@@ -1,0 +1,6 @@
+<p>You are currently viewing: {{ series.series_name }}</p>
+<ul>
+{% for issue in series.issue_set.all %}
+<li>{{ issue }}</li>
+{% endfor %}
+</ul>
