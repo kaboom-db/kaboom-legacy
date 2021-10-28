@@ -20,16 +20,22 @@ class Publisher(models.Model):
     name = models.CharField(max_length=200)
     logo = models.URLField()
 
+    def __str__(self) -> str:
+        return self.name
+
 class Character(models.Model):
     name = models.CharField(max_length=200)
     alias = models.CharField(max_length=200)
     description = models.CharField(max_length=1000)
     image = models.URLField()
 
+    def __str__(self) -> str:
+        return self.name
+
 class Series(models.Model):
     series_name = models.CharField(max_length=200)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
-    characters = models.ManyToManyField(Character)
+    description = models.CharField(max_length=1000)
     image_small = models.URLField()
     image_medium = models.URLField()
     image_large = models.URLField()
@@ -41,6 +47,7 @@ class Issue(models.Model):
     issue_number = models.IntegerField(default=1)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     description = models.CharField(max_length=1000)
+    characters = models.ManyToManyField(Character)
     image_small = models.URLField()
     image_medium = models.URLField()
     image_large = models.URLField()
@@ -52,3 +59,6 @@ class Staff(models.Model):
     name = models.CharField(max_length=200)
     position = models.CharField(max_length=100, choices=position_choices)
     image = models.URLField()
+
+    def __str__(self) -> str:
+        return self.name
