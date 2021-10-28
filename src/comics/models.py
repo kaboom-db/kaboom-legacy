@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.base import Model
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 position_choices = (
     ("WRITER", "Writer"),
@@ -15,10 +16,25 @@ position_choices = (
     ("EDITOR-IN-CHIEF", "Editor-in-Chief")
 )
 
+status_options = (
+    ("COMPLETED", "Completed"),
+    ("RELEASING", "Releasing"),
+    ("PLANNED", "Planned")
+)
+
 # Create your models here.
 class Publisher(models.Model):
     name = models.CharField(max_length=200)
     logo = models.URLField()
+    website = models.URLField()
+
+    def __str__(self) -> str:
+        return self.name
+
+class Staff(models.Model):
+    name = models.CharField(max_length=200)
+    position = models.CharField(max_length=100, choices=position_choices)
+    image = models.URLField()
 
     def __str__(self) -> str:
         return self.name
@@ -36,6 +52,8 @@ class Series(models.Model):
     series_name = models.CharField(max_length=200)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     description = models.CharField(max_length=1000)
+    year_started = models.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
+    status = models.CharField(max_length=100, choices=status_options)
     image_small = models.URLField()
     image_medium = models.URLField()
     image_large = models.URLField()
@@ -48,17 +66,11 @@ class Issue(models.Model):
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     description = models.CharField(max_length=1000)
     characters = models.ManyToManyField(Character)
+    staff = models.ManyToManyField(Staff)
+    release_date = models.DateField()
     image_small = models.URLField()
     image_medium = models.URLField()
     image_large = models.URLField()
 
     def __str__(self) -> str:
         return str(self.series) + ' #' + str(self.issue_number)
-
-class Staff(models.Model):
-    name = models.CharField(max_length=200)
-    position = models.CharField(max_length=100, choices=position_choices)
-    image = models.URLField()
-
-    def __str__(self) -> str:
-        return self.name

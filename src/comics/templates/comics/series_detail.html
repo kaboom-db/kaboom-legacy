@@ -1,6 +1,12 @@
+<h1>Series</h1>
 <p>You are currently viewing: {{ series.series_name }}</p>
+<p><b>Description:</b> {{ series.description }}</p>
+<p><b>Year:</b> {{ series.year_started }}</p>
+<p><b>Status:</b> {{ series.status }}</p>
+<p><b>Publisher:</b> {{ series.publisher }}</p>
+<p><b>Issues:</b></p>
 <ul>
 {% for issue in series.issue_set.all %}
-<li>{{ issue }}</li>
+<li><a href="{% url 'comics:issue_detail' issue.id %}">{{ issue }}</a></li>
 {% endfor %}
 </ul>
