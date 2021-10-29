@@ -1,0 +1,9 @@
+<h1>Comics</h1>
+{% if series_list %}
+<p>Series released this year:</p>
+<ul>
+{% for series in series_list %}
+    <li><a href="{% url 'comics:series_detail' series.id%}">{{ series }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}

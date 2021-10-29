@@ -4,7 +4,9 @@ from .models import Issue, Series
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Hello, you're visiting <strong>comics</strong>.")
+    # Get all series released in 2021
+    series_list = Series.objects.filter(year_started=2021)
+    return render(request, 'comics/comics.html', {'series_list': series_list})
 
 def series_detail(request, series_id):
     series = get_object_or_404(Series, pk=series_id)
