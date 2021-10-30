@@ -62,7 +62,8 @@ class Series(models.Model):
         return self.series_name
 
 class Issue(models.Model):
-    issue_number = models.IntegerField(default=1)
+    issue_number_absolute = models.IntegerField(default=1)
+    issue_number = models.CharField(max_length=10)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     description = models.CharField(max_length=10000)
     characters = models.ManyToManyField(Character, blank=True)
