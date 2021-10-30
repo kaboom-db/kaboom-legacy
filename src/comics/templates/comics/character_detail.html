@@ -1,3 +1,6 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'comics/style.css' %}">
+
 <h1>{{ character.name }}</h1>
 {% if character.alias %}
 <p>{{ character.alias }}</p>

@@ -1,3 +1,6 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'comics/style.css' %}">
+
 <h1>Issue</h1>
 <p>You are currently viewing the {{ issue.issue_number }}th issue of <a href="{% url 'comics:series_detail' issue.series.id %}">{{ issue.series }}</a></p>
 <p><b>Description:</b> {{ issue.description }}</p>

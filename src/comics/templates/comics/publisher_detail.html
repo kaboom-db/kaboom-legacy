@@ -1,3 +1,6 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'comics/style.css' %}">
+
 <h1>{{ publisher.name }}</h1>
 <p><b>Website:</b><a href="{{ publisher.website }}"> {{ publisher.website }}</a></p>
 {% if publisher.series_set.all %}
