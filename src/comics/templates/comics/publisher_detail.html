@@ -1,0 +1,11 @@
+<h1>{{ publisher.name }}</h1>
+<p><b>Website:</b><a href="{{ publisher.website }}">{{ publisher.website }}</a></p>
+{% if publisher.series_set.all %}
+<p><b>Series:</b></p>
+<ul>
+{% for series in publisher.series_set.all %}
+    <li><a href="{% url 'comics:series_detail' series.id %}">{{ series.series_name }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+<img src="{{ publisher.logo }}" alt="">

@@ -26,7 +26,7 @@ status_options = (
 class Publisher(models.Model):
     name = models.CharField(max_length=200)
     logo = models.URLField()
-    website = models.URLField()
+    website = models.URLField(blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -34,14 +34,14 @@ class Publisher(models.Model):
 class Staff(models.Model):
     name = models.CharField(max_length=200)
     position = models.CharField(max_length=100, choices=position_choices)
-    image = models.URLField()
+    image = models.URLField(blank=True)
 
     def __str__(self) -> str:
         return self.name
 
 class Character(models.Model):
     name = models.CharField(max_length=200)
-    alias = models.CharField(max_length=200)
+    alias = models.CharField(max_length=200, blank=True)
     description = models.CharField(max_length=10000)
     image = models.URLField()
 
@@ -65,8 +65,8 @@ class Issue(models.Model):
     issue_number = models.IntegerField(default=1)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     description = models.CharField(max_length=10000)
-    characters = models.ManyToManyField(Character)
-    staff = models.ManyToManyField(Staff)
+    characters = models.ManyToManyField(Character, blank=True)
+    staff = models.ManyToManyField(Staff, blank=True)
     release_date = models.DateField()
     image_small = models.URLField()
     image_medium = models.URLField()
