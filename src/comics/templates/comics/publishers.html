@@ -1,0 +1,6 @@
+<h1>Publishers:</h1>
+<ul>
+{% for publisher in publishers %}
+    <li><a href="{% url 'comics:publisher_detail' publisher.id %}">{{ publisher }}</a></li>
+{% endfor %}
+</ul>
