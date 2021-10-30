@@ -42,7 +42,7 @@ class Staff(models.Model):
 class Character(models.Model):
     name = models.CharField(max_length=200)
     alias = models.CharField(max_length=200)
-    description = models.CharField(max_length=1000)
+    description = models.CharField(max_length=10000)
     image = models.URLField()
 
     def __str__(self) -> str:
@@ -51,7 +51,7 @@ class Character(models.Model):
 class Series(models.Model):
     series_name = models.CharField(max_length=200)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
-    description = models.CharField(max_length=1000)
+    description = models.CharField(max_length=10000)
     year_started = models.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
     status = models.CharField(max_length=100, choices=status_options)
     image_small = models.URLField()
@@ -64,7 +64,7 @@ class Series(models.Model):
 class Issue(models.Model):
     issue_number = models.IntegerField(default=1)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
-    description = models.CharField(max_length=1000)
+    description = models.CharField(max_length=10000)
     characters = models.ManyToManyField(Character)
     staff = models.ManyToManyField(Staff)
     release_date = models.DateField()
