@@ -27,3 +27,7 @@ def staff_detail(request, staff_id):
 def character_detail(request, character_id):
     character = get_object_or_404(Character, pk=character_id)
     return render(request, 'comics/character_detail.html', {'character': character})
+
+def series_year(request, year):
+    series = Series.objects.filter(year_started=year)
+    return render(request, 'comics/year.html', {'year': year, 'series': series})
