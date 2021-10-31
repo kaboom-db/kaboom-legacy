@@ -6,6 +6,7 @@ routerComics = routers.DefaultRouter()
 routerComics.register(r'publishers', views.PublisherView, basename='publishers')
 routerComics.register(r'characters', views.CharacterView, basename='characters')
 routerComics.register(r'staff', views.StaffView, basename='staff')
+routerComics.register(r'issues', views.IssueView, basename='issues')
 
 app_name = 'comics'
 urlpatterns = [

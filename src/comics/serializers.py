@@ -15,3 +15,11 @@ class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
         fields = ['name', 'position', 'image', 'id']
+
+class IssueSerializer(serializers.ModelSerializer):
+    characters = CharacterSerializer(read_only=True, many=True)
+    staff = StaffSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Issue
+        fields = ['issue_number_absolute', 'issue_number', 'series', 'description', 'characters', 'staff', 'release_date', 'id', 'image_small', 'image_medium', 'image_large']

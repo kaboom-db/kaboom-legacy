@@ -1,9 +1,6 @@
-from django.db import models
-from django.db.models import query
-from django.http import HttpResponse, Http404
 from .models import Character, Issue, Series, Publisher, Staff
 from rest_framework import viewsets
-from .serializers import PublisherSerializer, CharacterSerializer, StaffSerializer
+from .serializers import IssueSerializer, PublisherSerializer, CharacterSerializer, StaffSerializer
 from rest_framework_api_key.permissions import HasAPIKey
 from django.db.models import Q
 
@@ -44,4 +41,14 @@ class StaffView(viewsets.ReadOnlyModelViewSet):
         elif query and position == 'all':
             queryset = Staff.objects.filter(name__contains=query)
 
+        return queryset
+
+class IssueView(viewsets.ReadOnlyModelViewSet):
+    serializer_class = IssueSerializer
+
+    def get_queryset(self):
+        queryset = Issue.objects.all()
+        series_id = self.request.query_params.get('series_id')
+        if series_id:
+            queryset = Issue.objects.filter(series__id=series_id)
         return queryset
