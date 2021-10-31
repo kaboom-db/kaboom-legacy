@@ -23,3 +23,8 @@ class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
         fields = ['issue_number_absolute', 'issue_number', 'series', 'description', 'characters', 'staff', 'release_date', 'id', 'image_small', 'image_medium', 'image_large']
+
+class SeriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Series
+        fields = ['series_name', 'publisher', 'description', 'year_started', 'status', 'image_small', 'image_medium', 'image_large']

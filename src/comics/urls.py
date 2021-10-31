@@ -1,3 +1,4 @@
+from django.db import router
 from django.urls import path, include
 from . import views
 from rest_framework import routers
@@ -7,6 +8,7 @@ routerComics.register(r'publishers', views.PublisherView, basename='publishers')
 routerComics.register(r'characters', views.CharacterView, basename='characters')
 routerComics.register(r'staff', views.StaffView, basename='staff')
 routerComics.register(r'issues', views.IssueView, basename='issues')
+# routerComics.register(r'series', views.SeriesView, basename='series')
 
 app_name = 'comics'
 urlpatterns = [
