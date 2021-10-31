@@ -9,4 +9,9 @@ class PublisherSerializer(serializers.ModelSerializer):
 class CharacterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
-        fields = ['name', 'alias', 'description', 'image']
+        fields = ['name', 'alias', 'description', 'image', 'id']
+
+class StaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Staff
+        fields = ['name', 'position', 'image', 'id']
