@@ -5,3 +5,8 @@ class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publisher
         fields = ['name', 'logo', 'website', 'id']
+
+class CharacterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Character
+        fields = ['name', 'alias', 'description', 'image']
