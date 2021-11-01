@@ -7,7 +7,7 @@ class StaffFilter(filters.FilterSet):
 
     class Meta:
         model = Staff
-        fields = ['name', 'position', 'image', 'id']
+        fields = ['name', 'position']
 
 class SeriesFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='series_name', lookup_expr='contains')
@@ -16,4 +16,4 @@ class SeriesFilter(filters.FilterSet):
 
     class Meta:
         model = Series
-        fields = ['series_name', 'publisher', 'description', 'year_started', 'status', 'id', 'image_small', 'image_medium', 'image_large']
+        fields = ['series_name', 'year_started', 'status']
