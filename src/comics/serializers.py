@@ -27,4 +27,4 @@ class IssueSerializer(serializers.ModelSerializer):
 class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Series
-        fields = ['series_name', 'publisher', 'description', 'year_started', 'status', 'image_small', 'image_medium', 'image_large']
+        fields = ['series_name', 'publisher', 'description', 'year_started', 'status', 'id', 'image_small', 'image_medium', 'image_large']
