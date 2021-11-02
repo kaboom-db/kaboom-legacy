@@ -30,7 +30,7 @@ class Genre(models.Model):
     def __str__(self) -> str:
         return self.genre
 
-class Cartoon(models.Model):
+class Series(models.Model):
     name = models.CharField(max_length=200)
     network = models.ForeignKey(Network, on_delete=models.CASCADE)
     genres = models.ManyToManyField(Genre, blank=True)
@@ -47,7 +47,7 @@ class Episode(models.Model):
     episode_number = models.IntegerField()
     absolute_episode_number = models.IntegerField()
     season_number = models.IntegerField(default=1)
-    cartoon = models.ForeignKey(Cartoon, on_delete=models.CASCADE)
+    series = models.ForeignKey(Series, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     summary = models.CharField(max_length=100)
     release_date = models.DateTimeField()
@@ -55,4 +55,4 @@ class Episode(models.Model):
     screenshot = models.URLField(blank=True)
 
     def __str__(self) -> str:
-        return str(self.cartoon) + " S" + str(self.season_number) + "E" + str(self.episode_number) + ": " + self.name
+        return str(self.series) + " S" + str(self.season_number) + "E" + str(self.episode_number) + ": " + self.name
