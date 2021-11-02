@@ -1,26 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-genres = (
-    ("ACTION", "Action"),
-    ("ADVENTURE", "Adventure"),
-    ("BIOGRAPHY", "Biography"),
-    ("COMEDY", "Comedy"),
-    ("CRIME", "Crime"),
-    ("DOCUMENTARY", "Documentary"),
-    ("DRAMA", "Drama"),
-    ("EPIC", "Epic"),
-    ("FAMILY", "Family"),
-    ("FANTASY", "Fantasy"),
-    ("GAME-SHOW", "Game-Show"),
-    ("HISTORY", "History"),
-    ("HORROR", "Horror"),
-    ("MUSICAL", "Musical"),
-    ("MYSTERY", "Mystery"),
-    ("SCI-FI", "Sci-Fi"),
-    ("THRILLER", "Thriller"),
-)
-
 class VoiceActor(models.Model):
     name = models.CharField(max_length=200)
     image = models.URLField(blank=True)

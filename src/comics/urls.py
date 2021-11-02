@@ -1,4 +1,3 @@
-from django.db import router
 from django.urls import path, include
 from . import views
 from rest_framework import routers
@@ -12,5 +11,5 @@ routerComics.register(r'series', views.SeriesView, basename='series')
 
 app_name = 'comics'
 urlpatterns = [
-    path('api/comics/', include(routerComics.urls), name='index')
+    path('', include(routerComics.urls), name='index')
 ]
