@@ -9,3 +9,5 @@ No. Especially in the current state it's in. There is no *usable* data in the da
 
 ## To Do
 - [ ] User Accounts
+- [ ] Desktop Client
+- [ ] Mobile Client
