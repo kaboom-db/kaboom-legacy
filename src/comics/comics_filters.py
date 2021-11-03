@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from comics.models import Staff, Series
+from comics.models import Issue, Staff, Series
 
 class StaffFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='contains')
@@ -17,3 +17,10 @@ class SeriesFilter(filters.FilterSet):
     class Meta:
         model = Series
         fields = ['series_name', 'year_started', 'status']
+
+class IssuesFilter(filters.FilterSet):
+    series = filters.filters.NumberFilter(field_name='series')
+
+    class Meta:
+        model = Issue
+        fields = ['series']

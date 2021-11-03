@@ -4,7 +4,7 @@ from .serializers import IssueSerializer, PublisherSerializer, CharacterSerializ
 from rest_framework_api_key.permissions import HasAPIKey
 from django.db.models import Q
 from django_filters import rest_framework as filters
-from .comics_filters import StaffFilter, SeriesFilter
+from .comics_filters import IssuesFilter, StaffFilter, SeriesFilter
 
 class PublisherView(viewsets.ReadOnlyModelViewSet):
     # Specify the serializer
@@ -35,14 +35,10 @@ class StaffView(viewsets.ReadOnlyModelViewSet):
     filterset_class = StaffFilter
 
 class IssueView(viewsets.ReadOnlyModelViewSet):
+    queryset = Issue.objects.all()
     serializer_class = IssueSerializer
-
-    def get_queryset(self):
-        queryset = Issue.objects.all()
-        series_id = self.request.query_params.get('series_id')
-        if series_id:
-            queryset = Issue.objects.filter(series__id=series_id)
-        return queryset
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = IssuesFilter
 
 class SeriesView(viewsets.ReadOnlyModelViewSet):
     queryset = Series.objects.all()
