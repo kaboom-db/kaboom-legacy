@@ -5,6 +5,7 @@ from rest_framework import routers
 routerCartoons = routers.DefaultRouter()
 routerCartoons.register(r'series', views.SeriesView, basename='series')
 routerCartoons.register(r'characters', views.CharacterView, basename='characters')
+routerCartoons.register(r'episodes', views.EpisodeView, basename='episodes')
 
 app_name = 'cartoons'
 urlpatterns = [
