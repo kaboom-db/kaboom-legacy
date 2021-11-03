@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from .models import Character, Episode, Genre, Series
+from .models import Character, Episode, Genre, Network, Series
 
 class SeriesFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='contains')
@@ -35,3 +35,11 @@ class GenresFilter(filters.FilterSet):
     class Meta:
         model = Genre
         fields = ['genre']
+
+class NetworksFilter(filters.FilterSet):
+    query = filters.filters.CharFilter(field_name='name', lookup_expr='contains')
+    website = filters.filters.CharFilter(field_name='website', lookup_expr='contains')
+
+    class Meta:
+        model = Network
+        fields = ['name', 'website']

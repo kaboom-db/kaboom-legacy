@@ -7,6 +7,7 @@ routerCartoons.register(r'series', views.SeriesView, basename='series')
 routerCartoons.register(r'characters', views.CharacterView, basename='characters')
 routerCartoons.register(r'episodes', views.EpisodeView, basename='episodes')
 routerCartoons.register(r'genres', views.GenreView, basename='genres')
+routerCartoons.register(r'networks', views.NetworkView, basename='networks')
 
 app_name = 'cartoons'
 urlpatterns = [

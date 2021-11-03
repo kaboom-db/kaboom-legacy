@@ -1,4 +1,4 @@
-from .cartoons_filters import CharactersFilter, EpisodesFilter, GenresFilter, SeriesFilter
+from .cartoons_filters import CharactersFilter, EpisodesFilter, GenresFilter, NetworksFilter, SeriesFilter
 from .models import Series, Character, Episode, Genre, Network, VoiceActor
 from rest_framework import viewsets
 from rest_framework_api_key.permissions import HasAPIKey
@@ -29,3 +29,9 @@ class GenreView(viewsets.ReadOnlyModelViewSet):
     serializer_class = GenreSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = GenresFilter
+
+class NetworkView(viewsets.ReadOnlyModelViewSet):
+    queryset = Network.objects.all()
+    serializer_class = NetworkSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = NetworksFilter
