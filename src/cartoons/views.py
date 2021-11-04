@@ -1,11 +1,9 @@
 from .cartoons_filters import CharactersFilter, EpisodesFilter, GenresFilter, NetworksFilter, SeriesFilter, VoiceActorsFilter
 from .models import Series, Character, Episode, Genre, Network, VoiceActor
 from rest_framework import viewsets
-from rest_framework_api_key.permissions import HasAPIKey
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from .serializers import SeriesSerializer, CharacterSerializer, EpisodeSerializer, GenreSerializer, NetworkSerializer, VoiceActorSerializer
-from cartoons import serializers
 
 class SeriesView(viewsets.ReadOnlyModelViewSet):
     queryset = Series.objects.all()

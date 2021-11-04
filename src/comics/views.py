@@ -1,7 +1,6 @@
 from .models import Character, Issue, Series, Publisher, Staff
 from rest_framework import viewsets
 from .serializers import IssueSerializer, PublisherSerializer, CharacterSerializer, SeriesSerializer, StaffSerializer
-from rest_framework_api_key.permissions import HasAPIKey
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from .comics_filters import IssuesFilter, PublishersFilters, StaffFilter, SeriesFilter
