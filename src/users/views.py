@@ -10,7 +10,8 @@ class CreateUser(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({
-                serializer.data
+                'user_id': serializer.data['pk'],
+                'username': serializer.data['username']
             })
         return Response({
             serializer.errors
