@@ -13,7 +13,7 @@ class CustomAuthToken(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
 
         g = Gravatar(user.email)
-        image = g.get_image()
+        image = g.get_image(default='https://github.com/crxssed.png')
 
         return Response({
             'token': token.key,
