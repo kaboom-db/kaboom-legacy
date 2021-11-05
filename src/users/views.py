@@ -1,7 +1,14 @@
+from django.db.models import query
+from rest_framework import serializers
+from rest_framework.decorators import action
 from rest_framework.views import APIView
-from .serializers import UserSerializer
+from .serializers import ComicSubscriptionSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from .models import ComicSubscription
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, ViewSet
 
 class CreateUser(APIView):
     def post(self, request):
@@ -19,3 +26,25 @@ class CreateUser(APIView):
         return Response({
             serializer.errors
         })
+
+class GetUserSubscriptions(ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ComicSubscriptionSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return ComicSubscription.objects.filter(user=user.pk)
+
+    # @action(detail=True, methods=['post'])
+    # def subscribe(self, request, **kwargs):
+    #     # create a new subscription
+    #     user = self.request.user
+    #     print(request.data)
+    #     serializer = ComicSubscriptionSerializer(data=request.data, user=user.pk)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         print(request.data)
+    #         return Response({'status': 'Successfully subscribed'})
+    #     else:
+    #         return Response(serializer.errors)

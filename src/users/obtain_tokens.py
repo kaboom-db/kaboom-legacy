@@ -1,7 +1,8 @@
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from libgravatar import Gravatar
+from . import models
+
 
 class CustomAuthToken(ObtainAuthToken):
 
@@ -12,11 +13,11 @@ class CustomAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
 
-        g = Gravatar(user.email)
-        image = g.get_image(default='retro')
+        image = models.get_user_image(user.email)
 
         return Response({
             'token': token.key,
+            'username': user.username,
             'user_id': user.pk,
             'email': user.email,
             'image': image

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from users.models import ComicSubscription
+from comics.serializers import SeriesSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -12,4 +14,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'id']
+        fields = ['username', 'email', 'id']
+
+class ComicSubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ComicSubscription
+        fields = ['series', 'user']
