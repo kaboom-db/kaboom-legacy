@@ -1,4 +1,5 @@
 from django.db.models import query
+from django.http.response import Http404
 from rest_framework import serializers
 from rest_framework.decorators import action
 from rest_framework.views import APIView
@@ -32,7 +33,7 @@ class GetUserSubscriptions(ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ComicSubscriptionSerializer
-    http_method_names = ['get', 'post']
+    http_method_names = ['get', 'post', 'delete']
 
     def get_queryset(self):
         user = self.request.user
@@ -50,3 +51,15 @@ class GetUserSubscriptions(ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # TODO Add a delete method so that users can unsub from a comic
+    def destroy(self, request, pk=None, *args, **kwargs):
+        try:
+            user = self.request.user
+            request.data['user'] = user.pk
+            serializer = ComicSubscriptionSerializer(data=request.data)
+            if serializer.is_valid():
+                sub = ComicSubscription.objects.filter(user=serializer.validated_data['user'], series=serializer.validated_data['series'])
+                self.perform_destroy(sub)
+                return Response({'status', 'Successfully unsubscribed'})
+        except Http404:
+            pass
+        return Response(status=status.HTTP_204_NO_CONTENT)
