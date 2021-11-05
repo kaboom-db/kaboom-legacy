@@ -20,8 +20,8 @@ def get_user_image(email) -> str:
     return image
 
 class ComicSubscription(models.Model):
-    # class Meta:
-    #     UniqueConstraint(fields=['series', 'user'], name='comic_subscription')
+    class Meta:
+        unique_together = (('series', 'user'),)
     
     series = models.ForeignKey(comic_models.Series, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -36,15 +36,13 @@ class GetUserSubscriptions(ModelViewSet):
         user = self.request.user
         return ComicSubscription.objects.filter(user=user.pk)
 
-    # @action(detail=True, methods=['post'])
-    # def subscribe(self, request, **kwargs):
-    #     # create a new subscription
-    #     user = self.request.user
-    #     print(request.data)
-    #     serializer = ComicSubscriptionSerializer(data=request.data, user=user.pk)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         print(request.data)
-    #         return Response({'status': 'Successfully subscribed'})
-    #     else:
-    #         return Response(serializer.errors)
+    def create(self, request, *args, **kwargs):
+        user = self.request.user
+        request.data['user'] = user.pk
+        print(request.data)
+        serializer = ComicSubscriptionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'Successfully subscribed'})
+        else:
+            return Response(serializer.errors)
