@@ -9,6 +9,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import ComicSubscription
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, ViewSet
+from rest_framework import status
 
 class CreateUser(APIView):
     def post(self, request):
@@ -31,6 +32,7 @@ class GetUserSubscriptions(ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ComicSubscriptionSerializer
+    http_method_names = ['get', 'post']
 
     def get_queryset(self):
         user = self.request.user
@@ -45,4 +47,6 @@ class GetUserSubscriptions(ModelViewSet):
             serializer.save()
             return Response({'status': 'Successfully subscribed'})
         else:
-            return Response(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # TODO Add a delete method so that users can unsub from a comic
