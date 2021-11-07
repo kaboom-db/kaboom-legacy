@@ -20,3 +20,11 @@ class ComicSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComicSubscription
         fields = ['series', 'user']
+
+class ComicSubscriptionSerializerDetailed(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    series = SeriesSerializer(read_only=True)
+
+    class Meta:
+        model = ComicSubscription
+        fields = ['series', 'user']

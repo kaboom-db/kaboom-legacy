@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from .serializers import ComicSubscriptionSerializer, UserSerializer
+from .serializers import ComicSubscriptionSerializer, ComicSubscriptionSerializerDetailed, UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -28,17 +28,20 @@ class CreateUser(APIView):
 class GetUserSubscriptions(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = ComicSubscriptionSerializer
+    serializer_class = ComicSubscriptionSerializerDetailed
     http_method_names = ['get']
     
     def get(self, request):
         user = self.request.user
         queryset = ComicSubscription.objects.filter(user=user.pk)
+        query = request.query_params.get('query')
+        if query:
+            queryset = ComicSubscription.objects.filter(user=user.pk, series__series_name__contains=query)
         paginator = pagination.PageNumberPagination()
         paginator.display_page_controls = True
         print(paginator.display_page_controls)
         result_page = paginator.paginate_queryset(queryset, request)
-        data = ComicSubscriptionSerializer(result_page, many=True).data
+        data = ComicSubscriptionSerializerDetailed(result_page, many=True).data
         return paginator.get_paginated_response(data)
         
 
