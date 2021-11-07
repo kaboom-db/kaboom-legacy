@@ -25,20 +25,6 @@ class CreateUser(APIView):
             serializer.errors
         })
 
-    # TODO Add a delete method so that users can unsub from a comic
-    # def destroy(self, request, pk=None, *args, **kwargs):
-    #     try:
-    #         user = self.request.user
-    #         request.data['user'] = user.pk
-    #         serializer = ComicSubscriptionSerializer(data=request.data)
-    #         if serializer.is_valid():
-    #             sub = ComicSubscription.objects.filter(user=serializer.validated_data['user'], series=serializer.validated_data['series'])
-    #             self.perform_destroy(sub)
-    #             return Response({'status', 'Successfully unsubscribed'})
-    #     except Http404:
-    #         pass
-    #     return Response(status=status.HTTP_204_NO_CONTENT)
-
 class GetUserSubscriptions(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
