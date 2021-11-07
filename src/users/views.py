@@ -29,17 +29,50 @@ class CreateUser(APIView):
             serializer.errors
         })
 
-class GetUserSubscriptions(ModelViewSet):
+# class GetUserSubscriptions(ModelViewSet):
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = ComicSubscriptionSerializer
+#     http_method_names = ['get']
+# 
+#     def get_queryset(self):
+#         user = self.request.user
+#         return ComicSubscription.objects.filter(user=user.pk)
+
+    # TODO Add a delete method so that users can unsub from a comic
+    # def destroy(self, request, pk=None, *args, **kwargs):
+    #     try:
+    #         user = self.request.user
+    #         request.data['user'] = user.pk
+    #         serializer = ComicSubscriptionSerializer(data=request.data)
+    #         if serializer.is_valid():
+    #             sub = ComicSubscription.objects.filter(user=serializer.validated_data['user'], series=serializer.validated_data['series'])
+    #             self.perform_destroy(sub)
+    #             return Response({'status', 'Successfully unsubscribed'})
+    #     except Http404:
+    #         pass
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+class GetUserSubscriptions(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ComicSubscriptionSerializer
-    http_method_names = ['get', 'post', 'delete']
+    http_method_names = ['get']
 
-    def get_queryset(self):
+    def get(self, request):
         user = self.request.user
-        return ComicSubscription.objects.filter(user=user.pk)
+        queryset = ComicSubscription.objects.filter(user=user.pk)
+        data = ComicSubscriptionSerializer(queryset, many=True).data
+        return Response({'subscriptions': data})
+        
 
-    def create(self, request, *args, **kwargs):
+class AddUserSubscription(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ComicSubscriptionSerializer
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
         user = self.request.user
         request.data['user'] = user.pk
         print(request.data)
@@ -49,17 +82,3 @@ class GetUserSubscriptions(ModelViewSet):
             return Response({'status': 'Successfully subscribed'})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # TODO Add a delete method so that users can unsub from a comic
-    def destroy(self, request, pk=None, *args, **kwargs):
-        try:
-            user = self.request.user
-            request.data['user'] = user.pk
-            serializer = ComicSubscriptionSerializer(data=request.data)
-            if serializer.is_valid():
-                sub = ComicSubscription.objects.filter(user=serializer.validated_data['user'], series=serializer.validated_data['series'])
-                self.perform_destroy(sub)
-                return Response({'status', 'Successfully unsubscribed'})
-        except Http404:
-            pass
-        return Response(status=status.HTTP_204_NO_CONTENT)
