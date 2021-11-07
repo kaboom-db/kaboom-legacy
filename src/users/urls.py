@@ -8,5 +8,6 @@ urlpatterns = [
     path('login/', CustomAuthToken.as_view(), name='token'),
     path('comics/series', views.GetUserSubscriptions.as_view(), name='get-sub'),
     path('comics/series/add/', views.AddUserSubscription.as_view(), name='add-sub'),
-    path('comics/series/remove/', views.RemoveUserSubscription.as_view(), name='remove-sub')
+    path('comics/series/remove/', views.RemoveUserSubscription.as_view(), name='remove-sub'),
+    path('comics/issues/', views.GetUserReadIssues.as_view(), name='get-issues')
 ]

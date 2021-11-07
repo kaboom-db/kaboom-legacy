@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from users.models import ComicSubscription
-from comics.serializers import SeriesSerializer
+from comics.models import Issue
+from users.models import ComicSubscription, ReadIssue
+from comics.serializers import IssueSerializer, SeriesSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -19,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ComicSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComicSubscription
-        fields = ['series', 'user']
+        fields = ['series', 'user', 'rating']
 
 class ComicSubscriptionSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -27,4 +28,17 @@ class ComicSubscriptionSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = ComicSubscription
-        fields = ['series', 'user']
+        fields = ['series', 'user', 'rating']
+
+class ReadIssuesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReadIssue
+        fields = ['issue', 'user', 'rating']
+
+class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    issue = IssueSerializer(read_only=True)
+
+    class Meta:
+        model = ReadIssue
+        fields = ['issue', 'user', 'rating']

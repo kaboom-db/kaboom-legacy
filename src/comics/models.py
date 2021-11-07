@@ -25,7 +25,7 @@ status_options = (
 class Publisher(models.Model):
     name = models.CharField(max_length=200)
     logo = models.URLField()
-    website = models.URLField(blank=True)
+    website = models.URLField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -33,14 +33,14 @@ class Publisher(models.Model):
 class Staff(models.Model):
     name = models.CharField(max_length=200)
     position = models.CharField(max_length=100, choices=position_choices)
-    image = models.URLField(blank=True)
+    image = models.URLField(null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name
 
 class Character(models.Model):
     name = models.CharField(max_length=200)
-    alias = models.CharField(max_length=200, blank=True)
+    alias = models.CharField(max_length=200, null=True, blank=True)
     description = models.CharField(max_length=10000)
     image = models.URLField()
 
@@ -61,6 +61,9 @@ class Series(models.Model):
         return self.series_name
 
 class Issue(models.Model):
+    class Meta:
+        unique_together = (('issue_number_absolute', 'series'),)
+
     issue_number_absolute = models.IntegerField(default=1)
     issue_number = models.CharField(max_length=10)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)

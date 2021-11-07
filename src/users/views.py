@@ -1,17 +1,16 @@
 from rest_framework.views import APIView
-from .serializers import ComicSubscriptionSerializer, ComicSubscriptionSerializerDetailed, UserSerializer
+from .serializers import ComicSubscriptionSerializer, ComicSubscriptionSerializerDetailed, ReadIssuesSerializerDetailed, UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .models import ComicSubscription
+from .models import ComicSubscription, ReadIssue
 from rest_framework import status
 from rest_framework import pagination
 
 class CreateUser(APIView):
     def post(self, request):
-        post_data = request.data
-        serializer = UserSerializer(data=post_data)
+        serializer = UserSerializer(data=request.data)
         try:
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
@@ -38,8 +37,6 @@ class GetUserSubscriptions(APIView):
         if query:
             queryset = ComicSubscription.objects.filter(user=user.pk, series__series_name__contains=query)
         paginator = pagination.PageNumberPagination()
-        paginator.display_page_controls = True
-        print(paginator.display_page_controls)
         result_page = paginator.paginate_queryset(queryset, request)
         data = ComicSubscriptionSerializerDetailed(result_page, many=True).data
         return paginator.get_paginated_response(data)
@@ -76,6 +73,27 @@ class RemoveUserSubscription(APIView):
                 instance.delete()
                 return Response({'status': 'Successfully unsubscribed'})
             else:
-                return Response({'status': 'Cannot unsubscribe from a comic that has not been subscribed to.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'series': [
+                    'Cannot unsubscribe from a comic that has not been subscribed to.'
+                ]}, status=status.HTTP_400_BAD_REQUEST)
         except KeyError:
-            return Response({'series': 'This is a required field'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'series': [
+                'This is a required field'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+
+class GetUserReadIssues(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReadIssuesSerializerDetailed
+    http_method_names = ['get']
+
+    def get(self, request):
+        user = self.request.user
+        queryset = ReadIssue.objects.filter(user=user.pk)
+        series = request.query_params.get('series')
+        if series:
+            queryset = ReadIssue.objects.filter(user=user.pk, issue__series=series)
+        paginator = pagination.PageNumberPagination()
+        result_page = paginator.paginate_queryset(queryset, request)
+        data = ReadIssuesSerializerDetailed(result_page, many=True).data
+        return paginator.get_paginated_response(data)
