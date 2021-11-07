@@ -1,7 +1,3 @@
-from django.db.models import query
-from django.http.response import Http404
-from rest_framework import serializers
-from rest_framework.decorators import action
 from rest_framework.views import APIView
 from .serializers import ComicSubscriptionSerializer, UserSerializer
 from rest_framework.response import Response
@@ -9,8 +5,8 @@ from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .models import ComicSubscription
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, ViewSet
 from rest_framework import status
+from rest_framework import pagination
 
 class CreateUser(APIView):
     def post(self, request):
@@ -28,16 +24,6 @@ class CreateUser(APIView):
         return Response({
             serializer.errors
         })
-
-# class GetUserSubscriptions(ModelViewSet):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = ComicSubscriptionSerializer
-#     http_method_names = ['get']
-# 
-#     def get_queryset(self):
-#         user = self.request.user
-#         return ComicSubscription.objects.filter(user=user.pk)
 
     # TODO Add a delete method so that users can unsub from a comic
     # def destroy(self, request, pk=None, *args, **kwargs):
@@ -58,12 +44,16 @@ class GetUserSubscriptions(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ComicSubscriptionSerializer
     http_method_names = ['get']
-
+    
     def get(self, request):
         user = self.request.user
         queryset = ComicSubscription.objects.filter(user=user.pk)
-        data = ComicSubscriptionSerializer(queryset, many=True).data
-        return Response({'subscriptions': data})
+        paginator = pagination.PageNumberPagination()
+        paginator.display_page_controls = True
+        print(paginator.display_page_controls)
+        result_page = paginator.paginate_queryset(queryset, request)
+        data = ComicSubscriptionSerializer(result_page, many=True).data
+        return paginator.get_paginated_response(data)
         
 
 class AddUserSubscription(APIView):
@@ -75,10 +65,28 @@ class AddUserSubscription(APIView):
     def post(self, request, *args, **kwargs):
         user = self.request.user
         request.data['user'] = user.pk
-        print(request.data)
         serializer = ComicSubscriptionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'status': 'Successfully subscribed'})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RemoveUserSubscription(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ComicSubscriptionSerializer
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        request.data['user'] = user.pk
+        try:
+            instance = ComicSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
+            if instance:
+                instance.delete()
+                return Response({'status': 'Successfully unsubscribed'})
+            else:
+                return Response({'status': 'Cannot unsubscribe from a comic that has not been subscribed to.'}, status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response({'series': 'This is a required field'}, status=status.HTTP_400_BAD_REQUEST)
