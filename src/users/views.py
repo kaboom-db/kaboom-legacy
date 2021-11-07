@@ -90,7 +90,7 @@ class GetUserReadIssues(APIView):
     def get(self, request):
         user = self.request.user
         queryset = ReadIssue.objects.filter(user=user.pk)
-        series = request.query_params.get('series')
+        series = request.query_params.get('series_id')
         if series:
             queryset = ReadIssue.objects.filter(user=user.pk, issue__series=series)
         paginator = pagination.PageNumberPagination()
