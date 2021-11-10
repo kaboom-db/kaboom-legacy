@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from .serializers import ComicSubscriptionSerializer, ComicSubscriptionSerializerDetailed, ReadIssuesSerializerDetailed, UserSerializer
+from .serializers import ComicSubscriptionSerializer, ComicSubscriptionSerializerDetailed, ReadIssuesSerializer, ReadIssuesSerializerDetailed, UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import ComicSubscription, ReadIssue
 from rest_framework import status
 from rest_framework import pagination
+from django.core.exceptions import ObjectDoesNotExist
 
 class CreateUser(APIView):
     def post(self, request):
@@ -97,3 +98,65 @@ class GetUserReadIssues(APIView):
         result_page = paginator.paginate_queryset(queryset, request)
         data = ReadIssuesSerializerDetailed(result_page, many=True).data
         return paginator.get_paginated_response(data)
+
+class AddUserReadIssue(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReadIssuesSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        request.data['user'] = user.pk
+        serializer = ReadIssuesSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'Read the issue'})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RemoveUserReadIssue(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReadIssuesSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        request.data['user'] = user.pk
+        try:
+            instance = ReadIssue.objects.get(id=request.data['read_id'])
+            instance.delete()
+            return Response({'status': 'Unread the issue'})
+        except KeyError:
+            return Response({'read_id': [
+                'This is a required field'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'issue': [
+                'Cannot unread a comic that has not been read.'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+
+class CleanUserReadIssues(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReadIssuesSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        request.data['user'] = user.pk
+        try:
+            instances = ReadIssue.objects.filter(issue=request.data['issue'])
+            if instances:
+                for instance in instances:
+                    instance.delete()
+                return Response({'status': 'All read states have been removed from this issue.'})
+            else:
+                return Response({'issue': [
+                    'That issue has not been read.'
+                ]}, status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response({'issue': [
+                'This is a required field'
+            ]}, status=status.HTTP_400_BAD_REQUEST)

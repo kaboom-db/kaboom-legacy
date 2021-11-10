@@ -33,7 +33,7 @@ class ComicSubscriptionSerializerDetailed(serializers.ModelSerializer):
 class ReadIssuesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReadIssue
-        fields = ['issue', 'user', 'rating']
+        fields = ['issue', 'user', 'watched_at']
 
 class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -41,4 +41,4 @@ class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = ReadIssue
-        fields = ['issue', 'user', 'rating']
+        fields = ['issue', 'user', 'watched_at', 'id']
