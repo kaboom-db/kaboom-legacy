@@ -8,14 +8,6 @@ class VoiceActor(models.Model):
     def __str__(self) -> str:
         return self.name
 
-class Character(models.Model):
-    name = models.CharField(max_length=200)
-    voice_actor = models.ForeignKey(VoiceActor, on_delete=models.CASCADE)
-    image = models.URLField(blank=True)
-
-    def __str__(self) -> str:
-        return self.name
-
 class Network(models.Model):
     name = models.CharField(max_length=200)
     website = models.URLField(blank=True)
@@ -39,6 +31,15 @@ class Series(models.Model):
     image_small = models.URLField(blank=True)
     image_medium = models.URLField(blank=True)
     image_large = models.URLField(blank=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+class Character(models.Model):
+    name = models.CharField(max_length=200)
+    voice_actor = models.ForeignKey(VoiceActor, on_delete=models.CASCADE)
+    image = models.URLField(blank=True)
+    series  = models.ForeignKey(Series, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.name
