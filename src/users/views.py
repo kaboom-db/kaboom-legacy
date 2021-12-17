@@ -1,15 +1,8 @@
 from rest_framework.views import APIView
 
-from cartoons.models import Series
-from .serializers import ComicSubscriptionSerializer, ComicSubscriptionSerializerDetailed, ReadIssuesSerializer, ReadIssuesSerializerDetailed, UserSerializer
+from .serializers import  UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-from .models import ComicSubscription, ReadIssue
-from rest_framework import status
-from rest_framework import pagination
-from django.core.exceptions import ObjectDoesNotExist
 
 ### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
