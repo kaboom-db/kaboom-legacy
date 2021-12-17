@@ -6,6 +6,7 @@ from comics.serializers import IssueSerializer, SeriesSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
+        print(validated_data)
         user = User.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
@@ -15,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'id']
+        fields = ['username', 'password', 'email', 'id']
 
 class ComicSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,7 +34,7 @@ class ComicSubscriptionSerializerDetailed(serializers.ModelSerializer):
 class ReadIssuesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReadIssue
-        fields = ['issue', 'user', 'watched_at']
+        fields = ['issue', 'user', 'read_at']
 
 class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -41,4 +42,4 @@ class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = ReadIssue
-        fields = ['issue', 'user', 'watched_at', 'id']
+        fields = ['issue', 'user', 'read_at', 'id']

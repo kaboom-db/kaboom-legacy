@@ -11,9 +11,11 @@ from rest_framework import status
 from rest_framework import pagination
 from django.core.exceptions import ObjectDoesNotExist
 
+### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
+        print(request.data)
         try:
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
@@ -21,12 +23,13 @@ class CreateUser(APIView):
                     'user_id': serializer.data['id'],
                     'username': serializer.data['username']
                 })
-        except KeyError:
-            raise ParseError(detail='You are either missing an email, password or username.')
+        except KeyError as e:
+            raise ParseError(detail='You are either missing an email, password or username. ' + str(e.args))
         return Response({
             serializer.errors
         })
 
+### Gets a users comic subcriptions. Can pass in a query.
 class GetUserSubscriptions(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -43,8 +46,8 @@ class GetUserSubscriptions(APIView):
         result_page = paginator.paginate_queryset(queryset, request)
         data = ComicSubscriptionSerializerDetailed(result_page, many=True).data
         return paginator.get_paginated_response(data)
-        
 
+### Adds a comic series to a users subscription list.
 class AddUserSubscription(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -61,6 +64,7 @@ class AddUserSubscription(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+### Removes a series from the subscription list.
 class RemoveUserSubscription(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -84,6 +88,7 @@ class RemoveUserSubscription(APIView):
                 'This is a required field'
             ]}, status=status.HTTP_400_BAD_REQUEST)
 
+### Add a rating to a series.
 class AddUserSeriesRating(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -121,6 +126,7 @@ class AddUserSeriesRating(APIView):
                 'Rating needs to be a number between 0 and 10'
             ]}, status=status.HTTP_400_BAD_REQUEST)
 
+### Gets all the read issues of the user.
 class GetUserReadIssues(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -138,6 +144,7 @@ class GetUserReadIssues(APIView):
         data = ReadIssuesSerializerDetailed(result_page, many=True).data
         return paginator.get_paginated_response(data)
 
+### Adds an issue as read.
 class AddUserReadIssue(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -154,6 +161,7 @@ class AddUserReadIssue(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+### Removes an issue from read.
 class RemoveUserReadIssue(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -176,6 +184,7 @@ class RemoveUserReadIssue(APIView):
                 'Cannot unread a comic that has not been read.'
             ]}, status=status.HTTP_400_BAD_REQUEST)
 
+### Removes all read states from the issue
 class CleanUserReadIssues(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]

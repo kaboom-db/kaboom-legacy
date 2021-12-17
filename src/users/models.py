@@ -31,4 +31,4 @@ class ComicSubscription(models.Model):
 class ReadIssue(models.Model):
     issue = models.ForeignKey(comic_models.Issue, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    watched_at = models.DateTimeField(default=timezone.now)
+    read_at = models.DateTimeField(default=timezone.now)
