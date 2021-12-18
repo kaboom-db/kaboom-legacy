@@ -1,6 +1,7 @@
 from django.urls import path, include
 from . import views
 from . import comics_views
+from . import cartoons_views
 from .obtain_tokens import CustomAuthToken
 
 app_name = 'users'
@@ -15,4 +16,6 @@ urlpatterns = [
     path('comics/issues/add/', comics_views.AddUserReadIssue.as_view(), name='add-issues'),
     path('comics/issues/remove/', comics_views.RemoveUserReadIssue.as_view(), name='remove-issues'),
     path('comics/issues/remove/clean/', comics_views.CleanUserReadIssues.as_view(), name='clean-issues'),
+    path('cartoons/series/', cartoons_views.GetUserSubscriptions.as_view(), name='get-cartoons-sub'),
+    path('cartoons/series/add/', cartoons_views.AddUserSubscription.as_view(), name='add-cartoons-sub'),
 ]

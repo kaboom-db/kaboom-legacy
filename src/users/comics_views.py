@@ -1,6 +1,5 @@
 from rest_framework.views import APIView
 
-from cartoons.models import Series
 from .serializers import ComicSubscriptionSerializer, ComicSubscriptionSerializerDetailed, ReadIssuesSerializer, ReadIssuesSerializerDetailed, UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
