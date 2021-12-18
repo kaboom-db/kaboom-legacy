@@ -45,3 +45,27 @@ class AddUserSubscription(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+### Removes a user subscription
+class RemoveUserSubscription(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = CartoonSubscriptionSerializer
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        request.data['user'] = user.pk
+        try:
+            instance = CartoonSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
+            if instance:
+                instance.delete()
+                return Response({'status': 'Successfully unsubscribed'})
+            else:
+                return Response({'series': [
+                    'Cannot unsubscribe from a cartoon that has not been subscribed to.'
+                ]}, status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response({'series': [
+                'This is a required field'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
