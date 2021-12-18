@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from comics.models import Issue
-from users.models import CartoonSubscription, ComicSubscription, ReadIssue, WatchedCartoon
+from users.models import CartoonSubscription, ComicSubscription, ReadIssue, WatchedEpisode
 from comics.serializers import IssueSerializer, SeriesSerializer
 import cartoons.serializers
 
@@ -19,13 +19,18 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'password', 'email', 'id']
 
+class UserSerializerNoPassword(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'id']
+
 class ComicSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComicSubscription
         fields = ['series', 'user', 'rating']
 
 class ComicSubscriptionSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = UserSerializerNoPassword(read_only=True)
     series = SeriesSerializer(read_only=True)
 
     class Meta:
@@ -38,7 +43,7 @@ class ReadIssuesSerializer(serializers.ModelSerializer):
         fields = ['issue', 'user', 'read_at']
 
 class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = UserSerializerNoPassword(read_only=True)
     issue = IssueSerializer(read_only=True)
 
     class Meta:
@@ -46,7 +51,7 @@ class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
         fields = ['issue', 'user', 'read_at', 'id']
 
 class CartoonSubscriptionSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = UserSerializerNoPassword(read_only=True)
     series = cartoons.serializers.SeriesSerializer(read_only=True)
 
     class Meta:
@@ -59,14 +64,14 @@ class CartoonSubscriptionSerializer(serializers.ModelSerializer):
         fields = ['series', 'user', 'rating']
 
 class WatchedEpisodesSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = UserSerializerNoPassword(read_only=True)
     episode = cartoons.serializers.EpisodeSerializer(read_only=True)
 
     class Meta:
-        model = WatchedCartoon
+        model = WatchedEpisode
         fields = ['episode', 'user', 'watched_at', 'id']
 
 class WatchedEpisodesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = WatchedCartoon
+        model = WatchedEpisode
         fields = ['episode', 'user', 'watched_at', 'id']

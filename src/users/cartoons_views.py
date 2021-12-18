@@ -1,12 +1,12 @@
 from rest_framework.views import APIView
 
 from cartoons.models import Series
-from .serializers import CartoonSubscriptionSerializer, CartoonSubscriptionSerializerDetailed, ReadIssuesSerializer, ReadIssuesSerializerDetailed, UserSerializer
+from .serializers import CartoonSubscriptionSerializer, CartoonSubscriptionSerializerDetailed, WatchedEpisodesSerializer, WatchedEpisodesSerializerDetailed, UserSerializer
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .models import CartoonSubscription, ComicSubscription, ReadIssue
+from .models import CartoonSubscription, ComicSubscription, ReadIssue, WatchedEpisode
 from rest_framework import status
 from rest_framework import pagination
 from django.core.exceptions import ObjectDoesNotExist
@@ -105,4 +105,87 @@ class AddUserSeriesRating(APIView):
         except ValueError:
             return Response({'field_error': [
                 'Rating needs to be a number between 0 and 10'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+
+### Get all the watched eps of a user
+class GetUserWatchedEpisodes(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = WatchedEpisodesSerializerDetailed
+    http_method_names = ['get']
+
+    def get(self, request):
+        user = self.request.user
+        queryset = WatchedEpisode.objects.filter(user=user.pk)
+        series = request.query_params.get('series')
+        if series:
+            queryset = WatchedEpisode.objects.filter(user=user.pk, episode__series=series)
+        paginator = pagination.PageNumberPagination()
+        result_page = paginator.paginate_queryset(queryset, request)
+        data = WatchedEpisodesSerializerDetailed(result_page, many=True).data
+        return paginator.get_paginated_response(data)
+
+### Adds an episode as watched
+class AddUserWatchedEpisode(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = WatchedEpisodesSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        request.data['user'] = user.pk
+        serializer = WatchedEpisodesSerializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'status': 'Watched the episode'})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+### Remove a watched episode
+class RemoveUserWatchedEpisode(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = WatchedEpisodesSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        request.data['user'] = user.pk
+        try:
+            instance = WatchedEpisode.objects.get(id=request.data['watched_id'])
+            instance.delete()
+            return Response({'status': 'Unwatched the episode'})
+        except KeyError:
+            return Response({'watched_id': [
+                'This is a required field'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'episode': [
+                'Cannot unwatch an episode that has not been watched.'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+
+### Remove all watched states of a certain episode
+class CleanUserWatchedEpisodes(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = WatchedEpisodesSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        request.data['user'] = user.pk
+        try:
+            instances = WatchedEpisode.objects.filter(episode=request.data['episode'])
+            if instances:
+                for instance in instances:
+                    instance.delete()
+                return Response({'status': 'All watched states have been removed from this episode.'})
+            else:
+                return Response({'episode': [
+                    'That episode has not been watched.'
+                ]}, status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response({'episode': [
+                'This is a required field'
             ]}, status=status.HTTP_400_BAD_REQUEST)

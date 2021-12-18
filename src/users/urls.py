@@ -20,4 +20,8 @@ urlpatterns = [
     path('cartoons/series/add/', cartoons_views.AddUserSubscription.as_view(), name='add-cartoons-sub'),
     path('cartoons/series/rate/', cartoons_views.AddUserSeriesRating.as_view(), name='rate-cartoons-sub'),
     path('cartoons/series/remove/', cartoons_views.RemoveUserSubscription.as_view(), name='remove-cartoons-sub'),
+    path('cartoons/episodes/', cartoons_views.GetUserWatchedEpisodes.as_view(), name='get-episodes'),
+    path('cartoons/episodes/add/', cartoons_views.AddUserWatchedEpisode.as_view(), name='add-episodes'),
+    path('cartoons/episodes/remove/', cartoons_views.RemoveUserWatchedEpisode.as_view(), name='remove-episodes'),
+    path('cartoons/episodes/remove/clean/', cartoons_views.CleanUserWatchedEpisodes.as_view(), name='clean-episodes'),
 ]

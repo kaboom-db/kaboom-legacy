@@ -43,7 +43,7 @@ class CartoonSubscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(10)])
 
-class WatchedCartoon(models.Model):
+class WatchedEpisode(models.Model):
     episode = models.ForeignKey(cartoons_models.Episode, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     watched_at = models.DateTimeField(default=timezone.now)
