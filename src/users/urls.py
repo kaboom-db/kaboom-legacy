@@ -18,5 +18,6 @@ urlpatterns = [
     path('comics/issues/remove/clean/', comics_views.CleanUserReadIssues.as_view(), name='clean-issues'),
     path('cartoons/series/', cartoons_views.GetUserSubscriptions.as_view(), name='get-cartoons-sub'),
     path('cartoons/series/add/', cartoons_views.AddUserSubscription.as_view(), name='add-cartoons-sub'),
+    path('cartoons/series/rate/', cartoons_views.AddUserSeriesRating.as_view(), name='rate-cartoons-sub'),
     path('cartoons/series/remove/', cartoons_views.RemoveUserSubscription.as_view(), name='remove-cartoons-sub'),
 ]

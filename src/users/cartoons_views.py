@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from .models import CartoonSubscription, ReadIssue
+from .models import CartoonSubscription, ComicSubscription, ReadIssue
 from rest_framework import status
 from rest_framework import pagination
 from django.core.exceptions import ObjectDoesNotExist
@@ -68,4 +68,41 @@ class RemoveUserSubscription(APIView):
         except KeyError:
             return Response({'series': [
                 'This is a required field'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+
+### Rate a cartoon
+class AddUserSeriesRating(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = CartoonSubscriptionSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        try:
+            instance = CartoonSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
+            if instance:
+                rating = request.data['rating']
+                if int(rating) >= 0 and int(rating) <= 10:
+                    instance.rating = rating
+                    instance.save()
+                    return Response({
+                        'series': instance.series.id,
+                        'user': instance.user.id,
+                        'id': instance.id,
+                        'rating': instance.rating
+                    })
+                else:
+                    raise ValueError()
+            else:
+                return Response({'series': [
+                    'Cannot rate a series that has not been subscribed to.'
+                ]}, status=status.HTTP_400_BAD_REQUEST)
+        except KeyError:
+            return Response({'field_error': [
+                'Rating and series are both required fields.'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError:
+            return Response({'field_error': [
+                'Rating needs to be a number between 0 and 10'
             ]}, status=status.HTTP_400_BAD_REQUEST)
