@@ -8,6 +8,5 @@ The best way to explain what KABOOM is meant to be is the 'TMDb of comics and ca
 No. Especially in the current state it's in. There is no *usable* data in the database and the user accounts system is not implemented yet. There may also be security issues, I am the only developer and I don't have much web tech experience, so the user account system may not be as secure as it could be. Currently KABOOM is just an experimental hobby project, we'll see where it goes from there.
 
 ## To Do
-- [ ] User Accounts
 - [ ] Desktop Client
 - [ ] Mobile Client
