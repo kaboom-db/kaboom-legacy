@@ -60,6 +60,12 @@ class Series(models.Model):
     def __str__(self) -> str:
         return self.series_name
 
+class Format(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self) -> str:
+        return self.name
+
 class Issue(models.Model):
     class Meta:
         unique_together = (('issue_number_absolute', 'series'),)
@@ -70,6 +76,7 @@ class Issue(models.Model):
     description = models.CharField(max_length=10000)
     characters = models.ManyToManyField(Character, blank=True)
     staff = models.ManyToManyField(Staff, blank=True)
+    format = models.ForeignKey(Format, on_delete=models.SET_NULL, null=True, blank=True)
     release_date = models.DateField()
     image_small = models.URLField()
     image_medium = models.URLField()
