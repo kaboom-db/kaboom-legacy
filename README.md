@@ -11,4 +11,4 @@ No. Especially in the current state it's in. There is no *usable* data in the da
 - [ ] Desktop Client
 - [ ] Mobile Client
 - [ ] Add posts to a user (social aspect)
-- [ ] Add logout endpoint that will regenerate auth token
+- [ ] Refactor choices for staff roles
