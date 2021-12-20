@@ -31,7 +31,7 @@ class CreateUser(APIView):
             serializer.errors
         })
 
-# TODO: This does not work. Fix it.
+### Get thoughts. Can be filtered with query params
 class GetThoughts(ListAPIView):
     serializer_class = ThoughtSerializer
     http_method_names = ['get']
