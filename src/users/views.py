@@ -38,3 +38,5 @@ class GetThoughts(ListAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ThoughtFilter
     queryset = Thought.objects.all()
+
+### TODO: Get user specific thought
