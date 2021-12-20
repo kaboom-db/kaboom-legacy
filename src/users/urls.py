@@ -8,6 +8,7 @@ app_name = 'users'
 urlpatterns = [
     path('signup/', views.CreateUser.as_view(), name='index'),
     path('login/', CustomAuthToken.as_view(), name='token'),
+    path('thoughts/', views.GetThoughts.as_view(), name='get-thoughts'),
     path('comics/series/', comics_views.GetUserSubscriptions.as_view(), name='get-sub'),
     path('comics/series/add/', comics_views.AddUserSubscription.as_view(), name='add-sub'),
     path('comics/series/rate/', comics_views.AddUserSeriesRating.as_view(), name='rate-sub'),
