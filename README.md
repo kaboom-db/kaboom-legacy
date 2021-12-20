@@ -12,3 +12,4 @@ No. Especially in the current state it's in. There is no *usable* data in the da
 - [ ] Mobile Client
 - [ ] Add posts to a user (social aspect)
 - [ ] "Format" field + table
+- [ ] Add logout endpoint that will regenerate auth token
