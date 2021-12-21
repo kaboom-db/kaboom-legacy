@@ -88,3 +88,35 @@ class RemoveThought(APIView):
             return Response({'thought': [
                 'That thought does not exist.'
             ]}, status=status.HTTP_400_BAD_REQUEST)
+
+class LikeThought(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ThoughtSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        try:
+            instance = Thought.objects.get(id=request.data['thought_id'])
+            ### add one like 
+            if instance.user == user:
+                # cant like your own thought
+                return Response({'thought_id': [
+                    'Thought owner cannot like their own thought.'
+                ]})
+            else:
+                instance.num_of_likes += 1
+                instance.save()
+                return Response({
+                    'id': instance.id,
+                    'num_of_likes': instance.num_of_likes
+                })
+        except KeyError:
+            return Response({'thought_id': [
+                'This is a required field'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'thought': [
+                'That thought does not exist.'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
