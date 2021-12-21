@@ -1,4 +1,4 @@
-from rest_framework.generics import GenericAPIView, ListAPIView
+from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView, set_rollback
 
 from users.models import Thought, ThoughtType
@@ -10,8 +10,8 @@ from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
-from rest_framework import viewsets
 from rest_framework import status
+from django.core.exceptions import ObjectDoesNotExist
 
 ### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
@@ -61,3 +61,30 @@ class AddThought(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+### Remove a thought
+class RemoveThought(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ThoughtSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        try:
+            instance = Thought.objects.get(id=request.data['thought_id'])
+            if instance.user == user:
+                instance.delete()
+                return Response({'status': 'Thought has successfully been deleted.'})
+            else:
+                return Response({'thought_id': [
+                    'This thought does not correspond to the correct user'
+                ]}, status=status.HTTP_401_UNAUTHORIZED)
+        except KeyError:
+            return Response({'thought_id': [
+                'This is a required field'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'thought': [
+                'That thought does not exist.'
+            ]}, status=status.HTTP_400_BAD_REQUEST)
