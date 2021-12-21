@@ -89,6 +89,7 @@ class RemoveThought(APIView):
                 'That thought does not exist.'
             ]}, status=status.HTTP_400_BAD_REQUEST)
 
+### Adds a like to a thought
 class LikeThought(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
