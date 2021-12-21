@@ -104,7 +104,7 @@ class LikeThought(APIView):
                 # cant like your own thought
                 return Response({'thought_id': [
                     'Thought owner cannot like their own thought.'
-                ]})
+                ]}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 instance.num_of_likes += 1
                 instance.save()
