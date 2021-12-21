@@ -154,8 +154,14 @@ class RemoveUserReadIssue(APIView):
         request.data['user'] = user.pk
         try:
             instance = ReadIssue.objects.get(id=request.data['read_id'])
-            instance.delete()
-            return Response({'status': 'Unread the issue'})
+            ## Check if the instance is attached to the user
+            if instance.user == user:
+                instance.delete()
+                return Response({'status': 'Unread the issue'})
+            else:
+                return Response({'read_id': [
+                    'This read state does not correspond to the correct user'
+                ]}, status=status.HTTP_401_UNAUTHORIZED)
         except KeyError:
             return Response({'read_id': [
                 'This is a required field'
@@ -176,7 +182,7 @@ class CleanUserReadIssues(APIView):
         user = self.request.user
         request.data['user'] = user.pk
         try:
-            instances = ReadIssue.objects.filter(issue=request.data['issue'])
+            instances = ReadIssue.objects.filter(issue=request.data['issue'], user=user)
             if instances:
                 for instance in instances:
                     instance.delete()

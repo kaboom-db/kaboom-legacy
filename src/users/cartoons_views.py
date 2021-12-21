@@ -154,8 +154,13 @@ class RemoveUserWatchedEpisode(APIView):
         request.data['user'] = user.pk
         try:
             instance = WatchedEpisode.objects.get(id=request.data['watched_id'])
-            instance.delete()
-            return Response({'status': 'Unwatched the episode'})
+            if instance.user == user:
+                instance.delete()
+                return Response({'status': 'Unwatched the episode'})
+            else:
+                return Response({'watched_id': [
+                    'This watched state does not correspond to the correct user'
+                ]}, status=status.HTTP_401_UNAUTHORIZED)
         except KeyError:
             return Response({'watched_id': [
                 'This is a required field'
@@ -176,7 +181,7 @@ class CleanUserWatchedEpisodes(APIView):
         user = self.request.user
         request.data['user'] = user.pk
         try:
-            instances = WatchedEpisode.objects.filter(episode=request.data['episode'])
+            instances = WatchedEpisode.objects.filter(episode=request.data['episode'], user=user)
             if instances:
                 for instance in instances:
                     instance.delete()
