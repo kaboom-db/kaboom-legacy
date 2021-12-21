@@ -81,7 +81,7 @@ class ThoughtTypeSerializer(serializers.ModelSerializer):
         model = ThoughtType
         fields = ['name', 'id']
 
-class ThoughtSerializer(serializers.ModelSerializer):
+class ThoughtSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
     thought_type = ThoughtTypeSerializer(read_only=True)
     comic = comics_ser.SeriesSerializer(read_only=True)
@@ -93,10 +93,20 @@ class ThoughtSerializer(serializers.ModelSerializer):
         model = Thought
         fields = ['user', 'post_content', 'date_created', 'thought_type', 'comic', 'issue', 'cartoon', 'episode', 'num_of_likes']
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
-    thought = ThoughtSerializer(read_only=True)
+    thought = ThoughtSerializerDetailed(read_only=True)
 
+    class Meta:
+        model = Comment
+        field = ['user', 'comment_content', 'date_created', 'thought']
+
+class ThoughtSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Thought
+        fields = ['user', 'post_content', 'date_created', 'thought_type', 'comic', 'issue', 'cartoon', 'episode', 'num_of_likes']
+
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         field = ['user', 'comment_content', 'date_created', 'thought']
