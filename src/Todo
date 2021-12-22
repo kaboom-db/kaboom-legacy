@@ -2,7 +2,3 @@
 - [ ] Refactor all error codes for API endpoints
 - [ ] Desktop Client
 - [ ] Mobile Client
-- [ ] Refactor choices for staff roles
-- [ ] Add slugs to new and old models
-- [ ] Write data migrations for Staff Positions and Comic Status
-- [ ] Add statuses to cartoons
