@@ -1,0 +1,4 @@
+Django==3.2.7
+django_filter==21.1
+djangorestframework==3.13.1
+libgravatar==1.0.0
