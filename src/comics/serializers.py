@@ -20,7 +20,7 @@ class StaffSerializer(serializers.ModelSerializer):
 class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Series
-        fields = ['series_name', 'publisher', 'description', 'year_started', 'status', 'id', 'image_small', 'image_medium', 'image_large']
+        fields = ['series_name', 'publisher', 'description', 'year_started', 'status', 'id', 'cover_image', 'background_image']
 
 class IssueSerializer(serializers.ModelSerializer):
     characters = CharacterSerializer(read_only=True, many=True)
@@ -29,4 +29,4 @@ class IssueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ['issue_number_absolute', 'issue_number', 'series', 'description', 'characters', 'staff', 'release_date', 'id', 'image_small', 'image_medium', 'image_large']
+        fields = ['issue_number_absolute', 'issue_number', 'series', 'description', 'characters', 'staff', 'release_date', 'id', 'cover_image']

@@ -28,9 +28,8 @@ class Series(models.Model):
     genres = models.ManyToManyField(Genre, blank=True)
     summary = models.CharField(max_length=10000)
     season_count = models.IntegerField(default=1)
-    image_small = models.URLField(blank=True)
-    image_medium = models.URLField(blank=True)
-    image_large = models.URLField(blank=True)
+    cover_image = models.URLField(blank=True)
+    background_image = models.URLField(blank=True)
 
     def __str__(self) -> str:
         return self.name
