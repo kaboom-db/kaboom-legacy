@@ -1,6 +1,12 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+status_options = (
+    ("COMPLETED", "Completed"),
+    ("RELEASING", "Releasing"),
+    ("PLANNED", "Planned")
+)
+
 class VoiceActor(models.Model):
     name = models.CharField(max_length=200)
     image = models.URLField(blank=True)
@@ -30,6 +36,7 @@ class Series(models.Model):
     season_count = models.IntegerField(default=1)
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
+    status = models.CharField(max_length=50, choices=status_options)
 
     def __str__(self) -> str:
         return self.name

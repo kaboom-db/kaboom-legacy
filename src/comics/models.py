@@ -1,19 +1,8 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-
-position_choices = (
-    ("WRITER", "Writer"),
-    ("PENCILLER", "Penciller"),
-    ("COVER ARTIST", "Cover Artist"),
-    ("INKER", "Inker"),
-    ("VARIANT COVER ARTIST", "Variant Cover Artist"),
-    ("COLORIST", "Colorist"),
-    ("LETTERER", "Letterer"),
-    ("DESIGNER", "Designer"),
-    ("EDITOR", "Editor"),
-    ("EXECUTIVE EDITOR", "Executive Editor"),
-    ("EDITOR-IN-CHIEF", "Editor-in-Chief")
-)
+from django.template.defaultfilters import slugify
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 status_options = (
     ("COMPLETED", "Completed"),
@@ -22,6 +11,12 @@ status_options = (
 )
 
 # Create your models here.
+class StaffPositions(models.Model):
+    position = models.CharField(max_length=250, unique=True)
+    
+    def __str__(self) -> str:
+        return self.position
+
 class Publisher(models.Model):
     name = models.CharField(max_length=200)
     logo = models.URLField(blank=True)
@@ -32,7 +27,7 @@ class Publisher(models.Model):
 
 class Staff(models.Model):
     name = models.CharField(max_length=200)
-    position = models.CharField(max_length=100, choices=position_choices)
+    position = models.ForeignKey(StaffPositions, on_delete=models.SET_NULL, blank=True, null=True)
     image = models.URLField(blank=True)
 
     def __str__(self) -> str:
@@ -52,7 +47,7 @@ class Series(models.Model):
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     description = models.CharField(max_length=10000)
     year_started = models.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
-    status = models.CharField(max_length=100, choices=status_options)
+    status = models.CharField(max_length=50, choices=status_options)
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
 
