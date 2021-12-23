@@ -5,14 +5,17 @@ NOTE: All records have an ID number
 ## Comics
 
 **Staff Positions**
+
 - `position`: CharField, required, unique
 
 **Publisher**
+
 - `name`: CharField, required
 - `logo`: URLField
 - `website`: URLField
 
 **Staff**
+
 - `name`: CharField, required
 - `position`: ForeignKey(StaffPositions)
 - `image`: URLField
@@ -21,12 +24,14 @@ NOTE: All records have an ID number
 - `biography`: TextField
 
 **Character**
+
 - `name`: CharField, required
 - `alias`: CharField
 - `image`: URLField
 - `biography`: TextField
 
 **Series**
+
 - `series_name`: CharField, required
 - `publisher`: ForeignKey(Publisher)
 - `summary`: TextField
@@ -36,9 +41,11 @@ NOTE: All records have an ID number
 - `background_image`: URLField
 
 **Format**
+
 - `name`: CharField, required, unique
 
 **Issue**
+
 - `issue_number_absolute`: IntegerField, required
 - `issue_number`: IntegerField, required
 - `series`: ForeignKey(Series), required
@@ -52,6 +59,7 @@ NOTE: All records have an ID number
 ## Cartoons
 
 **Voice Actor**
+
 - `name`: CharField, required
 - `image`: URLField
 - `date_of_birth`: DateField
@@ -59,18 +67,42 @@ NOTE: All records have an ID number
 - `biography`: TextField
 
 **Network**
+
 - `name`: CharField, required
 - `website`: URLField
 - `logo`: URLField
 
 **Genre**
+
 - `genre`: CharField, required, unique
 
 **Series**
+
 - `name`: CharField, required
 - `network`: ForeignKey(Network)
-- `genres`
-- `summary`
-- `season_count`
-- `genres`
-- `genres`
+- `genres`: ManyToMany(Genre)
+- `summary`: TextField
+- `season_count`: IntegerField, required
+- `cover_image`: URLField
+- `background_image`: URLField
+- `status`: CharField, required
+
+**Character**
+
+- `name`: CharField, required
+- `voice_actor`: ForeignKey(VoiceActor)
+- `image`: URLField
+- `series`: ForeignKey(Series)
+- `biography`: TextField
+
+**Episode**
+
+- `episode_number`: IntegerField, required
+- `absolute_episode_number`: IntegerField, required
+- `season_number`: IntegerField, required
+- `series`: ForeignKey(Series), required
+- `name`: CharField, required
+- `summary`: TextField
+- `release_date`: DateTimeField, required
+- `rating`: FloatField(0-10)
+- `screenshot`: URLField

@@ -46,9 +46,9 @@ class Series(models.Model):
 
 class Character(models.Model):
     name = models.CharField(max_length=200)
-    voice_actor = models.ForeignKey(VoiceActor, on_delete=models.CASCADE)
+    voice_actor = models.ForeignKey(VoiceActor, on_delete=models.SET_NULL, blank=True, null=True)
     image = models.URLField(blank=True)
-    series  = models.ForeignKey(Series, on_delete=models.CASCADE)
+    series  = models.ForeignKey(Series, on_delete=models.SET_NULL, blank=True, null=True)
     biography = models.TextField(blank=True)
 
     def __str__(self) -> str:
@@ -62,7 +62,7 @@ class Episode(models.Model):
     name = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
     release_date = models.DateTimeField()
-    rating = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(10)])
+    rating = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(10)], default=0, blank=True)
     screenshot = models.URLField(blank=True)
 
     def __str__(self) -> str:

@@ -3,3 +3,4 @@
 - [ ] Desktop Client
 - [ ] Mobile Client
 - [ ] Change layouts in Django admin
+- [ ] Add a function to Episode model to work out the rating
