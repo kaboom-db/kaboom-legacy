@@ -3,4 +3,4 @@
 - [ ] Desktop Client
 - [ ] Mobile Client
 - [ ] Change layouts in Django admin
-- [ ] Add extra info to staff/va (dob, summary etc)
+- [ ] Change descriptive fields to TextFields

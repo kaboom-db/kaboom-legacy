@@ -9,7 +9,7 @@ class GenreSerializer(serializers.ModelSerializer):
 class VoiceActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoiceActor
-        fields = ['name', 'id', 'image']
+        fields = ['name', 'date_of_birth', 'date_of_death', 'biography', 'id', 'image']
 
 class NetworkSerializer(serializers.ModelSerializer):
     class Meta:

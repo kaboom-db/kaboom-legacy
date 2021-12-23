@@ -10,6 +10,9 @@ status_options = (
 class VoiceActor(models.Model):
     name = models.CharField(max_length=200)
     image = models.URLField(blank=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    date_of_death = models.DateField(blank=True, null=True)
+    biography = models.TextField(blank=True)
 
     def __str__(self) -> str:
         return self.name
