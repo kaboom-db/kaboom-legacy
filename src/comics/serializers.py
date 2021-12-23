@@ -1,5 +1,5 @@
 from comics.comics_filters import SeriesFilter
-from .models import Series, Issue, Character, Staff, Publisher
+from .models import Series, Issue, Character, Staff, Publisher, StaffPositions
 from rest_framework import serializers
 
 class PublisherSerializer(serializers.ModelSerializer):
@@ -30,3 +30,8 @@ class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
         fields = ['issue_number_absolute', 'issue_number', 'series', 'description', 'characters', 'staff', 'release_date', 'id', 'cover_image']
+
+class StaffPositionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StaffPositions
+        fields = ['id', 'position']

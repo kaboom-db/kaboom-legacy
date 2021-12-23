@@ -1,9 +1,9 @@
-from .models import Character, Issue, Series, Publisher, Staff
+from .models import Character, Issue, Series, Publisher, Staff, StaffPositions
 from rest_framework import viewsets
-from .serializers import IssueSerializer, PublisherSerializer, CharacterSerializer, SeriesSerializer, StaffSerializer
+from .serializers import IssueSerializer, PublisherSerializer, CharacterSerializer, SeriesSerializer, StaffPositionsSerializer, StaffSerializer
 from django.db.models import Q
 from django_filters import rest_framework as filters
-from .comics_filters import IssuesFilter, PublishersFilters, StaffFilter, SeriesFilter
+from .comics_filters import IssuesFilter, PublishersFilters, StaffFilter, SeriesFilter, StaffPositionsFilter
 
 class PublisherView(viewsets.ReadOnlyModelViewSet):
     queryset = Publisher.objects.all()
@@ -38,3 +38,9 @@ class SeriesView(viewsets.ReadOnlyModelViewSet):
     serializer_class = SeriesSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = SeriesFilter
+
+class StaffPositionsView(viewsets.ReadOnlyModelViewSet):
+    queryset = StaffPositions.objects.all()
+    serializer_class = StaffPositionsSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class  =StaffPositionsFilter
