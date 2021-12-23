@@ -10,7 +10,7 @@ class StaffFilter(filters.FilterSet):
         fields = ['name', 'position']
 
 class StaffPositionsFilter(filters.FilterSet):
-    position = filters.filters.NumberFilter(field_name='position')
+    position = filters.filters.CharFilter(field_name='position', lookup_expr='icontains')
 
     class Meta:
         model = StaffPositions
