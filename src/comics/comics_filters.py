@@ -2,23 +2,23 @@ from django_filters import rest_framework as filters
 from comics.models import Issue, Publisher, Staff, Series, StaffPositions
 
 class StaffFilter(filters.FilterSet):
-    query = filters.filters.CharFilter(field_name='name', lookup_expr='contains')
-    position = filters.filters.CharFilter(field_name='position', lookup_expr='contains')
+    query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
+    position = filters.filters.NumberFilter(field_name='position')
 
     class Meta:
         model = Staff
         fields = ['name', 'position']
 
 class StaffPositionsFilter(filters.FilterSet):
-    position = filters.filters.CharFilter(field_name='position', lookup_expr='contains')
+    position = filters.filters.NumberFilter(field_name='position')
 
     class Meta:
         model = StaffPositions
         fields = ['position']
 
 class SeriesFilter(filters.FilterSet):
-    query = filters.filters.CharFilter(field_name='series_name', lookup_expr='contains')
-    status = filters.filters.CharFilter(field_name='status', lookup_expr='contains')
+    query = filters.filters.CharFilter(field_name='series_name', lookup_expr='icontains')
+    status = filters.filters.CharFilter(field_name='status', lookup_expr='icontains')
     year = filters.filters.NumberFilter(field_name='year_started')
 
     class Meta:
@@ -33,7 +33,7 @@ class IssuesFilter(filters.FilterSet):
         fields = ['series']
 
 class PublishersFilters(filters.FilterSet):
-    query = filters.filters.CharFilter(field_name='name', lookup_expr='contains')
+    query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
     
     class Meta:
         model = Publisher

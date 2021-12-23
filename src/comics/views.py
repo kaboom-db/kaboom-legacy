@@ -43,4 +43,4 @@ class StaffPositionsView(viewsets.ReadOnlyModelViewSet):
     queryset = StaffPositions.objects.all()
     serializer_class = StaffPositionsSerializer
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class  =StaffPositionsFilter
+    filterset_class = StaffPositionsFilter
