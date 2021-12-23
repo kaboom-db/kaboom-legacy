@@ -29,7 +29,7 @@ class SeriesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Series
-        fields = ['name', 'network', 'genres', 'summary', 'season_count', 'id', 'image_small', 'image_medium', 'image_large']
+        fields = ['name', 'network', 'genres', 'summary', 'season_count', 'id', 'cover_image']
 
 class EpisodeSerializer(serializers.ModelSerializer):
     series = SeriesSerializer(read_only=True)

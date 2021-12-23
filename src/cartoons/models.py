@@ -26,14 +26,14 @@ class Network(models.Model):
         return self.name
 
 class Genre(models.Model):
-    genre = models.CharField(max_length=100)
+    genre = models.CharField(max_length=100, unique=True)
 
     def __str__(self) -> str:
         return self.genre
 
 class Series(models.Model):
     name = models.CharField(max_length=200)
-    network = models.ForeignKey(Network, on_delete=models.CASCADE)
+    network = models.ForeignKey(Network, on_delete=models.SET_NULL, blank=True, null=True)
     genres = models.ManyToManyField(Genre, blank=True)
     summary = models.TextField(blank=True)
     season_count = models.IntegerField(default=1)
