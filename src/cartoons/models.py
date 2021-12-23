@@ -35,7 +35,7 @@ class Series(models.Model):
     name = models.CharField(max_length=200)
     network = models.ForeignKey(Network, on_delete=models.CASCADE)
     genres = models.ManyToManyField(Genre, blank=True)
-    summary = models.CharField(max_length=10000)
+    summary = models.TextField(blank=True)
     season_count = models.IntegerField(default=1)
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
@@ -49,6 +49,7 @@ class Character(models.Model):
     voice_actor = models.ForeignKey(VoiceActor, on_delete=models.CASCADE)
     image = models.URLField(blank=True)
     series  = models.ForeignKey(Series, on_delete=models.CASCADE)
+    biography = models.TextField(blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -59,7 +60,7 @@ class Episode(models.Model):
     season_number = models.IntegerField(default=1)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    summary = models.CharField(max_length=100)
+    summary = models.TextField(blank=True)
     release_date = models.DateTimeField()
     rating = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(10)])
     screenshot = models.URLField(blank=True)

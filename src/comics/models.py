@@ -39,8 +39,9 @@ class Staff(models.Model):
 class Character(models.Model):
     name = models.CharField(max_length=200)
     alias = models.CharField(max_length=200, null=True, blank=True)
-    description = models.CharField(max_length=10000)
+    description = models.TextField(blank=True)
     image = models.URLField(blank=True)
+    biography = models.TextField(blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -48,7 +49,7 @@ class Character(models.Model):
 class Series(models.Model):
     series_name = models.CharField(max_length=200)
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
-    description = models.CharField(max_length=10000)
+    summary = models.TextField(blank=True)
     year_started = models.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
     status = models.CharField(max_length=50, choices=status_options)
     cover_image = models.URLField(blank=True)
@@ -70,7 +71,7 @@ class Issue(models.Model):
     issue_number_absolute = models.IntegerField(default=1)
     issue_number = models.CharField(max_length=10)
     series = models.ForeignKey(Series, on_delete=models.CASCADE)
-    description = models.CharField(max_length=10000)
+    summary = models.TextField(blank=True)
     characters = models.ManyToManyField(Character, blank=True)
     staff = models.ManyToManyField(Staff, blank=True)
     format = models.ForeignKey(Format, on_delete=models.SET_NULL, null=True, blank=True)
