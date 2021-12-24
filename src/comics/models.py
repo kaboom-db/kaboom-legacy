@@ -53,6 +53,7 @@ class Series(models.Model):
     status = models.CharField(max_length=50, choices=status_options)
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
+    rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], default=0, blank=True)
 
     def __str__(self) -> str:
         return self.series_name

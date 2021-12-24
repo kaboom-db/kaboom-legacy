@@ -30,10 +30,11 @@ class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Series
         fields = ['name', 'network', 'genres', 'summary', 'season_count', 'id', 'cover_image']
+        read_only_fields = ['rating']
 
 class EpisodeSerializer(serializers.ModelSerializer):
     series = SeriesSerializer(read_only=True)
 
     class Meta:
         model = Episode
-        fields = ['episode_number', 'absolute_episode_number', 'season_number', 'series', 'name', 'summary', 'release_date', 'rating', 'screenshot', 'id']
+        fields = ['episode_number', 'absolute_episode_number', 'season_number', 'series', 'name', 'summary', 'release_date', 'screenshot', 'id']

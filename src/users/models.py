@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.db.models.aggregates import Count, Sum
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
@@ -30,6 +31,16 @@ class ComicSubscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(10)])
 
+@receiver(post_save, sender=ComicSubscription)
+def add_ratings_comicsubs(sender, instance=None, created=False, **kwargs):
+    if instance.rating:
+        count = ComicSubscription.objects.filter(series=instance.series).aggregate(count=Count('rating'))['count']
+        sum = ComicSubscription.objects.filter(series=instance.series).aggregate(sum=Sum('rating'))['sum']
+        avg = sum / count
+        s = comic_models.Series.objects.get(id=instance.series.id)
+        s.rating = avg
+        s.save()
+
 class ReadIssue(models.Model):
     issue = models.ForeignKey(comic_models.Issue, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -41,7 +52,19 @@ class CartoonSubscription(models.Model):
     
     series = models.ForeignKey(cartoons_models.Series, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(10)])
+
+@receiver(post_save, sender=CartoonSubscription)
+def add_ratings_cartoonsubs(sender, instance=None, created=False, **kwargs):
+    if instance.rating:
+        # Calculate the rating for a comic series
+        count = CartoonSubscription.objects.filter(series=instance.series).aggregate(count=Count('rating'))['count']
+        sum = CartoonSubscription.objects.filter(series=instance.series).aggregate(sum=Sum('rating'))['sum']
+        avg = sum / count
+        s = cartoons_models.Series.objects.get(id=instance.series.id)
+        s.rating = avg
+        s.save()
+        print(s.rating)
 
 class WatchedEpisode(models.Model):
     episode = models.ForeignKey(cartoons_models.Episode, on_delete=models.CASCADE)

@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models.aggregates import Count, Sum
 
 status_options = (
     ("COMPLETED", "Completed"),
@@ -40,6 +41,7 @@ class Series(models.Model):
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
     status = models.CharField(max_length=50, choices=status_options)
+    rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], default=0, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -62,7 +64,6 @@ class Episode(models.Model):
     name = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
     release_date = models.DateTimeField()
-    rating = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(10)], default=0, blank=True)
     screenshot = models.URLField(blank=True)
 
     def __str__(self) -> str:
