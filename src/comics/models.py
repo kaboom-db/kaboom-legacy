@@ -4,13 +4,7 @@ from django.template.defaultfilters import slugify
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from datetime import date
-from kaboom.utils import util_calculate_age
-
-status_options = (
-    ("COMPLETED", "Completed"),
-    ("RELEASING", "Releasing"),
-    ("PLANNED", "Planned")
-)
+from kaboom.utils import util_calculate_age, STATUS_OPTIONS
 
 # Create your models here.
 class StaffPositions(models.Model):
@@ -64,7 +58,7 @@ class Series(models.Model):
     publisher = models.ForeignKey(Publisher, on_delete=models.SET_NULL, blank=True, null=True)
     summary = models.TextField(blank=True)
     year_started = models.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
-    status = models.CharField(max_length=50, choices=status_options)
+    status = models.CharField(max_length=50, choices=STATUS_OPTIONS)
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
     rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], default=0, blank=True)

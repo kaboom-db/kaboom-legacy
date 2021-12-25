@@ -4,13 +4,7 @@ from django.db.models.aggregates import Count, Sum
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from datetime import date
-from kaboom.utils import util_calculate_age
-
-status_options = (
-    ("COMPLETED", "Completed"),
-    ("RELEASING", "Releasing"),
-    ("PLANNED", "Planned")
-)
+from kaboom.utils import util_calculate_age, STATUS_OPTIONS
 
 class VoiceActor(models.Model):
     name = models.CharField(max_length=200)
@@ -56,7 +50,7 @@ class Series(models.Model):
     season_count = models.IntegerField(default=1)
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
-    status = models.CharField(max_length=50, choices=status_options)
+    status = models.CharField(max_length=50, choices=STATUS_OPTIONS)
     rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], default=0, blank=True)
 
     def __str__(self) -> str:
