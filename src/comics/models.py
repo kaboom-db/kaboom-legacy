@@ -53,7 +53,7 @@ class Character(models.Model):
     def __str__(self) -> str:
         return self.name
 
-class Series(models.Model):
+class Comic(models.Model):
     series_name = models.CharField(max_length=200)
     publisher = models.ForeignKey(Publisher, on_delete=models.SET_NULL, blank=True, null=True)
     summary = models.TextField(blank=True)
@@ -78,7 +78,7 @@ class Issue(models.Model):
 
     issue_number_absolute = models.IntegerField(default=1)
     issue_number = models.CharField(max_length=10)
-    series = models.ForeignKey(Series, on_delete=models.CASCADE)
+    series = models.ForeignKey(Comic, on_delete=models.CASCADE)
     summary = models.TextField(blank=True)
     characters = models.ManyToManyField(Character, blank=True)
     staff = models.ManyToManyField(Staff, blank=True)

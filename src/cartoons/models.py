@@ -42,7 +42,16 @@ class Genre(models.Model):
     def __str__(self) -> str:
         return self.genre
 
-class Series(models.Model):
+class Character(models.Model):
+    name = models.CharField(max_length=200)
+    voice_actor = models.ForeignKey(VoiceActor, on_delete=models.SET_NULL, blank=True, null=True)
+    image = models.URLField(blank=True)
+    biography = models.TextField(blank=True)
+
+    def __str__(self) -> str:
+        return self.name
+
+class Cartoon(models.Model):
     name = models.CharField(max_length=200)
     network = models.ForeignKey(Network, on_delete=models.SET_NULL, blank=True, null=True)
     genres = models.ManyToManyField(Genre, blank=True)
@@ -51,17 +60,8 @@ class Series(models.Model):
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
     status = models.CharField(max_length=50, choices=STATUS_OPTIONS)
-    rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], default=0, blank=True)
-
-    def __str__(self) -> str:
-        return self.name
-
-class Character(models.Model):
-    name = models.CharField(max_length=200)
-    voice_actor = models.ForeignKey(VoiceActor, on_delete=models.SET_NULL, blank=True, null=True)
-    image = models.URLField(blank=True)
-    series  = models.ForeignKey(Series, on_delete=models.SET_NULL, blank=True, null=True)
-    biography = models.TextField(blank=True)
+    rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=True)
+    characters = models.ManyToManyField(Character, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -70,7 +70,7 @@ class Episode(models.Model):
     episode_number = models.IntegerField()
     absolute_episode_number = models.IntegerField()
     season_number = models.IntegerField(default=1)
-    series = models.ForeignKey(Series, on_delete=models.CASCADE)
+    series = models.ForeignKey(Cartoon, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
     release_date = models.DateTimeField()

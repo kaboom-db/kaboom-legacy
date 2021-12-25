@@ -1,37 +1,43 @@
 from comics.comics_filters import SeriesFilter
-from .models import Series, Issue, Character, Staff, Publisher, StaffPositions
+from .models import Comic, Format, Issue, Character, Staff, Publisher, StaffPositions
 from rest_framework import serializers
 
 class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publisher
-        fields = ['name', 'logo', 'website', 'id']
+        fields = '__all__'
 
 class CharacterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
-        fields = ['name', 'alias', 'description', 'image', 'id']
+        fields = '__all__'
 
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
-        fields = ['name', 'position', 'date_of_birth', 'date_of_death', 'biography', 'image', 'id']
+        fields = '__all__'
 
 class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Series
-        fields = ['series_name', 'publisher', 'description', 'year_started', 'status', 'id', 'cover_image', 'background_image']
+        model = Comic
+        fields = '__all__'
+
+class FormatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Format
+        fields = '__all__'
 
 class IssueSerializer(serializers.ModelSerializer):
     characters = CharacterSerializer(read_only=True, many=True)
     staff = StaffSerializer(read_only=True, many=True)
     series = SeriesSerializer(read_only=True)
+    format = FormatSerializer(read_only=True)
 
     class Meta:
         model = Issue
-        fields = ['issue_number_absolute', 'issue_number', 'series', 'description', 'characters', 'staff', 'release_date', 'id', 'cover_image']
+        fields = '__all__'
 
 class StaffPositionsSerializer(serializers.ModelSerializer):
     class Meta:
         model = StaffPositions
-        fields = ['id', 'position']
+        fields = '__all__'

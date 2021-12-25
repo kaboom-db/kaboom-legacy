@@ -1,4 +1,4 @@
-from .models import Character, Issue, Series, Publisher, Staff, StaffPositions
+from .models import Character, Issue, Comic, Publisher, Staff, StaffPositions
 from rest_framework import viewsets
 from .serializers import IssueSerializer, PublisherSerializer, CharacterSerializer, SeriesSerializer, StaffPositionsSerializer, StaffSerializer
 from django.db.models import Q
@@ -36,7 +36,7 @@ class IssueView(viewsets.ReadOnlyModelViewSet):
     filterset_class = IssuesFilter
 
 class SeriesView(viewsets.ReadOnlyModelViewSet):
-    queryset = Series.objects.all()
+    queryset = Comic.objects.all()
     serializer_class = SeriesSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = SeriesFilter

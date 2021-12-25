@@ -1,13 +1,13 @@
 from django_filters import rest_framework as filters
-from .models import Character, Episode, Genre, Network, Series, VoiceActor
+from .models import Character, Episode, Genre, Network, Cartoon, VoiceActor
 
 class SeriesFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
-    genre = filters.filters.NumberFilter(field_name='genres')
+    genre = filters.filters.CharFilter(field_name='genres', lookup_expr='genre__iexact')
     network = filters.filters.NumberFilter(field_name='network')
 
     class Meta:
-        model = Series
+        model = Cartoon
         fields = ['name', 'genres', 'network']
 
 class CharactersFilter(filters.FilterSet):

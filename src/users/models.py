@@ -27,7 +27,7 @@ class ComicSubscription(models.Model):
     class Meta:
         unique_together = (('series', 'user'),)
     
-    series = models.ForeignKey(comic_models.Series, on_delete=models.CASCADE)
+    series = models.ForeignKey(comic_models.Comic, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(10)])
 
@@ -37,7 +37,7 @@ def add_ratings_comicsubs(sender, instance=None, created=False, **kwargs):
         count = ComicSubscription.objects.filter(series=instance.series).aggregate(count=Count('rating'))['count']
         sum = ComicSubscription.objects.filter(series=instance.series).aggregate(sum=Sum('rating'))['sum']
         avg = sum / count
-        s = comic_models.Series.objects.get(id=instance.series.id)
+        s = comic_models.Comic.objects.get(id=instance.series.id)
         s.rating = avg
         s.save()
 
@@ -50,7 +50,7 @@ class CartoonSubscription(models.Model):
     class Meta:
         unique_together = (('series', 'user'),)
     
-    series = models.ForeignKey(cartoons_models.Series, on_delete=models.CASCADE)
+    series = models.ForeignKey(cartoons_models.Cartoon, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(10)])
 
@@ -61,7 +61,7 @@ def add_ratings_cartoonsubs(sender, instance=None, created=False, **kwargs):
         count = CartoonSubscription.objects.filter(series=instance.series).aggregate(count=Count('rating'))['count']
         sum = CartoonSubscription.objects.filter(series=instance.series).aggregate(sum=Sum('rating'))['sum']
         avg = sum / count
-        s = cartoons_models.Series.objects.get(id=instance.series.id)
+        s = cartoons_models.Cartoon.objects.get(id=instance.series.id)
         s.rating = avg
         s.save()
         print(s.rating)
@@ -82,9 +82,9 @@ class Thought(models.Model):
     post_content = models.TextField()
     date_created = models.DateTimeField(default=timezone.now)
     thought_type = models.ForeignKey(ThoughtType, blank=True, null=True, on_delete=models.SET_NULL)
-    comic = models.ForeignKey(comic_models.Series, blank=True, null=True, on_delete=models.SET_NULL)
+    comic = models.ForeignKey(comic_models.Comic, blank=True, null=True, on_delete=models.SET_NULL)
     issue = models.ForeignKey(comic_models.Issue, blank=True, null=True, on_delete=models.SET_NULL)
-    cartoon = models.ForeignKey(cartoons_models.Series, blank=True, null=True, on_delete=models.SET_NULL)
+    cartoon = models.ForeignKey(cartoons_models.Cartoon, blank=True, null=True, on_delete=models.SET_NULL)
     episode = models.ForeignKey(cartoons_models.Episode, blank=True, null=True, on_delete=models.SET_NULL)
     num_of_likes = models.IntegerField(default=0)
 

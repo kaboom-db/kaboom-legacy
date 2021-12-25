@@ -27,7 +27,7 @@ class UserSerializerNoPassword(serializers.ModelSerializer):
 class ComicSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComicSubscription
-        fields = ['series', 'user', 'rating']
+        fields = '__all__'
 
 class ComicSubscriptionSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
@@ -35,12 +35,12 @@ class ComicSubscriptionSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = ComicSubscription
-        fields = ['series', 'user', 'rating']
+        fields = '__all__'
 
 class ReadIssuesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReadIssue
-        fields = ['issue', 'user', 'read_at']
+        fields = '__all__'
 
 class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
@@ -48,7 +48,7 @@ class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = ReadIssue
-        fields = ['issue', 'user', 'read_at', 'id']
+        fields = '__all__'
 
 class CartoonSubscriptionSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
@@ -56,12 +56,12 @@ class CartoonSubscriptionSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = CartoonSubscription
-        fields = ['series', 'user', 'rating']
+        fields = '__all__'
 
 class CartoonSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartoonSubscription
-        fields = ['series', 'user', 'rating']
+        fields = '__all__'
 
 class WatchedEpisodesSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
@@ -69,17 +69,17 @@ class WatchedEpisodesSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = WatchedEpisode
-        fields = ['episode', 'user', 'watched_at', 'id']
+        fields = '__all__'
 
 class WatchedEpisodesSerializer(serializers.ModelSerializer):
     class Meta:
         model = WatchedEpisode
-        fields = ['episode', 'user', 'watched_at', 'id']
+        fields = '__all__'
 
 class ThoughtTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ThoughtType
-        fields = ['name', 'id']
+        fields = '__all__'
 
 class ThoughtSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
@@ -91,7 +91,7 @@ class ThoughtSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = Thought
-        fields = ['user', 'post_content', 'date_created', 'thought_type', 'comic', 'issue', 'cartoon', 'episode', 'num_of_likes']
+        fields = '__all__'
 
 class CommentSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
@@ -99,14 +99,14 @@ class CommentSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        field = ['user', 'comment_content', 'date_created', 'thought']
+        field = '__all__'
 
 class ThoughtSerializer(serializers.ModelSerializer):
     class Meta:
         model = Thought
-        fields = ['user', 'post_content', 'date_created', 'thought_type', 'comic', 'issue', 'cartoon', 'episode', 'num_of_likes']
+        fields = '__all__'
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        field = ['user', 'comment_content', 'date_created', 'thought']
+        field = '__all__'

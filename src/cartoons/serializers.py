@@ -1,35 +1,36 @@
-from .models import Series, Character, Episode, Genre, Network, VoiceActor
+from .models import Cartoon, Character, Episode, Genre, Network, VoiceActor
 from rest_framework import serializers
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
-        fields = ['genre', 'id']
+        fields = '__all__'
 
 class VoiceActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoiceActor
-        fields = ['name', 'date_of_birth', 'date_of_death', 'biography', 'id', 'image']
+        fields = '__all__'
 
 class NetworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Network
-        fields = ['name', 'website', 'id', 'logo']
+        fields = '__all__'
 
 class CharacterSerializer(serializers.ModelSerializer):
     voice_actor = VoiceActorSerializer(read_only=True)
 
     class Meta:
         model = Character
-        fields = ['name', 'voice_actor', 'id', 'image']
+        fields = '__all__'
 
 class SeriesSerializer(serializers.ModelSerializer):
     genres = GenreSerializer(read_only=True, many=True)
     network = NetworkSerializer(read_only=True)
+    characters = CharacterSerializer(read_only=True, many=True)
 
     class Meta:
-        model = Series
-        fields = ['name', 'network', 'genres', 'summary', 'season_count', 'id', 'cover_image']
+        model = Cartoon
+        fields = ['name', 'network', 'genres', 'summary', 'season_count', 'id', 'cover_image', 'characters']
         read_only_fields = ['rating']
 
 class EpisodeSerializer(serializers.ModelSerializer):
@@ -37,4 +38,4 @@ class EpisodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Episode
-        fields = ['episode_number', 'absolute_episode_number', 'season_number', 'series', 'name', 'summary', 'release_date', 'screenshot', 'id']
+        fields = '__all__'

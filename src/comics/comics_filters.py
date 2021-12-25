@@ -1,9 +1,8 @@
 from django_filters import rest_framework as filters
-from comics.models import Issue, Publisher, Staff, Series, StaffPositions
+from comics.models import Issue, Publisher, Staff, Comic, StaffPositions
 
 class StaffFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
-    # position = filters.filters.NumberFilter(field_name='position')
     position = filters.filters.CharFilter(field_name='position', lookup_expr='position__iexact')
 
     class Meta:
@@ -23,7 +22,7 @@ class SeriesFilter(filters.FilterSet):
     year = filters.filters.NumberFilter(field_name='year_started')
 
     class Meta:
-        model = Series
+        model = Comic
         fields = ['series_name', 'year_started', 'status']
 
 class IssuesFilter(filters.FilterSet):
