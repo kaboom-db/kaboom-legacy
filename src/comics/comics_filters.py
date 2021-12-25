@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from comics.models import Issue, Publisher, Staff, Comic, StaffPositions
+from comics.models import Format, Issue, Publisher, Staff, Comic, StaffPositions
 
 class StaffFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
@@ -37,4 +37,11 @@ class PublishersFilters(filters.FilterSet):
     
     class Meta:
         model = Publisher
+        fields = ['name']
+
+class FormatFilter(filters.FilterSet):
+    name= filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
+
+    class Meta:
+        model = Format
         fields = ['name']

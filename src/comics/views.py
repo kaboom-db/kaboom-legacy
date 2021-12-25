@@ -1,9 +1,9 @@
-from .models import Character, Issue, Comic, Publisher, Staff, StaffPositions
+from .models import Character, Format, Issue, Comic, Publisher, Staff, StaffPositions
 from rest_framework import viewsets
-from .serializers import IssueSerializer, PublisherSerializer, CharacterSerializer, SeriesSerializer, StaffPositionsSerializer, StaffSerializer
+from .serializers import FormatSerializer, IssueSerializer, PublisherSerializer, CharacterSerializer, SeriesSerializer, StaffPositionsSerializer, StaffSerializer
 from django.db.models import Q
 from django_filters import rest_framework as filters
-from .comics_filters import IssuesFilter, PublishersFilters, StaffFilter, SeriesFilter, StaffPositionsFilter
+from .comics_filters import FormatFilter, IssuesFilter, PublishersFilters, StaffFilter, SeriesFilter, StaffPositionsFilter
 from kaboom.utils import STATUS_OPTIONS
 from rest_framework.response import Response
 
@@ -46,3 +46,9 @@ class StaffPositionsView(viewsets.ReadOnlyModelViewSet):
     serializer_class = StaffPositionsSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = StaffPositionsFilter
+
+class FormatsView(viewsets.ReadOnlyModelViewSet):
+    queryset = Format.objects.all()
+    serializer_class = FormatSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = FormatFilter

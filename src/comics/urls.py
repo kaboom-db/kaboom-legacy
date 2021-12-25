@@ -9,6 +9,7 @@ routerComics.register(r'staff', views.StaffView, basename='staff')
 routerComics.register(r'issues', views.IssueView, basename='issues')
 routerComics.register(r'series', views.SeriesView, basename='series')
 routerComics.register(r'staffpositions', views.StaffPositionsView, basename='staff-positions')
+routerComics.register(r'formats', views.FormatsView, basename='formats')
 
 app_name = 'comics'
 urlpatterns = [
