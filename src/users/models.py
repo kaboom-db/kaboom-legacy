@@ -31,6 +31,9 @@ class ComicSubscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(10)])
 
+    def __str__(self) -> str:
+        return "Comic: " + str(self.series) + ", User: " + str(self.user)
+
 @receiver(post_save, sender=ComicSubscription)
 def add_ratings_comicsubs(sender, instance=None, created=False, **kwargs):
     if instance.rating:
@@ -46,6 +49,9 @@ class ReadIssue(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     read_at = models.DateTimeField(default=timezone.now)
 
+    def __str__(self) -> str:
+        return "Issue: " + str(self.issue) + ", User: " + str(self.user) + ", Read: " + str(self.read_at)
+
 class CartoonSubscription(models.Model):
     class Meta:
         unique_together = (('series', 'user'),)
@@ -53,6 +59,9 @@ class CartoonSubscription(models.Model):
     series = models.ForeignKey(cartoons_models.Cartoon, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(10)])
+
+    def __str__(self) -> str:
+        return "Cartoon: " + str(self.series) + ", User: " + str(self.user)
 
 @receiver(post_save, sender=CartoonSubscription)
 def add_ratings_cartoonsubs(sender, instance=None, created=False, **kwargs):
@@ -71,6 +80,9 @@ class WatchedEpisode(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     watched_at = models.DateTimeField(default=timezone.now)
 
+    def __str__(self) -> str:
+        return "Episode: " + str(self.episode) + ", User: " + str(self.user) + ", Watched: " + str(self.watched_at)
+
 class ThoughtType(models.Model):
     name = models.CharField(max_length=25)
 
@@ -79,6 +91,7 @@ class ThoughtType(models.Model):
 
 class Thought(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=250)
     post_content = models.TextField()
     date_created = models.DateTimeField(default=timezone.now)
     thought_type = models.ForeignKey(ThoughtType, blank=True, null=True, on_delete=models.SET_NULL)
@@ -88,8 +101,14 @@ class Thought(models.Model):
     episode = models.ForeignKey(cartoons_models.Episode, blank=True, null=True, on_delete=models.SET_NULL)
     num_of_likes = models.IntegerField(default=0)
 
+    def __str__(self) -> str:
+        return self.title
+
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     comment_content = models.TextField()
     date_created = models.DateTimeField(default=timezone.now)
     thought = models.ForeignKey(Thought, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return "Comment on: " + str(self.thought) + ", User: " + str(self.user)

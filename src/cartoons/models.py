@@ -60,7 +60,7 @@ class Cartoon(models.Model):
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
     status = models.CharField(max_length=50, choices=STATUS_OPTIONS)
-    rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=True)
+    rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=True, null=True)
     characters = models.ManyToManyField(Character, blank=True)
 
     def __str__(self) -> str:
