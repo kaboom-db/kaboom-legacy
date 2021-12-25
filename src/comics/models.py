@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.template.defaultfilters import slugify
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from datetime import date
 
 status_options = (
     ("COMPLETED", "Completed"),
@@ -31,10 +32,22 @@ class Staff(models.Model):
     image = models.URLField(blank=True)
     date_of_birth = models.DateField(blank=True, null=True)
     date_of_death = models.DateField(blank=True, null=True)
+    age = models.IntegerField(blank=True, null=True)
     biography = models.TextField(blank=True)
 
     def __str__(self) -> str:
         return self.name
+
+@receiver(pre_save, sender=Staff)
+def calculate_age(sender, instance=None, created=False, **kwargs):
+    today = date.today()
+    if instance.date_of_birth:
+        if instance.date_of_death:
+            instance.age = instance.date_of_death.year - instance.date_of_birth.year - ((instance.date_of_death.month, instance.date_of_death.day) < (instance.date_of_birth.month, instance.date_of_birth.day))
+        else:
+            instance.age = today.year - instance.date_of_birth.year - ((today.month, today.day) < (instance.date_of_birth.month, instance.date_of_birth.day))
+    else:
+        instance.age = None
 
 class Character(models.Model):
     name = models.CharField(max_length=200)
