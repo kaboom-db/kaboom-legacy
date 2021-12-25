@@ -3,7 +3,8 @@ from comics.models import Issue, Publisher, Staff, Series, StaffPositions
 
 class StaffFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
-    position = filters.filters.NumberFilter(field_name='position')
+    # position = filters.filters.NumberFilter(field_name='position')
+    position = filters.filters.CharFilter(field_name='position', lookup_expr='position__iexact')
 
     class Meta:
         model = Staff
