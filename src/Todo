@@ -4,4 +4,3 @@
 - [ ] Mobile Client
 - [ ] Change layouts in Django admin
 - [ ] Add rating to issue/episode
-- [ ] Move repetitive code (calculating age etc) to its own utility file

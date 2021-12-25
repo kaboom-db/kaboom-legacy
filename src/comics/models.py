@@ -4,6 +4,7 @@ from django.template.defaultfilters import slugify
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from datetime import date
+from kaboom.utils import util_calculate_age
 
 status_options = (
     ("COMPLETED", "Completed"),
@@ -43,9 +44,9 @@ def calculate_age(sender, instance=None, created=False, **kwargs):
     today = date.today()
     if instance.date_of_birth:
         if instance.date_of_death:
-            instance.age = instance.date_of_death.year - instance.date_of_birth.year - ((instance.date_of_death.month, instance.date_of_death.day) < (instance.date_of_birth.month, instance.date_of_birth.day))
+            instance.age = util_calculate_age(instance.date_of_birth, instance.date_of_death)
         else:
-            instance.age = today.year - instance.date_of_birth.year - ((today.month, today.day) < (instance.date_of_birth.month, instance.date_of_birth.day))
+            instance.age = util_calculate_age(instance.date_of_birth, today)
     else:
         instance.age = None
 
