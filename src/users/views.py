@@ -75,7 +75,7 @@ class RemoveThought(APIView):
             instance = Thought.objects.get(id=request.data['thought_id'])
             if instance.user == user:
                 instance.delete()
-                return Response({'status': 'Thought has successfully been deleted.'})
+                return Response({'success': 'Thought has successfully been deleted.'})
             else:
                 return Response({'thought_id': [
                     'This thought does not correspond to the correct user'

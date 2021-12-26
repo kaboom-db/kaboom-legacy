@@ -68,7 +68,7 @@ class RemoveUserSubscription(APIView):
             instance = ComicSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
             if instance:
                 instance.delete()
-                return Response({'status': 'Successfully unsubscribed'})
+                return Response({'success': 'Successfully unsubscribed'})
             else:
                 return Response({'series': [
                     'Cannot unsubscribe from a comic that has not been subscribed to.'
@@ -156,7 +156,7 @@ class AddUserReadIssue(APIView):
         serializer = ReadIssuesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'status': 'Read the issue'})
+            return Response({'success': 'Read the issue'})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -175,7 +175,7 @@ class RemoveUserReadIssue(APIView):
             ## Check if the instance is attached to the user
             if instance.user == user:
                 instance.delete()
-                return Response({'status': 'Unread the issue'})
+                return Response({'success': 'Unread the issue'})
             else:
                 return Response({'read_id': [
                     'This read state does not correspond to the correct user'
@@ -204,7 +204,7 @@ class CleanUserReadIssues(APIView):
             if instances:
                 for instance in instances:
                     instance.delete()
-                return Response({'status': 'All read states have been removed from this issue.'})
+                return Response({'success': 'All read states have been removed from this issue.'})
             else:
                 return Response({'issue': [
                     'That issue has not been read.'

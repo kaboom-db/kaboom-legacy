@@ -69,7 +69,7 @@ class RemoveUserSubscription(APIView):
             instance = CartoonSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
             if instance:
                 instance.delete()
-                return Response({'status': 'Successfully unsubscribed'})
+                return Response({'success': 'Successfully unsubscribed'})
             else:
                 return Response({'series': [
                     'Cannot unsubscribe from a cartoon that has not been subscribed to.'
@@ -156,7 +156,7 @@ class AddUserWatchedEpisode(APIView):
         serializer = WatchedEpisodesSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'status': 'Watched the episode'})
+            return Response({'success': 'Watched the episode'})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -174,7 +174,7 @@ class RemoveUserWatchedEpisode(APIView):
             instance = WatchedEpisode.objects.get(id=request.data['watched_id'])
             if instance.user == user:
                 instance.delete()
-                return Response({'status': 'Unwatched the episode'})
+                return Response({'success': 'Unwatched the episode'})
             else:
                 return Response({'watched_id': [
                     'This watched state does not correspond to the correct user'
@@ -203,7 +203,7 @@ class CleanUserWatchedEpisodes(APIView):
             if instances:
                 for instance in instances:
                     instance.delete()
-                return Response({'status': 'All watched states have been removed from this episode.'})
+                return Response({'success': 'All watched states have been removed from this episode.'})
             else:
                 return Response({'episode': [
                     'That episode has not been watched.'
