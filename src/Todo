@@ -1,6 +1,9 @@
 ## Todo List
-- [ ] Refactor all error codes for API endpoints
+- [ ] Refactor all error codes for API endpoints (change status to error)
 - [ ] Desktop Client
 - [ ] Mobile Client
 - [ ] Change layouts in Django admin
 - [ ] Ability to edit thoughts
+- [ ] Add ability to follow users
+- [ ] Refactor the Users URLS/Views
+- [ ] Remove square brackets from errors in users app

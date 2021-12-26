@@ -30,7 +30,7 @@ class SeriesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cartoon
-        fields = ['name', 'network', 'genres', 'summary', 'season_count', 'id', 'cover_image', 'characters']
+        fields = '__all__'
         read_only_fields = ['rating']
 
 class EpisodeSerializer(serializers.ModelSerializer):

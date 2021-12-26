@@ -18,6 +18,8 @@ class StaffSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SeriesSerializer(serializers.ModelSerializer):
+    publisher = PublisherSerializer(read_only=True)
+
     class Meta:
         model = Comic
         fields = '__all__'

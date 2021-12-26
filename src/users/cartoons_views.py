@@ -20,14 +20,23 @@ class GetUserSubscriptions(APIView):
 
     def get(self, request):
         user = self.request.user
-        queryset = CartoonSubscription.objects.filter(user=user.pk)
-        query = request.query_params.get('query')
-        if query:
-            queryset = CartoonSubscription.objects.filter(user=user.pk, series__series_name__contains=query)
-        paginator = pagination.PageNumberPagination()
-        result_page = paginator.paginate_queryset(queryset, request)
-        data = CartoonSubscriptionSerializerDetailed(result_page, many=True).data
-        return paginator.get_paginated_response(data)
+        # Check if the user specifies a user
+        query_user = request.query_params.get('user')
+        if query_user:
+            user_id = query_user
+        else:
+            user_id = user.pk
+        try:
+            queryset = CartoonSubscription.objects.filter(user=user_id)
+            query = request.query_params.get('query')
+            if query:
+                queryset = CartoonSubscription.objects.filter(user=user_id, series__name__icontains=query)
+            paginator = pagination.PageNumberPagination()
+            result_page = paginator.paginate_queryset(queryset, request)
+            data = CartoonSubscriptionSerializerDetailed(result_page, many=True).data
+            return paginator.get_paginated_response(data)
+        except ValueError:
+            return Response({ 'error': 'User must be a valid integer and user id' }, status=status.HTTP_400_BAD_REQUEST)
 
 ### Adds a cartoon subscription to a user
 class AddUserSubscription(APIView):
