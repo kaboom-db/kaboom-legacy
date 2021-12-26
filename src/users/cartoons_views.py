@@ -125,14 +125,23 @@ class GetUserWatchedEpisodes(APIView):
 
     def get(self, request):
         user = self.request.user
-        queryset = WatchedEpisode.objects.filter(user=user.pk)
-        series = request.query_params.get('series')
-        if series:
-            queryset = WatchedEpisode.objects.filter(user=user.pk, episode__series=series)
-        paginator = pagination.PageNumberPagination()
-        result_page = paginator.paginate_queryset(queryset, request)
-        data = WatchedEpisodesSerializerDetailed(result_page, many=True).data
-        return paginator.get_paginated_response(data)
+        # Check if the user specifies a user
+        query_user = request.query_params.get('user')
+        if query_user:
+            user_id = query_user
+        else:
+            user_id = user.pk
+        try:
+            queryset = WatchedEpisode.objects.filter(user=user_id)
+            series = request.query_params.get('series')
+            if series:
+                queryset = WatchedEpisode.objects.filter(user=user_id, episode__series=series)
+            paginator = pagination.PageNumberPagination()
+            result_page = paginator.paginate_queryset(queryset, request)
+            data = WatchedEpisodesSerializerDetailed(result_page, many=True).data
+            return paginator.get_paginated_response(data)
+        except ValueError as ve:
+            return Response({ 'error': str(ve) }, status=status.HTTP_400_BAD_REQUEST)
 
 ### Adds an episode as watched
 class AddUserWatchedEpisode(APIView):

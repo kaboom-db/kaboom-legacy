@@ -125,14 +125,23 @@ class GetUserReadIssues(APIView):
 
     def get(self, request):
         user = self.request.user
-        queryset = ReadIssue.objects.filter(user=user.pk)
-        series = request.query_params.get('series_id')
-        if series:
-            queryset = ReadIssue.objects.filter(user=user.pk, issue__series=series)
-        paginator = pagination.PageNumberPagination()
-        result_page = paginator.paginate_queryset(queryset, request)
-        data = ReadIssuesSerializerDetailed(result_page, many=True).data
-        return paginator.get_paginated_response(data)
+        # Check if the user specifies a user
+        query_user = request.query_params.get('user')
+        if query_user:
+            user_id = query_user
+        else:
+            user_id = user.pk
+        try:
+            queryset = ReadIssue.objects.filter(user=user_id)
+            series = request.query_params.get('series')
+            if series:
+                queryset = ReadIssue.objects.filter(user=user_id, issue__series=series)
+            paginator = pagination.PageNumberPagination()
+            result_page = paginator.paginate_queryset(queryset, request)
+            data = ReadIssuesSerializerDetailed(result_page, many=True).data
+            return paginator.get_paginated_response(data)
+        except ValueError as ve:
+            return Response({ 'error': str(ve) }, status=status.HTTP_400_BAD_REQUEST)
 
 ### Adds an issue as read.
 class AddUserReadIssue(APIView):
