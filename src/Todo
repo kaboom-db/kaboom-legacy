@@ -4,5 +4,3 @@
 - [ ] Change layouts in Django admin
 - [ ] Add ability to follow users
 - [ ] Remove square brackets from errors in users app
-- [ ] Add validations to thoughts
-- [ ] Remove test models

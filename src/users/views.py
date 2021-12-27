@@ -14,8 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
-
-from users import serializers
+from django.contrib.contenttypes.models import ContentType
 
 ### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
@@ -163,14 +162,3 @@ class EditThought(APIView):
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
             return Response({'error': str(e)})
-
-### Get a thoughts related object
-#class GetThoughtObject(APIView):
- #   serializer_class = ThoughtSerializer
-  #  http_method_names = ['get']
-
-   # def get(self, request, thought_id):
-    #    try:
-     #       thought = Thought.objects.get(id=thought_id)
-      #      if thought.thought_type:
-       #         ct = 

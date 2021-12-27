@@ -114,9 +114,3 @@ class Comment(models.Model):
 
     def __str__(self) -> str:
         return "Comment on: " + str(self.thought) + ", User: " + str(self.user)
-
-class TestModel(models.Model):
-    limit = Q(app_label='comics', model='comic') | Q(app_label='comics', model='issue') | Q(app_label='cartoons', model='cartoon') | Q(app_label='cartoons', model='episode')
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=limit)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
