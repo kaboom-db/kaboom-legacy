@@ -132,16 +132,18 @@ class EditThought(APIView):
     serializer_class = ThoughtSerializer
     http_method_names = ['post']
 
-    ### TODO: Doesnt work.
+    ### TODO: Add type validations.
     def post(self, request, thought_id):
         # A user can only edit their own thought
         user = self.request.user
         try:
             thought = Thought.objects.get(id=thought_id)
             if thought.user == user:
-                request.data['id'] = thought.id
-                print(request.data)
-                serializer = ThoughtSerializer(data=request.data, partial=True)
+                ### Override the users input of num_of_likes, date created and user
+                request.data['num_of_likes'] = thought.num_of_likes
+                request.data['date_created'] = thought.date_created
+                request.data['user'] = thought.user
+                serializer = ThoughtSerializer(instance=thought, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.update(instance=thought, validated_data=serializer.validated_data)
                     return Response(serializer.data)
