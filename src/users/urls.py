@@ -11,6 +11,7 @@ urlpatterns = [
     path('thoughts/', views.GetThoughts.as_view(), name='get-thoughts'),
     path('thoughts/types/', views.GetThoughtTypes.as_view(), name='get-thought-types'),
     path('thoughts/add/', views.AddThought.as_view(), name='add-thoughts'),
+    path('thoughts/<int:thought_id>/', views.GetThought.as_view(), name='get-thought'),
     path('thoughts/<int:thought_id>/remove/', views.RemoveThought.as_view(), name='remove-thoughts'),
     path('thoughts/<int:thought_id>/like/', views.LikeThought.as_view(), name='like-thoughts'),
     path('thoughts/<int:thought_id>/edit/', views.EditThought.as_view(), name='edit-thoughts'),

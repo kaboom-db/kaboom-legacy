@@ -49,6 +49,18 @@ class GetThoughts(ListAPIView):
     filterset_class = ThoughtFilter
     queryset = Thought.objects.all()
 
+class GetThought(APIView):
+    serializer_class = ThoughtSerializer
+    http_method_names = ['get']
+
+    def get(self, request, thought_id):
+        try:
+            thought = Thought.objects.get(id=thought_id)
+            serializer = ThoughtSerializer(thought)
+            return Response(serializer.data)
+        except:
+            return Response({'error': 'Thought Id not found'}, status=status.HTTP_404_NOT_FOUND)
+
 ### Add a thought
 class AddThought(APIView):
     authentication_classes = [TokenAuthentication]
@@ -151,3 +163,14 @@ class EditThought(APIView):
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
             return Response({'error': str(e)})
+
+### Get a thoughts related object
+#class GetThoughtObject(APIView):
+ #   serializer_class = ThoughtSerializer
+  #  http_method_names = ['get']
+
+   # def get(self, request, thought_id):
+    #    try:
+     #       thought = Thought.objects.get(id=thought_id)
+      #      if thought.thought_type:
+       #         ct = 

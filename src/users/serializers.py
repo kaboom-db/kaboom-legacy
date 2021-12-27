@@ -84,10 +84,6 @@ class ThoughtTypeSerializer(serializers.ModelSerializer):
 class ThoughtSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
     thought_type = ThoughtTypeSerializer(read_only=True)
-    comic = comics_ser.SeriesSerializer(read_only=True)
-    issue = comics_ser.IssueSerializer(read_only=True)
-    cartoon = cartoons_ser.SeriesSerializer(read_only=True)
-    episode = cartoons_ser.EpisodeSerializer(read_only=True)
 
     class Meta:
         model = Thought

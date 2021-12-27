@@ -10,6 +10,9 @@ from comics import models as comic_models
 from cartoons import models as cartoons_models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.db.models import Q
 
 ### When a new user is created, add a token for their account.
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -94,11 +97,10 @@ class Thought(models.Model):
     title = models.CharField(max_length=250)
     post_content = models.TextField()
     date_created = models.DateTimeField(default=timezone.now)
-    thought_type = models.ForeignKey(ThoughtType, blank=True, null=True, on_delete=models.SET_NULL)
-    comic = models.ForeignKey(comic_models.Comic, blank=True, null=True, on_delete=models.SET_NULL)
-    issue = models.ForeignKey(comic_models.Issue, blank=True, null=True, on_delete=models.SET_NULL)
-    cartoon = models.ForeignKey(cartoons_models.Cartoon, blank=True, null=True, on_delete=models.SET_NULL)
-    episode = models.ForeignKey(cartoons_models.Episode, blank=True, null=True, on_delete=models.SET_NULL)
+    limit = Q(app_label='comics', model='comic') | Q(app_label='comics', model='issue') | Q(app_label='cartoons', model='cartoon') | Q(app_label='cartoons', model='episode')
+    thought_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.SET_NULL, limit_choices_to=limit)
+    related_object_id = models.PositiveIntegerField(blank=True, null=True)
+    content_object = GenericForeignKey('thought_type', 'related_object_id')
     num_of_likes = models.IntegerField(default=0)
 
     def __str__(self) -> str:
@@ -112,3 +114,9 @@ class Comment(models.Model):
 
     def __str__(self) -> str:
         return "Comment on: " + str(self.thought) + ", User: " + str(self.user)
+
+class TestModel(models.Model):
+    limit = Q(app_label='comics', model='comic') | Q(app_label='comics', model='issue') | Q(app_label='cartoons', model='cartoon') | Q(app_label='cartoons', model='episode')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, limit_choices_to=limit)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
