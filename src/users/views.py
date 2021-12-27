@@ -1,8 +1,6 @@
-from functools import partial
 from django.contrib.auth.models import User
-from django.core.checks.messages import Error
 from rest_framework.generics import ListAPIView
-from rest_framework.views import APIView, set_rollback
+from rest_framework.views import APIView
 
 from users.models import Follow, Thought, ThoughtType
 from users.users_filters import ThoughtFilter
@@ -15,7 +13,6 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.contenttypes.models import ContentType
 
 ### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
