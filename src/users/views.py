@@ -73,10 +73,10 @@ class RemoveThought(APIView):
     serializer_class = ThoughtSerializer
     http_method_names = ['post']
 
-    def post(self, request):
+    def post(self, request, thought_id):
         user = self.request.user
         try:
-            instance = Thought.objects.get(id=request.data['thought_id'])
+            instance = Thought.objects.get(id=thought_id)
             if instance.user == user:
                 instance.delete()
                 return Response({'success': 'Thought has successfully been deleted.'})
@@ -100,10 +100,10 @@ class LikeThought(APIView):
     serializer_class = ThoughtSerializer
     http_method_names = ['post']
 
-    def post(self, request):
+    def post(self, request, thought_id):
         user = self.request.user
         try:
-            instance = Thought.objects.get(id=request.data['thought_id'])
+            instance = Thought.objects.get(id=thought_id)
             ### add one like 
             if instance.user == user:
                 # cant like your own thought
