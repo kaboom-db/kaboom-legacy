@@ -1,12 +1,13 @@
 from functools import partial
+from django.contrib.auth.models import User
 from django.core.checks.messages import Error
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView, set_rollback
 
-from users.models import Thought, ThoughtType
+from users.models import Follow, Thought, ThoughtType
 from users.users_filters import ThoughtFilter
 
-from .serializers import  ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, ThoughtTypeSerializer, CommentSerializerDetailed
+from .serializers import  FollowSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, ThoughtTypeSerializer, CommentSerializerDetailed, UserSerializerNoPassword
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -142,8 +143,7 @@ class EditThought(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ThoughtSerializer
     http_method_names = ['post']
-
-    ### TODO: Add type validations.
+    
     def post(self, request, thought_id):
         # A user can only edit their own thought
         user = self.request.user
@@ -162,3 +162,45 @@ class EditThought(APIView):
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
             return Response({'error': str(e)})
+
+class FollowUser(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = FollowSerializer
+    http_method_names = ['post']
+
+    def post(self, request, user_id):
+        user = self.request.user
+        try:
+            following = User.objects.get(id=user_id)
+            request.data['follower'] = user.id
+            request.data['following'] = following.id
+            serializer = FollowSerializer(data=request.data)
+            if user != following:
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Users cannot follow themselves'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class UnfollowUser(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = FollowSerializer
+    http_method_names = ['post']
+
+    def post(self, request, user_id):
+        user = self.request.user
+        try:
+            follow_obj = Follow.objects.filter(follower=user, following=user_id)
+            if follow_obj:
+                follow_obj.delete()
+                return Response({'success': 'Successfully unfollowed'})
+            else:
+                return Response({'error': 'User has not been followed'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

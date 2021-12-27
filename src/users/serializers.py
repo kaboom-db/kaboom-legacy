@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from comics.models import Issue
-from users.models import CartoonSubscription, ComicSubscription, ReadIssue, WatchedEpisode, ThoughtType, Thought, Comment
+from users.models import CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, ThoughtType, Thought, Comment
 import comics.serializers as comics_ser
 import cartoons.serializers as cartoons_ser
 
@@ -105,4 +105,9 @@ class ThoughtSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        field = '__all__'
+        fields = '__all__'
+
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = '__all__'

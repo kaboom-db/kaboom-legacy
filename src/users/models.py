@@ -114,3 +114,15 @@ class Comment(models.Model):
 
     def __str__(self) -> str:
         return "Comment on: " + str(self.thought) + ", User: " + str(self.user)
+
+class Follow(models.Model):
+    class Meta:
+        unique_together = (('follower', 'following'),)
+
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower')
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
+
+    def save(self, *args, **kwargs) -> None:
+        if self.follower == self.following:
+            return
+        super(Follow, self).save(*args, **kwargs)
