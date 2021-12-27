@@ -1,3 +1,5 @@
+from functools import partial
+from django.core.checks.messages import Error
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView, set_rollback
 
@@ -12,6 +14,8 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+
+from users import serializers
 
 ### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
@@ -121,3 +125,27 @@ class LikeThought(APIView):
             return Response({'thought': [
                 'That thought does not exist.'
             ]}, status=status.HTTP_400_BAD_REQUEST)
+
+class EditThought(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ThoughtSerializer
+    http_method_names = ['post']
+
+    ### TODO: Doesnt work.
+    def post(self, request, thought_id):
+        # A user can only edit their own thought
+        user = self.request.user
+        try:
+            thought = Thought.objects.get(id=thought_id)
+            if thought.user == user:
+                request.data['id'] = thought.id
+                print(request.data)
+                serializer = ThoughtSerializer(data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.update(instance=thought, validated_data=serializer.validated_data)
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)})

@@ -13,6 +13,7 @@ urlpatterns = [
     path('thoughts/add/', views.AddThought.as_view(), name='add-thoughts'),
     path('thoughts/remove/', views.RemoveThought.as_view(), name='remove-thoughts'),
     path('thoughts/like/', views.LikeThought.as_view(), name='like-thoughts'),
+    path('thoughts/<int:thought_id>/edit/', views.EditThought.as_view(), name='edit-thoughts'),
     path('comics/subscriptions/', comics_views.GetUserSubscriptions.as_view(), name='get-sub'),
     path('comics/subscriptions/add/', comics_views.AddUserSubscription.as_view(), name='add-sub'),
     path('comics/subscriptions/rate/', comics_views.AddUserSeriesRating.as_view(), name='rate-sub'),
