@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.db.models.aggregates import Count, Sum
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from libgravatar import Gravatar
@@ -126,3 +126,25 @@ class Follow(models.Model):
         if self.follower == self.following:
             return
         super(Follow, self).save(*args, **kwargs)
+
+class UserLikedThought(models.Model):
+    class Meta:
+        unique_together = (('user', 'thought'),)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    thought = models.ForeignKey(Thought, on_delete=models.CASCADE)
+
+@receiver(post_save, sender=UserLikedThought)
+def add_num_of_likes(sender, instance=None, created=False, **kwargs):
+    if created:
+        num_of_likes = UserLikedThought.objects.filter(thought=instance.thought.id).aggregate(count=Count('user'))['count']
+        thought = Thought.objects.get(id=instance.thought.id)
+        thought.num_of_likes = num_of_likes
+        thought.save()
+
+@receiver(post_delete, sender=UserLikedThought)
+def delete_num_of_likes(sender, instance=None, **kwargs):
+    num_of_likes = UserLikedThought.objects.filter(thought=instance.thought.id).aggregate(count=Count('user'))['count']
+    thought = Thought.objects.get(id=instance.thought.id)
+    thought.num_of_likes = num_of_likes
+    thought.save()

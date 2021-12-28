@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 
-from users.models import Follow, Thought, ThoughtType
+from users.models import Follow, Thought, ThoughtType, UserLikedThought
 from users.users_filters import ThoughtFilter
 
 from .serializers import  FollowSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, ThoughtTypeSerializer, CommentSerializerDetailed, UserSerializerNoPassword
@@ -120,20 +120,37 @@ class LikeThought(APIView):
                     'Thought owner cannot like their own thought.'
                 ]}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                instance.num_of_likes += 1
-                instance.save()
-                return Response({
-                    'id': instance.id,
-                    'num_of_likes': instance.num_of_likes
-                })
-        except KeyError:
-            return Response({'thought_id': [
-                'This is a required field'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
-            return Response({'thought': [
-                'That thought does not exist.'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+                # check if the user has already liked this thought
+                already_existing_obj = UserLikedThought.objects.filter(user=user, thought=instance).first()
+                if already_existing_obj:
+                    return Response({'error': 'This user has already liked this thought'}, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    # create a new liked thought record
+                    liked_thought = UserLikedThought(user=user, thought=instance)
+                    liked_thought.save()
+                    return Response({
+                        'thought': instance.id,
+                        'num_of_likes': instance.num_of_likes
+                    })
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class UnlikeThought(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ThoughtSerializer
+    http_method_names = ['post']
+
+    def post(self, request, thought_id):
+        user = self.request.user
+        ### Get the related user thought like object
+        user_like = UserLikedThought.objects.filter(user=user, thought=thought_id)
+        if user_like:
+            ## delete the user like
+            user_like.delete()
+            return Response({'success': 'Unliked the thought'})
+        else:
+            return Response({'error': 'User has not liked the thought'}, status=status.HTTP_400_BAD_REQUEST)
 
 class EditThought(APIView):
     authentication_classes = [TokenAuthentication]
