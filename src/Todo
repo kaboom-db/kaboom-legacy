@@ -2,3 +2,4 @@
 - [ ] Desktop Client
 - [ ] Mobile Client
 - [ ] Change layouts in Django admin
+- [ ] Make certain fields read_only in serializers
