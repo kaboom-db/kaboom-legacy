@@ -111,3 +111,17 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = '__all__'
+
+class GetFollowersSerializer(serializers.ModelSerializer):
+    follower = UserSerializerNoPassword(read_only=True)
+
+    class Meta:
+        model = Follow
+        fields = ['follower']
+
+class GetFollowingsSerializer(serializers.ModelSerializer):
+    following = UserSerializerNoPassword(read_only=True)
+
+    class Meta:
+        model = Follow
+        fields = ['following']

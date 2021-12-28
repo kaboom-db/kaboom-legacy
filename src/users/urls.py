@@ -10,6 +10,7 @@ urlpatterns = [
     path('login/', CustomAuthToken.as_view(), name='token'),
     path('<int:user_id>/follow/', views.FollowUser.as_view(), name='follow-user'),
     path('<int:user_id>/followers/', views.GetUsersFollowers.as_view(), name='followers-user'),
+    path('<int:user_id>/following/', views.GetUsersFollowing.as_view(), name='following-user'),
     path('<int:user_id>/unfollow/', views.UnfollowUser.as_view(), name='unfollow-user'),
     path('thoughts/', views.GetThoughts.as_view(), name='get-thoughts'),
     path('thoughts/types/', views.GetThoughtTypes.as_view(), name='get-thought-types'),

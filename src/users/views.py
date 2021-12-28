@@ -6,7 +6,7 @@ from cartoons import serializers
 from users.models import Follow, Thought, ThoughtType, UserLikedThought
 from users.users_filters import ThoughtFilter
 
-from .serializers import  FollowSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, ThoughtTypeSerializer, CommentSerializerDetailed, UserSerializerNoPassword
+from .serializers import  FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, ThoughtTypeSerializer, CommentSerializerDetailed, UserSerializerNoPassword
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -212,17 +212,28 @@ class UnfollowUser(APIView):
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-### TODO: Update the JSON data for this
 class GetUsersFollowers(APIView):
-    serializer_class = UserSerializerNoPassword
+    serializer_class = GetFollowersSerializer
     http_method_names = ['get']
 
     def get(self, request, user_id):
         # Get all the followers
         users_followers = Follow.objects.filter(following=user_id)
         if users_followers:
-            serializer = FollowSerializer(instance=users_followers, many=True)
+            serializer = GetFollowersSerializer(instance=users_followers, many=True)
             return Response(serializer.data)
         else:
             # user has no followers, loner
             return Response({'error': 'User has no followers'}, status=status.HTTP_400_BAD_REQUEST)
+
+class GetUsersFollowing(APIView):
+    serializer_class = GetFollowersSerializer
+    http_method_names = ['get']
+
+    def get(self, request, user_id):
+        users_following = Follow.objects.filter(follower=user_id)
+        if users_following:
+            serializer = GetFollowingsSerializer(instance=users_following, many=True)
+            return Response(serializer.data)
+        else:
+            return Response({'error': 'User isn\'t following anyone'}, status=status.HTTP_400_BAD_REQUEST)
