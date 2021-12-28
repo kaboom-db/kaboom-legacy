@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
+from cartoons import serializers
 
 from users.models import Follow, Thought, ThoughtType, UserLikedThought
 from users.users_filters import ThoughtFilter
@@ -210,3 +211,18 @@ class UnfollowUser(APIView):
                 return Response({'error': 'User has not been followed'}, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+### TODO: Update the JSON data for this
+class GetUsersFollowers(APIView):
+    serializer_class = UserSerializerNoPassword
+    http_method_names = ['get']
+
+    def get(self, request, user_id):
+        # Get all the followers
+        users_followers = Follow.objects.filter(following=user_id)
+        if users_followers:
+            serializer = FollowSerializer(instance=users_followers, many=True)
+            return Response(serializer.data)
+        else:
+            # user has no followers, loner
+            return Response({'error': 'User has no followers'}, status=status.HTTP_400_BAD_REQUEST)
