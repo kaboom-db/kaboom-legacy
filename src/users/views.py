@@ -27,10 +27,8 @@ class CreateUser(APIView):
                     'username': serializer.data['username']
                 })
         except KeyError as e:
-            raise ParseError(detail='You are either missing an email, password or username. ' + str(e.args))
-        return Response({
-            serializer.errors
-        })
+            raise ParseError(detail='You are either missing an email, password or username. Missing: ' + str(e.args))
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 ### Get all the thought types
 class GetThoughtTypes(ListAPIView):
@@ -93,14 +91,8 @@ class RemoveThought(APIView):
                 return Response({'thought_id': [
                     'This thought does not correspond to the correct user'
                 ]}, status=status.HTTP_401_UNAUTHORIZED)
-        except KeyError:
-            return Response({'thought_id': [
-                'This is a required field'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
-            return Response({'thought': [
-                'That thought does not exist.'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 ### Adds a like to a thought
 class LikeThought(APIView):
