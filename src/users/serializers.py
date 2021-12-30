@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from comics.models import Issue
-from users.models import CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, ThoughtType, Thought, Comment
+from users.models import CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, Thought, Comment
 import comics.serializers as comics_ser
 import cartoons.serializers as cartoons_ser
+from django.contrib.contenttypes.models import ContentType
 
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
@@ -76,14 +77,15 @@ class WatchedEpisodesSerializer(serializers.ModelSerializer):
         model = WatchedEpisode
         fields = '__all__'
 
-class ThoughtTypeSerializer(serializers.ModelSerializer):
+class ContentTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ThoughtType
-        fields = '__all__'
+        model = ContentType
+        fields = ['id', 'model']
+        lookup_field = 'model'
 
 class ThoughtSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
-    thought_type = ThoughtTypeSerializer(read_only=True)
+    thought_type = ContentTypeSerializer(read_only=True)
 
     class Meta:
         model = Thought

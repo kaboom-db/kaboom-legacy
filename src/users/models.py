@@ -86,12 +86,6 @@ class WatchedEpisode(models.Model):
     def __str__(self) -> str:
         return "Episode: " + str(self.episode) + ", User: " + str(self.user) + ", Watched: " + str(self.watched_at)
 
-class ThoughtType(models.Model):
-    name = models.CharField(max_length=25)
-
-    def __str__(self) -> str:
-        return self.name
-
 class Thought(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=250)

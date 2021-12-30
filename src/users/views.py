@@ -1,14 +1,14 @@
 from functools import partial
 from django.contrib.auth.models import User
-from django.db.models import base
+from django.db.models import base, query
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from cartoons import serializers
 
-from users.models import Comment, Follow, Thought, ThoughtType, UserLikedThought
+from users.models import Comment, Follow, Thought, UserLikedThought
 from users.users_filters import ThoughtFilter
 
-from .serializers import  CommentSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, ThoughtTypeSerializer, CommentSerializerDetailed, UserSerializerNoPassword
+from .serializers import  CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerNoPassword
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -16,6 +16,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.contenttypes.models import ContentType
 
 ### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
@@ -33,11 +34,12 @@ class CreateUser(APIView):
             raise ParseError(detail='You are either missing an email, password or username. Missing: ' + str(e.args))
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-### Get all the thought types
 class GetThoughtTypes(ListAPIView):
-    serializer_class = ThoughtTypeSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ContentTypeSerializer
     http_method_names = ['get']
-    queryset = ThoughtType.objects.all()
+    queryset = ContentType.objects.filter(model__in=['comic', 'issue', 'cartoon', 'episode'])
 
 ### Get thoughts. Can be filtered with query params
 class GetThoughts(ListAPIView):
@@ -71,6 +73,16 @@ class AddThought(APIView):
     def post(self, request):
         user = self.request.user
         request.data['user'] = user.pk
+        try:
+            thought_type = request.data['thought_type']
+            content_type = ContentType.objects.filter(model=thought_type).first()
+            if content_type:
+                request.data['thought_type'] = content_type.id
+            else:
+                return Response({'error': 'Thought type ' + request.data['thought_type'] + ' does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            print('No thought type')
+        print(request.data)
         serializer = ThoughtSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
