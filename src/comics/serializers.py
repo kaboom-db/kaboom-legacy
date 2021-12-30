@@ -23,6 +23,7 @@ class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comic
         fields = '__all__'
+        read_only_fields = ['rating']
 
 class FormatSerializer(serializers.ModelSerializer):
     class Meta:

@@ -88,6 +88,7 @@ class ThoughtSerializerDetailed(serializers.ModelSerializer):
     class Meta:
         model = Thought
         fields = '__all__'
+        read_only_fields = ['date_created', 'num_of_likes']
 
 class CommentSerializerDetailed(serializers.ModelSerializer):
     user = UserSerializerNoPassword(read_only=True)
@@ -95,17 +96,20 @@ class CommentSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        field = '__all__'
+        fields = '__all__'
+        read_only_fields = ['date_created']
 
 class ThoughtSerializer(serializers.ModelSerializer):
     class Meta:
         model = Thought
         fields = '__all__'
+        read_only_fields = ['date_created', 'num_of_likes']
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+        read_only_fields = ['date_created']
 
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:

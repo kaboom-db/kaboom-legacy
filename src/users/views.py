@@ -1,12 +1,14 @@
+from functools import partial
 from django.contrib.auth.models import User
+from django.db.models import base
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from cartoons import serializers
 
-from users.models import Follow, Thought, ThoughtType, UserLikedThought
+from users.models import Comment, Follow, Thought, ThoughtType, UserLikedThought
 from users.users_filters import ThoughtFilter
 
-from .serializers import  FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, ThoughtTypeSerializer, CommentSerializerDetailed, UserSerializerNoPassword
+from .serializers import  CommentSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, ThoughtTypeSerializer, CommentSerializerDetailed, UserSerializerNoPassword
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -39,6 +41,8 @@ class GetThoughtTypes(ListAPIView):
 
 ### Get thoughts. Can be filtered with query params
 class GetThoughts(ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = ThoughtSerializerDetailed
     http_method_names = ['get']
     filter_backends = (filters.DjangoFilterBackend,)
@@ -237,3 +241,36 @@ class GetUsersFollowing(APIView):
             return Response(serializer.data)
         else:
             return Response({'error': 'User isn\'t following anyone'}, status=status.HTTP_400_BAD_REQUEST)
+
+class AddComment(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentSerializer
+    http_method_names = ['post', 'get']
+
+    def post(self, request, thought_id):
+        user = self.request.user
+        try:
+            thought = Thought.objects.get(id=thought_id)
+            request.data['thought'] = thought.id
+            request.data['user'] = user.id
+            comment = CommentSerializer(data=request.data, partial=True)
+            if comment.is_valid():
+                comment.save()
+                return Response(comment.data)
+            else:
+                return Response(comment.errors, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request, thought_id):
+        # Get all the comments related to this thought
+        try:
+            comments = Comment.objects.filter(thought=thought_id)
+            if comments:
+                serializer = CommentSerializerDetailed(instance=comments, many=True)
+                return Response(serializer.data)
+            else:
+                return Response({'error': 'No comments found'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

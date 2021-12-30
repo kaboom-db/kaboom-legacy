@@ -1,5 +1,5 @@
 ## Todo List
 - [ ] Desktop Client
 - [ ] Mobile Client
+- [ ] Test how to add object relations for thoughts via API
 - [ ] Change layouts in Django admin
-- [ ] Make certain fields read_only in serializers
