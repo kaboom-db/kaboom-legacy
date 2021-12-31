@@ -238,12 +238,13 @@ class GetUsersFollowing(APIView):
         else:
             return Response({'error': 'User isn\'t following anyone'}, status=status.HTTP_400_BAD_REQUEST)
 
-class AddComment(APIView):
+class CommentView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
     http_method_names = ['post', 'get']
 
+    # adds a comment
     def post(self, request, thought_id):
         user = self.request.user
         try:
@@ -259,6 +260,7 @@ class AddComment(APIView):
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
+    # gets all comments for this thought
     def get(self, request, thought_id):
         # Get all the comments related to this thought
         try:
@@ -277,6 +279,7 @@ class SpecificCommentView(APIView):
     serializer_class = CommentSerializer
     http_method_names = ['post', 'get', 'delete']
 
+    # get a comment
     def get(self, request, thought_id, comment_id):
         try:
             comment = Comment.objects.get(id=comment_id)
@@ -289,6 +292,7 @@ class SpecificCommentView(APIView):
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
+    # delete a comment
     def delete(self, request, thought_id, comment_id):
         user = self.request.user
         try:
@@ -305,6 +309,7 @@ class SpecificCommentView(APIView):
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
+    # update a comment
     def post(self, request, thought_id, comment_id):
         user = self.request.user
         try:
