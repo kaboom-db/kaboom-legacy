@@ -19,15 +19,16 @@ class CreateUser(APIView):
         serializer = UserSerializer(data=request.data)
         print(request.data)
         try:
-            if serializer.is_valid(raise_exception=True):
+            if serializer.is_valid():
                 serializer.save()
                 return Response({
                     'user_id': serializer.data['id'],
                     'username': serializer.data['username']
                 })
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except KeyError as e:
-            raise ParseError(detail='You are either missing an email, password or username. Missing: ' + str(e.args))
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'You are either missing an email, password or username. Missing: ' + str(e.args)}, status=status.HTTP_400_BAD_REQUEST)
 
 class GetUsersView(ListAPIView):
     authentication_classes = [TokenAuthentication]
