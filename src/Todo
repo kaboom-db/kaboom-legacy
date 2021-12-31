@@ -1,5 +1,6 @@
 ## Todo List
-- [ ] Desktop Client
-- [ ] Mobile Client
-- [ ] Change layouts in Django admin
-- [ ] Delete comments
+- Desktop Client
+- Mobile Client
+- Change layouts in Django admin
+- Refactor User views (comics and cartoons)
+- Add extra user info

@@ -1,13 +1,8 @@
-from functools import partial
 from django.contrib.auth.models import User
-from django.db.models import base, query
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
-from cartoons import serializers
-
 from users.models import Comment, Follow, Thought, UserLikedThought
 from users.users_filters import ThoughtFilter
-
 from .serializers import  CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerNoPassword
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
@@ -15,7 +10,6 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
 from rest_framework import status
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.contenttypes.models import ContentType
 
 ### Creates a user. Must pass an email, password and username.
@@ -51,17 +45,52 @@ class GetThoughts(ListAPIView):
     filterset_class = ThoughtFilter
     queryset = Thought.objects.all()
 
-class GetThought(APIView):
-    serializer_class = ThoughtSerializer
-    http_method_names = ['get']
+class SpecificThoughtView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ThoughtSerializerDetailed
+    http_method_names = ['get', 'delete', 'post']
 
     def get(self, request, thought_id):
         try:
             thought = Thought.objects.get(id=thought_id)
-            serializer = ThoughtSerializer(thought)
+            serializer = ThoughtSerializerDetailed(thought)
             return Response(serializer.data)
         except:
             return Response({'error': 'Thought Id not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def delete(self, request, thought_id):
+        user = self.request.user
+        try:
+            instance = Thought.objects.get(id=thought_id)
+            if instance.user == user:
+                instance.delete()
+                return Response({'success': 'Thought has successfully been deleted.'})
+            else:
+                return Response({'error': 'This thought does not correspond to the correct user'}, status=status.HTTP_401_UNAUTHORIZED)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def post(self, request, thought_id):
+        # A user can only edit their own thought
+        user = self.request.user
+        try:
+            thought = Thought.objects.get(id=thought_id)
+            if thought.user == user:
+                ### Override the users input of num_of_likes, date created and user
+                request.data['num_of_likes'] = thought.num_of_likes
+                request.data['date_created'] = thought.date_created
+                request.data['user'] = thought.user.id
+                serializer = ThoughtSerializer(instance=thought, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.update(instance=thought, validated_data=serializer.validated_data)
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'User does not own this thought'}, status=status.HTTP_401_UNAUTHORIZED)
+        except BaseException as e:
+            return Response({'error': str(e)})
 
 ### Add a thought
 class AddThought(APIView):
@@ -74,6 +103,7 @@ class AddThought(APIView):
         user = self.request.user
         request.data['user'] = user.pk
         try:
+            # This allows developers to send a string instead of the id of content type
             thought_type = request.data['thought_type']
             content_type = ContentType.objects.filter(model=thought_type).first()
             if content_type:
@@ -89,27 +119,6 @@ class AddThought(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-### Remove a thought
-class RemoveThought(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = ThoughtSerializer
-    http_method_names = ['post']
-
-    def post(self, request, thought_id):
-        user = self.request.user
-        try:
-            instance = Thought.objects.get(id=thought_id)
-            if instance.user == user:
-                instance.delete()
-                return Response({'success': 'Thought has successfully been deleted.'})
-            else:
-                return Response({'thought_id': [
-                    'This thought does not correspond to the correct user'
-                ]}, status=status.HTTP_401_UNAUTHORIZED)
-        except BaseException as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 ### Adds a like to a thought
 class LikeThought(APIView):
@@ -160,31 +169,6 @@ class UnlikeThought(APIView):
             return Response({'success': 'Unliked the thought'})
         else:
             return Response({'error': 'User has not liked the thought'}, status=status.HTTP_400_BAD_REQUEST)
-
-class EditThought(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = ThoughtSerializer
-    http_method_names = ['post']
-    
-    def post(self, request, thought_id):
-        # A user can only edit their own thought
-        user = self.request.user
-        try:
-            thought = Thought.objects.get(id=thought_id)
-            if thought.user == user:
-                ### Override the users input of num_of_likes, date created and user
-                request.data['num_of_likes'] = thought.num_of_likes
-                request.data['date_created'] = thought.date_created
-                request.data['user'] = thought.user
-                serializer = ThoughtSerializer(instance=thought, data=request.data, partial=True)
-                if serializer.is_valid():
-                    serializer.update(instance=thought, validated_data=serializer.validated_data)
-                    return Response(serializer.data)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except BaseException as e:
-            return Response({'error': str(e)})
 
 class FollowUser(APIView):
     authentication_classes = [TokenAuthentication]
@@ -284,5 +268,62 @@ class AddComment(APIView):
                 return Response(serializer.data)
             else:
                 return Response({'error': 'No comments found'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class SpecificCommentView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentSerializer
+    http_method_names = ['post', 'get', 'delete']
+
+    def get(self, request, thought_id, comment_id):
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            thought = Thought.objects.get(id=thought_id)
+            if comment.thought == thought:
+                serializer = CommentSerializer(instance=comment)
+                return Response(serializer.data)
+            else:
+                return Response({'error': 'Comment ID does not have relation with Thought ID'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, thought_id, comment_id):
+        user = self.request.user
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            thought = Thought.objects.get(id=thought_id)
+            if comment.user == user:
+                if comment.thought == thought:
+                    comment.delete()
+                    return Response({'success': 'Comment was deleted'})
+                else:
+                    return Response({'error': 'Comment ID does not have relation with Thought ID'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Comment does not belong to user'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def post(self, request, thought_id, comment_id):
+        user = self.request.user
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            thought = Thought.objects.get(id=thought_id)
+            if comment.user == user:
+                if comment.thought == thought:
+                    request.data['thought'] = comment.thought.id
+                    request.data['date_created'] = comment.date_created
+                    request.data['user'] = comment.user.id
+                    serializer = CommentSerializer(instance=comment, data=request.data, partial=True)
+                    if serializer.is_valid():
+                        serializer.update(instance=comment, validated_data=serializer.validated_data)
+                        return Response(serializer.data)
+                    else:
+                        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    return Response({'error': 'Comment ID does not have relation with Thought ID'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Comment does not belong to user'}, status=status.HTTP_401_UNAUTHORIZED)
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
