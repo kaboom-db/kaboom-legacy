@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
 from rest_framework import status
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
 
 ### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
@@ -176,10 +177,10 @@ class FollowUser(APIView):
     serializer_class = FollowSerializer
     http_method_names = ['post']
 
-    def post(self, request, user_id):
+    def post(self, request, username):
         user = self.request.user
         try:
-            following = User.objects.get(id=user_id)
+            following = User.objects.get(username=username)
             request.data['follower'] = user.id
             request.data['following'] = following.id
             serializer = FollowSerializer(data=request.data)
@@ -200,10 +201,11 @@ class UnfollowUser(APIView):
     serializer_class = FollowSerializer
     http_method_names = ['post']
 
-    def post(self, request, user_id):
+    def post(self, request, username):
         user = self.request.user
         try:
-            follow_obj = Follow.objects.filter(follower=user, following=user_id)
+            following = User.objects.get(username=username)
+            follow_obj = Follow.objects.filter(follower=user, following=following.id)
             if follow_obj:
                 follow_obj.delete()
                 return Response({'success': 'Successfully unfollowed'})
@@ -216,27 +218,35 @@ class GetUsersFollowers(APIView):
     serializer_class = GetFollowersSerializer
     http_method_names = ['get']
 
-    def get(self, request, user_id):
+    def get(self, request, username):
         # Get all the followers
-        users_followers = Follow.objects.filter(following=user_id)
-        if users_followers:
-            serializer = GetFollowersSerializer(instance=users_followers, many=True)
-            return Response(serializer.data)
-        else:
-            # user has no followers, loner
-            return Response({'error': 'User has no followers'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            following = User.objects.get(username=username)
+            users_followers = Follow.objects.filter(following=following.id)
+            if users_followers:
+                serializer = GetFollowersSerializer(instance=users_followers, many=True)
+                return Response(serializer.data)
+            else:
+                # user has no followers, loner
+                return Response({'error': 'User has no followers'}, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 class GetUsersFollowing(APIView):
     serializer_class = GetFollowersSerializer
     http_method_names = ['get']
 
-    def get(self, request, user_id):
-        users_following = Follow.objects.filter(follower=user_id)
-        if users_following:
-            serializer = GetFollowingsSerializer(instance=users_following, many=True)
-            return Response(serializer.data)
-        else:
-            return Response({'error': 'User isn\'t following anyone'}, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request, username):
+        try:
+            follower = User.objects.get(username=username)
+            users_following = Follow.objects.filter(follower=follower.id)
+            if users_following:
+                serializer = GetFollowingsSerializer(instance=users_following, many=True)
+                return Response(serializer.data)
+            else:
+                return Response({'error': 'User isn\'t following anyone'}, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 class CommentView(APIView):
     authentication_classes = [TokenAuthentication]
