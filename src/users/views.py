@@ -36,7 +36,7 @@ class GetUsersView(ListAPIView):
     http_method_names = ['get']
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = UserFilter
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('-date_joined')
 
 class SpecificUserView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -57,7 +57,7 @@ class GetThoughtTypes(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ContentTypeSerializer
     http_method_names = ['get']
-    queryset = ContentType.objects.filter(model__in=['comic', 'issue', 'cartoon', 'episode'])
+    queryset = ContentType.objects.filter(model__in=['comic', 'issue', 'cartoon', 'episode']).order_by('id')
 
 ### Get thoughts. Can be filtered with query params
 class GetThoughts(ListAPIView):
@@ -67,7 +67,7 @@ class GetThoughts(ListAPIView):
     http_method_names = ['get']
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ThoughtFilter
-    queryset = Thought.objects.all()
+    queryset = Thought.objects.all().order_by('-date_created')
 
 class SpecificThoughtView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -297,7 +297,7 @@ class CommentView(APIView):
     def get(self, request, thought_id):
         # Get all the comments related to this thought
         try:
-            comments = Comment.objects.filter(thought=thought_id)
+            comments = Comment.objects.filter(thought=thought_id).order_by('-date_created')
             if comments:
                 serializer = CommentSerializerDetailed(instance=comments, many=True)
                 return Response(serializer.data)

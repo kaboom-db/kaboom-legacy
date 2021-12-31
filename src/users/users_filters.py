@@ -3,17 +3,14 @@ from users.models import Thought
 from django.contrib.auth.models import User
 
 class ThoughtFilter(filters.FilterSet):
-    user = filters.filters.NumberFilter(field_name='user')
-    thought_type = filters.filters.NumberFilter(field_name='thought_type')
-    comic = filters.filters.NumberFilter(field_name='comic')
-    issue = filters.filters.NumberFilter(field_name='issue')
-    cartoon = filters.filters.NumberFilter(field_name='cartoon')
-    episode = filters.filters.NumberFilter(field_name='episode')
+    user = filters.filters.CharFilter(field_name='user', lookup_expr='username__iexact')
+    thought_type = filters.filters.CharFilter(field_name='thought_type', lookup_expr='model__iexact')
+    related_object_id = filters.filters.NumberFilter(field_name='related_object_id')
     date_created = filters.filters.DateFromToRangeFilter(field_name='date_created')
 
     class Meta:
         model = Thought
-        fields = ['user', 'thought_type', 'comic', 'issue', 'cartoon', 'episode', 'date_created']
+        fields = '__all__'
 
 class UserFilter(filters.FilterSet):
     username = filters.filters.CharFilter(field_name='username', lookup_expr='icontains')
