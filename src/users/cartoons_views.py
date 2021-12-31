@@ -12,11 +12,11 @@ from rest_framework import pagination
 from django.core.exceptions import ObjectDoesNotExist
 
 ### Gets all the cartoons that the user is subbed to
-class GetUserSubscriptions(APIView):
+class CartoonSubscriptionsView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = CartoonSubscriptionSerializerDetailed
-    http_method_names = ['get']
+    http_method_names = ['get', 'post', 'delete']
 
     def get(self, request):
         user = self.request.user
@@ -35,17 +35,10 @@ class GetUserSubscriptions(APIView):
             result_page = paginator.paginate_queryset(queryset, request)
             data = CartoonSubscriptionSerializerDetailed(result_page, many=True).data
             return paginator.get_paginated_response(data)
-        except ValueError:
-            return Response({ 'error': 'User must be a valid integer and user id' }, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({ 'error': str(e) }, status=status.HTTP_400_BAD_REQUEST)
 
-### Adds a cartoon subscription to a user
-class AddUserSubscription(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = CartoonSubscriptionSerializer
-    http_method_names = ['post']
-
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         user = self.request.user
         request.data['user'] = user.pk
         serializer = CartoonSubscriptionSerializer(data=request.data)
@@ -54,15 +47,8 @@ class AddUserSubscription(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-### Removes a user subscription
-class RemoveUserSubscription(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = CartoonSubscriptionSerializer
-    http_method_names = ['post']
-
-    def post(self, request, *args, **kwargs):
+    
+    def delete(self, request):
         user = self.request.user
         request.data['user'] = user.pk
         try:
@@ -71,13 +57,9 @@ class RemoveUserSubscription(APIView):
                 instance.delete()
                 return Response({'success': 'Successfully unsubscribed'})
             else:
-                return Response({'series': [
-                    'Cannot unsubscribe from a cartoon that has not been subscribed to.'
-                ]}, status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            return Response({'series': [
-                'This is a required field'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Cannot unsubscribe from a cartoon that has not been subscribed to.'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 ### Rate a cartoon
 class AddUserSeriesRating(APIView):
@@ -92,7 +74,7 @@ class AddUserSeriesRating(APIView):
             instance = CartoonSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
             if instance:
                 rating = request.data['rating']
-                if int(rating) >= 0 and int(rating) <= 10:
+                if int(rating) >= 1 and int(rating) <= 10:
                     instance.rating = rating
                     instance.save()
                     return Response({
@@ -102,26 +84,18 @@ class AddUserSeriesRating(APIView):
                         'rating': instance.rating
                     })
                 else:
-                    raise ValueError()
+                    return Response({'error': 'Rating must be between 1 and 10'})
             else:
-                return Response({'series': [
-                    'Cannot rate a series that has not been subscribed to.'
-                ]}, status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            return Response({'field_error': [
-                'Rating and series are both required fields.'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
-        except ValueError:
-            return Response({'field_error': [
-                'Rating needs to be a number between 0 and 10'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Cannot rate a series that has not been subscribed to.'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 ### Get all the watched eps of a user
-class GetUserWatchedEpisodes(APIView):
+class UserWatchedEpisodesView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = WatchedEpisodesSerializerDetailed
-    http_method_names = ['get']
+    http_method_names = ['get', 'post', 'delete']
 
     def get(self, request):
         user = self.request.user
@@ -140,15 +114,8 @@ class GetUserWatchedEpisodes(APIView):
             result_page = paginator.paginate_queryset(queryset, request)
             data = WatchedEpisodesSerializerDetailed(result_page, many=True).data
             return paginator.get_paginated_response(data)
-        except ValueError as ve:
+        except BaseException as ve:
             return Response({ 'error': str(ve) }, status=status.HTTP_400_BAD_REQUEST)
-
-### Adds an episode as watched
-class AddUserWatchedEpisode(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = WatchedEpisodesSerializer
-    http_method_names = ['post']
 
     def post(self, request):
         user = self.request.user
@@ -159,15 +126,8 @@ class AddUserWatchedEpisode(APIView):
             return Response({'success': 'Watched the episode'})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-### Remove a watched episode
-class RemoveUserWatchedEpisode(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = WatchedEpisodesSerializer
-    http_method_names = ['post']
-
-    def post(self, request):
+    
+    def delete(self, request):
         user = self.request.user
         request.data['user'] = user.pk
         try:
@@ -176,26 +136,18 @@ class RemoveUserWatchedEpisode(APIView):
                 instance.delete()
                 return Response({'success': 'Unwatched the episode'})
             else:
-                return Response({'watched_id': [
-                    'This watched state does not correspond to the correct user'
-                ]}, status=status.HTTP_401_UNAUTHORIZED)
-        except KeyError:
-            return Response({'watched_id': [
-                'This is a required field'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
-            return Response({'episode': [
-                'Cannot unwatch an episode that has not been watched.'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'This watched state does not correspond to the correct user'}, status=status.HTTP_401_UNAUTHORIZED)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 ### Remove all watched states of a certain episode
 class CleanUserWatchedEpisodes(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = WatchedEpisodesSerializer
-    http_method_names = ['post']
+    http_method_names = ['delete']
 
-    def post(self, request):
+    def delete(self, request):
         user = self.request.user
         request.data['user'] = user.pk
         try:
@@ -205,10 +157,6 @@ class CleanUserWatchedEpisodes(APIView):
                     instance.delete()
                 return Response({'success': 'All watched states have been removed from this episode.'})
             else:
-                return Response({'episode': [
-                    'That episode has not been watched.'
-                ]}, status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            return Response({'episode': [
-                'This is a required field'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'That episode has not been watched.'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
