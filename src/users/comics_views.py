@@ -11,11 +11,11 @@ from rest_framework import pagination
 from django.core.exceptions import ObjectDoesNotExist
 
 ### Gets a users comic subcriptions. Can pass in a query.
-class GetUserSubscriptions(APIView):
+class ComicSubscriptionsView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ComicSubscriptionSerializerDetailed
-    http_method_names = ['get']
+    http_method_names = ['get', 'post', 'delete']
     
     def get(self, request):
         user = self.request.user
@@ -34,17 +34,10 @@ class GetUserSubscriptions(APIView):
             result_page = paginator.paginate_queryset(queryset, request)
             data = ComicSubscriptionSerializerDetailed(result_page, many=True).data
             return paginator.get_paginated_response(data)
-        except ValueError:
-            return Response({ 'error': 'User must be a valid integer and user id' }, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({ 'error': str(e) }, status=status.HTTP_400_BAD_REQUEST)
 
-### Adds a comic series to a users subscription list.
-class AddUserSubscription(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = ComicSubscriptionSerializer
-    http_method_names = ['post']
-
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         user = self.request.user
         request.data['user'] = user.pk
         serializer = ComicSubscriptionSerializer(data=request.data)
@@ -53,15 +46,8 @@ class AddUserSubscription(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-### Removes a series from the subscription list.
-class RemoveUserSubscription(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = ComicSubscriptionSerializer
-    http_method_names = ['post']
-
-    def post(self, request, *args, **kwargs):
+    
+    def delete(self, request):
         user = self.request.user
         request.data['user'] = user.pk
         try:
@@ -70,13 +56,9 @@ class RemoveUserSubscription(APIView):
                 instance.delete()
                 return Response({'success': 'Successfully unsubscribed'})
             else:
-                return Response({'series': [
-                    'Cannot unsubscribe from a comic that has not been subscribed to.'
-                ]}, status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            return Response({'series': [
-                'This is a required field'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Cannot unsubscribe from a comic that has not been subscribed to.'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 ### Add a rating to a series.
 class AddUserSeriesRating(APIView):
@@ -92,7 +74,7 @@ class AddUserSeriesRating(APIView):
             instance = ComicSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
             if instance:
                 rating = request.data['rating']
-                if int(rating) >= 0 and int(rating) <= 10:
+                if int(rating) >= 1 and int(rating) <= 10:
                     instance.rating = rating
                     instance.save()
                     return Response({
@@ -102,26 +84,18 @@ class AddUserSeriesRating(APIView):
                         'rating': instance.rating
                     })
                 else:
-                    raise ValueError()
+                    return Response({'error': 'Rating must be between 1 and 10'})
             else:
-                return Response({'series': [
-                    'Cannot rate a series that has not been subscribed to.'
-                ]}, status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            return Response({'field_error': [
-                'Rating and series are both required fields.'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
-        except ValueError:
-            return Response({'field_error': [
-                'Rating needs to be a number between 0 and 10'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Cannot rate a series that has not been subscribed to.'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 ### Gets all the read issues of the user.
-class GetUserReadIssues(APIView):
+class UserReadIssuesView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ReadIssuesSerializerDetailed
-    http_method_names = ['get']
+    http_method_names = ['get', 'post', 'delete']
 
     def get(self, request):
         user = self.request.user
@@ -140,34 +114,21 @@ class GetUserReadIssues(APIView):
             result_page = paginator.paginate_queryset(queryset, request)
             data = ReadIssuesSerializerDetailed(result_page, many=True).data
             return paginator.get_paginated_response(data)
-        except ValueError as ve:
+        except BaseException as ve:
             return Response({ 'error': str(ve) }, status=status.HTTP_400_BAD_REQUEST)
 
-### Adds an issue as read.
-class AddUserReadIssue(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = ReadIssuesSerializer
-    http_method_names = ['post']
-
+    ### Adds an issue as read
     def post(self, request):
         user = self.request.user
         request.data['user'] = user.pk
         serializer = ReadIssuesSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'success': 'Read the issue'})
+            return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-### Removes an issue from read.
-class RemoveUserReadIssue(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = ReadIssuesSerializer
-    http_method_names = ['post']
-
-    def post(self, request):
+    def delete(self, request):
         user = self.request.user
         request.data['user'] = user.pk
         try:
@@ -177,26 +138,18 @@ class RemoveUserReadIssue(APIView):
                 instance.delete()
                 return Response({'success': 'Unread the issue'})
             else:
-                return Response({'read_id': [
-                    'This read state does not correspond to the correct user'
-                ]}, status=status.HTTP_401_UNAUTHORIZED)
-        except KeyError:
-            return Response({'read_id': [
-                'This is a required field'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
-            return Response({'issue': [
-                'Cannot unread a comic that has not been read.'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'This read state does not correspond to the correct user'}, status=status.HTTP_401_UNAUTHORIZED)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 ### Removes all read states from the issue
 class CleanUserReadIssues(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ReadIssuesSerializer
-    http_method_names = ['post']
+    http_method_names = ['delete']
 
-    def post(self, request):
+    def delete(self, request):
         user = self.request.user
         request.data['user'] = user.pk
         try:
@@ -206,10 +159,6 @@ class CleanUserReadIssues(APIView):
                     instance.delete()
                 return Response({'success': 'All read states have been removed from this issue.'})
             else:
-                return Response({'issue': [
-                    'That issue has not been read.'
-                ]}, status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            return Response({'issue': [
-                'This is a required field'
-            ]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'That issue has not been read.'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
