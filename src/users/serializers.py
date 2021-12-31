@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from comics.models import Issue
-from users.models import CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, Thought, Comment
+from users.models import CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, Thought, Comment, get_user_image
 import comics.serializers as comics_ser
 import cartoons.serializers as cartoons_ser
 from django.contrib.contenttypes.models import ContentType
@@ -20,10 +20,23 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'password', 'email', 'id']
 
-class UserSerializerNoPassword(serializers.ModelSerializer):
+class UserSerializerDetailed(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField('get_image')
+    date_joined = serializers.SerializerMethodField('get_date_joined')
+    time_joined = serializers.SerializerMethodField('get_time_joined')
+
+    def get_time_joined(self, obj) -> str:
+        return str(obj.date_joined.time())
+
+    def get_date_joined(self, obj) -> str:
+        return str(obj.date_joined.date())
+
+    def get_image(self, obj) -> str:
+        return get_user_image(obj.email)
+
     class Meta:
         model = User
-        fields = ['username', 'id']
+        fields = ['username', 'id', 'image', 'date_joined', 'time_joined']
 
 class ComicSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,7 +44,7 @@ class ComicSubscriptionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ComicSubscriptionSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializerNoPassword(read_only=True)
+    user = UserSerializerDetailed(read_only=True)
     series = comics_ser.SeriesSerializer(read_only=True)
 
     class Meta:
@@ -44,7 +57,7 @@ class ReadIssuesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializerNoPassword(read_only=True)
+    user = UserSerializerDetailed(read_only=True)
     issue = comics_ser.IssueSerializer(read_only=True)
 
     class Meta:
@@ -52,7 +65,7 @@ class ReadIssuesSerializerDetailed(serializers.ModelSerializer):
         fields = '__all__'
 
 class CartoonSubscriptionSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializerNoPassword(read_only=True)
+    user = UserSerializerDetailed(read_only=True)
     series = cartoons_ser.SeriesSerializer(read_only=True)
 
     class Meta:
@@ -65,7 +78,7 @@ class CartoonSubscriptionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class WatchedEpisodesSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializerNoPassword(read_only=True)
+    user = UserSerializerDetailed(read_only=True)
     episode = cartoons_ser.EpisodeSerializer(read_only=True)
 
     class Meta:
@@ -84,7 +97,7 @@ class ContentTypeSerializer(serializers.ModelSerializer):
         lookup_field = 'model'
 
 class ThoughtSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializerNoPassword(read_only=True)
+    user = UserSerializerDetailed(read_only=True)
     thought_type = ContentTypeSerializer(read_only=True)
 
     class Meta:
@@ -93,7 +106,7 @@ class ThoughtSerializerDetailed(serializers.ModelSerializer):
         read_only_fields = ['date_created', 'num_of_likes']
 
 class CommentSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializerNoPassword(read_only=True)
+    user = UserSerializerDetailed(read_only=True)
     thought = ThoughtSerializerDetailed(read_only=True)
 
     class Meta:
@@ -119,14 +132,14 @@ class FollowSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class GetFollowersSerializer(serializers.ModelSerializer):
-    follower = UserSerializerNoPassword(read_only=True)
+    follower = UserSerializerDetailed(read_only=True)
 
     class Meta:
         model = Follow
         fields = ['follower']
 
 class GetFollowingsSerializer(serializers.ModelSerializer):
-    following = UserSerializerNoPassword(read_only=True)
+    following = UserSerializerDetailed(read_only=True)
 
     class Meta:
         model = Follow

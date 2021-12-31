@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 from . import comics_views
 from . import cartoons_views
@@ -8,6 +8,8 @@ app_name = 'users'
 urlpatterns = [
     path('signup/', views.CreateUser.as_view(), name='index'),
     path('login/', CustomAuthToken.as_view(), name='token'),
+    path('users/', views.GetUsersView.as_view(), name='get-users'),
+    path('users/<str:username>/', views.SpecificUserView.as_view(), name='user'),
     path('users/<str:username>/follow/', views.FollowUser.as_view(), name='follow-user'),
     path('users/<str:username>/followers/', views.GetUsersFollowers.as_view(), name='followers-user'),
     path('users/<str:username>/following/', views.GetUsersFollowing.as_view(), name='following-user'),

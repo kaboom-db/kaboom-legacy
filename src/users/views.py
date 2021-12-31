@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from users.models import Comment, Follow, Thought, UserLikedThought
-from users.users_filters import ThoughtFilter
-from .serializers import  CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerNoPassword
+from users.users_filters import ThoughtFilter, UserFilter
+from .serializers import  CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerDetailed
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -28,6 +28,29 @@ class CreateUser(APIView):
         except KeyError as e:
             raise ParseError(detail='You are either missing an email, password or username. Missing: ' + str(e.args))
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GetUsersView(ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializerDetailed
+    http_method_names = ['get']
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = UserFilter
+    queryset = User.objects.all()
+
+class SpecificUserView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializerDetailed
+    http_method_names = ['get']
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            serializer = UserSerializerDetailed(instance=user)
+            return Response(serializer.data)
+        except ObjectDoesNotExist:
+            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 class GetThoughtTypes(ListAPIView):
     authentication_classes = [TokenAuthentication]
