@@ -93,4 +93,10 @@ class EpisodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Episode
         fields = '__all__'
+        read_only_fields = ['date_created', 'series']
+
+class EpisodeSerializerSave(serializers.ModelSerializer):
+    class Meta:
+        model = Episode
+        fields = '__all__'
         read_only_fields = ['date_created']

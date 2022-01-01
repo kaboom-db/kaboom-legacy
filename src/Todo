@@ -4,3 +4,4 @@
 - Change layouts in Django admin
 - Add user contribution endpoints
 - Add rate limits to prevent spamming
+- Prevent user from changing an episodes series

@@ -72,13 +72,15 @@ class Cartoon(models.Model):
         return self.name
 
 class Episode(models.Model):
+    class Meta:
+        unique_together = (('episode_number', 'season_number', 'series'))
+
     episode_number = models.IntegerField()
-    absolute_episode_number = models.IntegerField()
     season_number = models.IntegerField(default=1)
     series = models.ForeignKey(Cartoon, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
-    release_date = models.DateTimeField()
+    release_date = models.DateTimeField(blank=True, null=True)
     screenshot = models.URLField(blank=True)
     date_created = models.DateTimeField(default=timezone.now)
 
