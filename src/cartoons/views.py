@@ -1,3 +1,4 @@
+from functools import partial
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.response import Response
 from .cartoons_filters import CharactersFilter, EpisodesFilter, GenresFilter, NetworksFilter, SeriesFilter, VoiceActorsFilter
@@ -32,12 +33,15 @@ class SeriesView(viewsets.ModelViewSet):
         return paginator.get_paginated_response(data=serializer.data)
 
     def create(self, request):
-        serializer = SeriesSerializer(data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+        if request.data:
+            serializer = SeriesSerializer(data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Request body must not be empty'}, status=status.HTTP_400_BAD_REQUEST)
     
     def retrieve(self, request, pk=None):
         try:
@@ -50,20 +54,67 @@ class SeriesView(viewsets.ModelViewSet):
     def partial_update(self, request, pk=None):
         try:
             series = Cartoon.objects.get(pk=pk)
-            serializer = SeriesSerializer(instance=series, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.update(instance=series, validated_data=serializer.validated_data)
-                return Response(serializer.data)
+            if request.data:
+                serializer = SeriesSerializer(instance=series, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.update(instance=series, validated_data=serializer.validated_data)
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Request body must not be empty'}, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class CharacterView(viewsets.ModelViewSet):
-    queryset = Character.objects.all()
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowGetAuthentication]
     serializer_class = CharacterSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CharactersFilter
+    http_method_names = ['get', 'post', 'patch']
+
+    def list(self, request):
+        queryset = Character.objects.all().order_by('name')
+        queryset = self.filter_queryset(queryset)
+        paginator = pagination.PageNumberPagination()
+        result_page = paginator.paginate_queryset(queryset, request)
+        serializer = CharacterSerializer(instance=result_page, many=True)
+        return paginator.get_paginated_response(data=serializer.data)
+    
+    def create(self, request):
+        if request.data:
+            serializer = CharacterSerializer(data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'Request body must not be empty'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def retrieve(self, request, pk=None):
+        try:
+            character = Character.objects.get(pk=pk)
+            serializer = CharacterSerializer(instance=character)
+            return Response(serializer.data)
+        except:
+            return Response({'error': 'Cartoon with ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def partial_update(self, request, pk=None):
+        try:
+            character = Character.objects.get(pk=pk)
+            if request.data:
+                serializer = CharacterSerializer(instance=character, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.update(instance=character, validated_data=serializer.validated_data)
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Request body must not be empty'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class EpisodeView(viewsets.ReadOnlyModelViewSet):
     queryset = Episode.objects.all()

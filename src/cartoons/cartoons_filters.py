@@ -13,11 +13,10 @@ class SeriesFilter(filters.FilterSet):
 class CharactersFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
     voice_actor = filters.filters.NumberFilter(field_name='voice_actor')
-    series = filters.filters.NumberFilter(field_name='series')
 
     class Meta:
         model = Character
-        fields = ['name', 'voice_actor', 'series']
+        fields = ['name', 'voice_actor']
 
 class EpisodesFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
