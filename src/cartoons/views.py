@@ -155,6 +155,8 @@ class EpisodeView(viewsets.ModelViewSet):
         try:
             episode = Episode.objects.get(pk=pk)
             if request.data:
+                # over write data
+                request.data['series'] = episode.series.id
                 serializer = EpisodeSerializerSave(instance=episode, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.update(instance=episode, validated_data=serializer.validated_data)
@@ -172,11 +174,55 @@ class GenreView(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = GenresFilter
 
-class NetworkView(viewsets.ReadOnlyModelViewSet):
-    queryset = Network.objects.all()
+class NetworkView(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowGetAuthentication]
     serializer_class = NetworkSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = NetworksFilter
+    http_method_names = ['get', 'post', 'patch']
+
+    def list(self, request):
+        queryset = Network.objects.all().order_by('name')
+        queryset = self.filter_queryset(queryset)
+        paginator = pagination.PageNumberPagination()
+        result_page = paginator.paginate_queryset(queryset, request)
+        serializer = NetworkSerializer(instance=result_page, many=True)
+        return paginator.get_paginated_response(data=serializer.data)
+    
+    def create(self, request):
+        try:
+            serializer = NetworkSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def retrieve(self, request, pk=None):
+        try:
+            network = Network.objects.get(pk=pk)
+            serializer = NetworkSerializer(instance=network)
+            return Response(serializer.data)
+        except:
+            return Response({'error': 'Episode with ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    def partial_update(self, request, pk=None):
+        try:
+            network = Network.objects.get(pk=pk)
+            if request.data:
+                serializer = NetworkSerializer(instance=network, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.update(instance=network, validated_data=serializer.validated_data)
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Request body must not be empty'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class VoiceActorView(viewsets.ReadOnlyModelViewSet):
     queryset = VoiceActor.objects.all()
