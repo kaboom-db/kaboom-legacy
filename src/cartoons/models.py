@@ -4,6 +4,7 @@ from django.db.models.aggregates import Count, Sum
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from datetime import date
+from django.utils import timezone
 from kaboom.utils import util_calculate_age, STATUS_OPTIONS
 
 class VoiceActor(models.Model):
@@ -13,6 +14,7 @@ class VoiceActor(models.Model):
     date_of_death = models.DateField(blank=True, null=True)
     biography = models.TextField(blank=True)
     age = models.IntegerField(blank=True, null=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return self.name
@@ -32,6 +34,7 @@ class Network(models.Model):
     name = models.CharField(max_length=200)
     website = models.URLField(blank=True)
     logo = models.URLField(blank=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return self.name
@@ -47,6 +50,7 @@ class Character(models.Model):
     voice_actor = models.ForeignKey(VoiceActor, on_delete=models.SET_NULL, blank=True, null=True)
     image = models.URLField(blank=True)
     biography = models.TextField(blank=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return self.name
@@ -62,6 +66,7 @@ class Cartoon(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_OPTIONS)
     rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=True, null=True)
     characters = models.ManyToManyField(Character, blank=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return self.name
@@ -75,6 +80,7 @@ class Episode(models.Model):
     summary = models.TextField(blank=True)
     release_date = models.DateTimeField()
     screenshot = models.URLField(blank=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return str(self.series) + " S" + str(self.season_number) + "E" + str(self.episode_number) + ": " + self.name

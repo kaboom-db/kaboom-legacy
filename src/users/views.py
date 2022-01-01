@@ -159,9 +159,7 @@ class LikeThought(APIView):
             ### add one like 
             if instance.user == user:
                 # cant like your own thought
-                return Response({'thought_id': [
-                    'Thought owner cannot like their own thought.'
-                ]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'Thought owner cannot like their own thought.'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 # check if the user has already liked this thought
                 already_existing_obj = UserLikedThought.objects.filter(user=user, thought=instance).first()
