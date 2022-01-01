@@ -169,7 +169,7 @@ class EpisodeView(viewsets.ModelViewSet):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class GenreView(viewsets.ReadOnlyModelViewSet):
-    queryset = Genre.objects.all()
+    queryset = Genre.objects.all().order_by('genre')
     serializer_class = GenreSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = GenresFilter
