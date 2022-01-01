@@ -224,8 +224,52 @@ class NetworkView(viewsets.ModelViewSet):
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class VoiceActorView(viewsets.ReadOnlyModelViewSet):
-    queryset = VoiceActor.objects.all()
+class VoiceActorView(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [AllowGetAuthentication]
     serializer_class = VoiceActorSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = VoiceActorsFilter
+    http_method_names = ['get', 'post', 'patch']
+
+    def list(self, request):
+        queryset = VoiceActor.objects.all().order_by('name')
+        queryset = self.filter_queryset(queryset)
+        paginator = pagination.PageNumberPagination()
+        result_page = paginator.paginate_queryset(queryset, request)
+        serializer = VoiceActorSerializer(instance=result_page, many=True)
+        return paginator.get_paginated_response(data=serializer.data)
+    
+    def create(self, request):
+        try:
+            serializer = VoiceActorSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, pk=None):
+        try:
+            actor = VoiceActor.objects.get(pk=pk)
+            serializer = VoiceActorSerializer(instance=actor)
+            return Response(serializer.data)
+        except:
+            return Response({'error': 'Episode with ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    def partial_update(self, request, pk=None):
+        try:
+            actor = VoiceActor.objects.get(pk=pk)
+            if request.data:
+                serializer = VoiceActorSerializer(instance=actor, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.update(instance=actor, validated_data=serializer.validated_data)
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'Request body must not be empty'}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
