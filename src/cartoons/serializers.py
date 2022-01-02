@@ -20,8 +20,8 @@ class NetworkSerializer(serializers.ModelSerializer):
         read_only_fields = ['date_created']
 
 class CharacterSerializer(serializers.ModelSerializer):
-    voice_actor = VoiceActorSerializer()
-    voice_actor_id = serializers.PrimaryKeyRelatedField(queryset=VoiceActor.objects.all(), write_only=True)
+    voice_actor = VoiceActorSerializer(required=False)
+    voice_actor_id = serializers.PrimaryKeyRelatedField(queryset=VoiceActor.objects.all(), write_only=True, required=False)
 
     class Meta:
         model = Character
@@ -33,6 +33,7 @@ class CharacterSerializer(serializers.ModelSerializer):
         character = Character.objects.create(**validated_data)
         if voice_actor is not None:
             character.voice_actor = voice_actor
+        character.save()
         return character
     
     def update(self, instance, validated_data):
@@ -46,12 +47,12 @@ class CharacterSerializer(serializers.ModelSerializer):
         return instance
 
 class SeriesSerializer(serializers.ModelSerializer):
-    genres = GenreSerializer(many=True)
-    network = NetworkSerializer()
-    characters = CharacterSerializer(many=True)
-    genres_id = serializers.PrimaryKeyRelatedField(queryset=Genre.objects.all(), write_only=True, many=True)
-    characters_id = serializers.PrimaryKeyRelatedField(queryset=Character.objects.all(), write_only=True, many=True)
-    network_id = serializers.PrimaryKeyRelatedField(queryset=Network.objects.all(), write_only=True)
+    genres = GenreSerializer(many=True, required=False)
+    network = NetworkSerializer(required=False)
+    characters = CharacterSerializer(many=True, required=False)
+    genres_id = serializers.PrimaryKeyRelatedField(queryset=Genre.objects.all(), write_only=True, many=True, required=False)
+    characters_id = serializers.PrimaryKeyRelatedField(queryset=Character.objects.all(), write_only=True, many=True, required=False)
+    network_id = serializers.PrimaryKeyRelatedField(queryset=Network.objects.all(), write_only=True, required=False)
 
     class Meta:
         model = Cartoon
@@ -69,6 +70,7 @@ class SeriesSerializer(serializers.ModelSerializer):
             series.characters.add(*characters)
         if network is not None:
             series.network = network
+        series.save()
         return series
 
     def update(self, instance, validated_data):

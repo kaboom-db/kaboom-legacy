@@ -83,7 +83,7 @@ class Issue(models.Model):
     characters = models.ManyToManyField(Character, blank=True)
     staff = models.ManyToManyField(Staff, blank=True)
     format = models.ForeignKey(Format, on_delete=models.SET_NULL, null=True, blank=True)
-    release_date = models.DateField()
+    release_date = models.DateField(blank=True, null=True)
     cover_image = models.URLField(blank=True)
 
     def __str__(self) -> str:

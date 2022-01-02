@@ -1,5 +1,3 @@
-from functools import partial
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.response import Response
 from .cartoons_filters import CharactersFilter, EpisodesFilter, GenresFilter, NetworksFilter, SeriesFilter, VoiceActorsFilter
 from .models import Cartoon, Character, Episode, Genre, Network, VoiceActor
