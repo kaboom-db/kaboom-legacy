@@ -19,6 +19,10 @@ class VoiceActor(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(VoiceActor, self).save(*args, **kwargs)
+
 @receiver(pre_save, sender=VoiceActor)
 def calculate_age(sender, instance=None, created=False, **kwargs):
     today = date.today()
@@ -39,6 +43,10 @@ class Network(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(Network, self).save(*args, **kwargs)
+
 class Genre(models.Model):
     genre = models.CharField(max_length=100, unique=True)
 
@@ -54,6 +62,10 @@ class Character(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(Character, self).save(*args, **kwargs)
 
 class Cartoon(models.Model):
     name = models.CharField(max_length=200)
@@ -71,6 +83,10 @@ class Cartoon(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(Cartoon, self).save(*args, **kwargs)
+
 class Episode(models.Model):
     class Meta:
         unique_together = (('episode_number', 'season_number', 'series'))
@@ -80,9 +96,13 @@ class Episode(models.Model):
     series = models.ForeignKey(Cartoon, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
-    release_date = models.DateTimeField(blank=True, null=True)
+    release_date = models.DateField(blank=True, null=True)
     screenshot = models.URLField(blank=True)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return str(self.series) + " S" + str(self.season_number) + "E" + str(self.episode_number) + ": " + self.name
+
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(Episode, self).save(*args, **kwargs)
