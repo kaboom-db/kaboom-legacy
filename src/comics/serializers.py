@@ -93,15 +93,15 @@ class IssueSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         staff = validated_data.pop('staff_id', None)
         characters = validated_data.pop('characters_id', None)
-        format = validated_data.pop('format_id', None)
+        format_obj = validated_data.pop('format_id', None)
         series = validated_data.pop('series_id')
         issue = Issue.objects.create(series=series, **validated_data)
         if staff is not None:
             issue.staff.add(*staff)
         if characters is not None:
             issue.characters.add(*characters)
-        if format is not None:
-            issue.format = format
+        if format_obj is not None:
+            issue.format = format_obj
         issue.save()
         return issue
 

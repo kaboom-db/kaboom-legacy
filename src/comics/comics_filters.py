@@ -20,17 +20,19 @@ class SeriesFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='series_name', lookup_expr='icontains')
     status = filters.filters.CharFilter(field_name='status', lookup_expr='icontains')
     year = filters.filters.NumberFilter(field_name='year_started')
+    publisher = filters.filters.NumberFilter(field_name='publisher')
 
     class Meta:
         model = Comic
-        fields = ['series_name', 'year_started', 'status']
+        fields = ['series_name', 'year_started', 'status', 'publisher']
 
 class IssuesFilter(filters.FilterSet):
     series = filters.filters.NumberFilter(field_name='series')
+    issue_number_absolute = filters.filters.NumberFilter(field_name='issue_number_absolute')
 
     class Meta:
         model = Issue
-        fields = ['series']
+        fields = ['series', 'issue_number_absolute']
 
 class PublishersFilters(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
