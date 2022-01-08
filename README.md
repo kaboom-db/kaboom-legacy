@@ -6,5 +6,3 @@ The best way to explain what Kaboom is meant to be is the 'Trakt of comics and c
 
 ## Should I use Kaboom?
 No. Especially in the current state it's in, not all endpoints have been tested. Currently Kaboom is just an experimental hobby project, we'll see where it goes from there.
-
-1
