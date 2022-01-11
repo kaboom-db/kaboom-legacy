@@ -32,6 +32,7 @@ class SeriesView(viewsets.ModelViewSet):
 
     def create(self, request):
         if request.data:
+            print(request.data)
             serializer = SeriesSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()

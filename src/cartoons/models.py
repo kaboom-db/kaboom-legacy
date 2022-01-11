@@ -9,7 +9,7 @@ from kaboom.utils import util_calculate_age, STATUS_OPTIONS
 
 class VoiceActor(models.Model):
     name = models.CharField(max_length=200)
-    image = models.URLField(blank=True)
+    image = models.ImageField(blank=True)
     date_of_birth = models.DateField(blank=True, null=True)
     date_of_death = models.DateField(blank=True, null=True)
     biography = models.TextField(blank=True)
@@ -37,7 +37,7 @@ def calculate_age(sender, instance=None, created=False, **kwargs):
 class Network(models.Model):
     name = models.CharField(max_length=200)
     website = models.URLField(blank=True)
-    logo = models.URLField(blank=True)
+    logo = models.ImageField(blank=True)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
@@ -56,7 +56,7 @@ class Genre(models.Model):
 class Character(models.Model):
     name = models.CharField(max_length=200)
     voice_actor = models.ForeignKey(VoiceActor, on_delete=models.SET_NULL, blank=True, null=True)
-    image = models.URLField(blank=True)
+    image = models.ImageField(blank=True)
     biography = models.TextField(blank=True)
     date_created = models.DateTimeField(default=timezone.now)
 
@@ -73,8 +73,8 @@ class Cartoon(models.Model):
     genres = models.ManyToManyField(Genre, blank=True)
     summary = models.TextField(blank=True)
     season_count = models.IntegerField(default=1)
-    cover_image = models.URLField(blank=True)
-    background_image = models.URLField(blank=True)
+    cover_image = models.ImageField(blank=True)
+    background_image = models.ImageField(blank=True)
     status = models.CharField(max_length=50, choices=STATUS_OPTIONS)
     rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=True, null=True)
     characters = models.ManyToManyField(Character, blank=True)
@@ -97,7 +97,7 @@ class Episode(models.Model):
     name = models.CharField(max_length=200)
     summary = models.TextField(blank=True)
     release_date = models.DateField(blank=True, null=True)
-    screenshot = models.URLField(blank=True)
+    screenshot = models.ImageField(blank=True)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:

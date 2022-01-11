@@ -129,8 +129,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_ROOT = str(BASE_DIR / "static")
-
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = str(BASE_DIR / 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -153,3 +154,13 @@ REST_FRAMEWORK = {
         'user': '60/minute'
     }
 }
+
+AWS_ACCESS_KEY_ID = db_secrets.AWS_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY = db_secrets.AWS_SECRET_ACCESS_KEY
+AWS_STORAGE_BUCKET_NAME = db_secrets.AWS_BUCKET_NAME
+AWS_S3_SIGNATURE_VERSION = db_secrets.AWS_S3_SIGNATURE_VERSION
+AWS_S3_REGION_NAME = db_secrets.AWS_S3_REGION_NAME
+AWS_S3_FILE_OVERWRITE = db_secrets.AWS_S3_FILE_OVERWRITE
+AWS_DEFAULT_ACL = db_secrets.AWS_DEFAULT_ACL
+AWS_S3_VERIFY = db_secrets.AWS_S3_VERIFY
+DEFAULT_FILE_STORAGE = db_secrets.DEFAULT_FILE_STORAGE
