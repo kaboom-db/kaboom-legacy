@@ -1,9 +1,9 @@
 from django.contrib.auth.models import User
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView, CreateAPIView
 from rest_framework.views import APIView
 from users.models import Comment, Follow, Thought, UserLikedThought
 from users.users_filters import ThoughtFilter, UserFilter
-from .serializers import  CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerDetailed
+from .serializers import ImageRequestSerializer, CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerDetailed
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -349,6 +349,7 @@ class SpecificCommentView(APIView):
             thought = Thought.objects.get(id=thought_id)
             if comment.user == user:
                 if comment.thought == thought:
+                    print(request.data)
                     request.data['thought'] = comment.thought.id
                     request.data['date_created'] = comment.date_created
                     request.data['user'] = comment.user.id
@@ -362,5 +363,25 @@ class SpecificCommentView(APIView):
                     return Response({'error': 'Comment ID does not have relation with Thought ID'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({'error': 'Comment does not belong to user'}, status=status.HTTP_401_UNAUTHORIZED)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class ImageRequestView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ImageRequestSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        try: 
+            data = request.data.copy()
+            data['user'] = user.id
+            serializer = ImageRequestSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save();
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

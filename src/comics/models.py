@@ -16,7 +16,7 @@ class StaffPositions(models.Model):
 
 class Publisher(models.Model):
     name = models.CharField(max_length=200)
-    logo = models.URLField(blank=True)
+    logo = models.URLField(blank=True, max_length=500)
     website = models.URLField(null=True, blank=True)
     date_created = models.DateTimeField(default=timezone.now)
 
@@ -30,7 +30,7 @@ class Publisher(models.Model):
 class Staff(models.Model):
     name = models.CharField(max_length=200)
     position = models.ForeignKey(StaffPositions, on_delete=models.SET_NULL, blank=True, null=True)
-    image = models.URLField(blank=True)
+    image = models.URLField(blank=True, max_length=500)
     date_of_birth = models.DateField(blank=True, null=True)
     date_of_death = models.DateField(blank=True, null=True)
     age = models.IntegerField(blank=True, null=True)
@@ -58,7 +58,7 @@ def calculate_age(sender, instance=None, created=False, **kwargs):
 class Character(models.Model):
     name = models.CharField(max_length=200)
     alias = models.CharField(max_length=200, null=True, blank=True)
-    image = models.URLField(blank=True)
+    image = models.URLField(blank=True, max_length=500)
     biography = models.TextField(blank=True)
     date_created = models.DateTimeField(default=timezone.now)
 
@@ -75,8 +75,8 @@ class Comic(models.Model):
     summary = models.TextField(blank=True)
     year_started = models.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
     status = models.CharField(max_length=50, choices=STATUS_OPTIONS)
-    cover_image = models.URLField(blank=True)
-    background_image = models.URLField(blank=True)
+    cover_image = models.URLField(blank=True, max_length=500)
+    background_image = models.URLField(blank=True, max_length=500)
     rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=True, null=True)
     date_created = models.DateTimeField(default=timezone.now)
 
@@ -105,7 +105,7 @@ class Issue(models.Model):
     staff = models.ManyToManyField(Staff, blank=True)
     format = models.ForeignKey(Format, on_delete=models.SET_NULL, null=True, blank=True)
     release_date = models.DateField(blank=True, null=True)
-    cover_image = models.URLField(blank=True)
+    cover_image = models.URLField(blank=True, max_length=500)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:

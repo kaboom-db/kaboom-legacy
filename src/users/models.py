@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models import Q
+from kaboom.utils import IMG_REQUEST_FIELDS, IMG_REQUEST_OPTIONS, IMG_REQUEST_STATUS
 
 ### When a new user is created, add a token for their account.
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -142,3 +143,14 @@ def delete_num_of_likes(sender, instance=None, **kwargs):
     thought = Thought.objects.get(id=instance.thought.id)
     thought.num_of_likes = num_of_likes
     thought.save()
+
+class ImageRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField()
+    object_type = models.CharField(max_length=50, choices=IMG_REQUEST_OPTIONS)
+    request_field = models.CharField(max_length=50, choices=IMG_REQUEST_FIELDS)
+    object_id = models.PositiveIntegerField()
+    status = models.CharField(max_length=50, choices=IMG_REQUEST_STATUS, default="NONE")
+
+    def __str__(self):
+        return "Image Request: " + self.user.username + " | " + self.object_type

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from comics.models import Issue
-from users.models import CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, Thought, Comment, get_user_image
+from users.models import ImageRequest, CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, Thought, Comment, get_user_image
 import comics.serializers as comics_ser
 import cartoons.serializers as cartoons_ser
 from django.contrib.contenttypes.models import ContentType
@@ -144,3 +144,8 @@ class GetFollowingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = ['following']
+
+class ImageRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImageRequest
+        fields = '__all__'
