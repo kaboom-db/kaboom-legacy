@@ -15,7 +15,7 @@ class StaffPositions(models.Model):
 
 class Publisher(models.Model):
     name = models.CharField(max_length=200)
-    logo = models.ImageField(blank=True)
+    logo = models.URLField(blank=True)
     website = models.URLField(null=True, blank=True)
 
     def __str__(self) -> str:
@@ -24,7 +24,7 @@ class Publisher(models.Model):
 class Staff(models.Model):
     name = models.CharField(max_length=200)
     position = models.ForeignKey(StaffPositions, on_delete=models.SET_NULL, blank=True, null=True)
-    image = models.ImageField(blank=True)
+    image = models.URLField(blank=True)
     date_of_birth = models.DateField(blank=True, null=True)
     date_of_death = models.DateField(blank=True, null=True)
     age = models.IntegerField(blank=True, null=True)
@@ -47,7 +47,7 @@ def calculate_age(sender, instance=None, created=False, **kwargs):
 class Character(models.Model):
     name = models.CharField(max_length=200)
     alias = models.CharField(max_length=200, null=True, blank=True)
-    image = models.ImageField(blank=True)
+    image = models.URLField(blank=True)
     biography = models.TextField(blank=True)
 
     def __str__(self) -> str:
@@ -59,8 +59,8 @@ class Comic(models.Model):
     summary = models.TextField(blank=True)
     year_started = models.IntegerField(validators=[MinValueValidator(1000), MaxValueValidator(9999)])
     status = models.CharField(max_length=50, choices=STATUS_OPTIONS)
-    cover_image = models.ImageField(blank=True)
-    background_image = models.ImageField(blank=True)
+    cover_image = models.URLField(blank=True)
+    background_image = models.URLField(blank=True)
     rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=True, null=True)
 
     def __str__(self) -> str:
@@ -84,7 +84,7 @@ class Issue(models.Model):
     staff = models.ManyToManyField(Staff, blank=True)
     format = models.ForeignKey(Format, on_delete=models.SET_NULL, null=True, blank=True)
     release_date = models.DateField(blank=True, null=True)
-    cover_image = models.ImageField(blank=True)
+    cover_image = models.URLField(blank=True)
 
     def __str__(self) -> str:
         return str(self.series) + ' #' + str(self.issue_number)

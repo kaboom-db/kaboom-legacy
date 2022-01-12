@@ -11,13 +11,13 @@ class VoiceActorSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoiceActor
         fields = '__all__'
-        read_only_fields = ['date_created']
+        read_only_fields = ['date_created', 'image']
 
 class NetworkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Network
         fields = '__all__'
-        read_only_fields = ['date_created']
+        read_only_fields = ['date_created', 'logo']
 
 class CharacterSerializer(serializers.ModelSerializer):
     voice_actor = VoiceActorSerializer(required=False)
@@ -26,7 +26,7 @@ class CharacterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
         fields = '__all__'
-        read_only_fields = ['date_created', 'voice_actor']
+        read_only_fields = ['date_created', 'voice_actor', 'image']
     
     def create(self, validated_data):
         voice_actor = validated_data.pop('voice_actor_id', None)
@@ -57,7 +57,7 @@ class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cartoon
         fields = '__all__'
-        read_only_fields = ['rating', 'date_created', 'genres', 'characters', 'network']
+        read_only_fields = ['rating', 'date_created', 'genres', 'characters', 'network', 'cover_image', 'background_image']
     
     def create(self, validated_data):
         genres = validated_data.pop('genres_id', None)
@@ -95,10 +95,10 @@ class EpisodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Episode
         fields = '__all__'
-        read_only_fields = ['date_created', 'series']
+        read_only_fields = ['date_created', 'series', 'screenshot']
 
 class EpisodeSerializerSave(serializers.ModelSerializer):
     class Meta:
         model = Episode
         fields = '__all__'
-        read_only_fields = ['date_created']
+        read_only_fields = ['date_created', 'screenshot']
