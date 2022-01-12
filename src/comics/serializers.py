@@ -6,13 +6,13 @@ class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publisher
         fields = '__all__'
-        read_only_fields = ['logo']
+        read_only_fields = ['logo', 'date_created']
 
 class CharacterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Character
         fields = '__all__'
-        read_only_fields = ['image']
+        read_only_fields = ['image', 'date_created']
 
 class StaffPositionsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,7 +26,7 @@ class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
         fields = '__all__'
-        read_only_fields = ['position', 'image']
+        read_only_fields = ['position', 'image', 'date_created']
     
     def create(self, validated_data):
         position = validated_data.pop('position_id', None)
@@ -53,7 +53,7 @@ class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comic
         fields = '__all__'
-        read_only_fields = ['rating', 'publisher', 'cover_image', 'background_image']
+        read_only_fields = ['rating', 'publisher', 'cover_image', 'background_image', 'date_created']
 
     def create(self, validated_data):
         publisher = validated_data.pop('publisher_id', None)
@@ -91,7 +91,7 @@ class IssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
         fields = '__all__'
-        read_only_fields = ['cover_image']
+        read_only_fields = ['cover_image', 'date_created']
 
     def create(self, validated_data):
         staff = validated_data.pop('staff_id', None)

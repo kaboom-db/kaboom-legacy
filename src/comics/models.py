@@ -4,6 +4,7 @@ from django.template.defaultfilters import slugify
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from datetime import date
+from django.utils import timezone
 from kaboom.utils import util_calculate_age, STATUS_OPTIONS
 
 # Create your models here.
@@ -17,9 +18,14 @@ class Publisher(models.Model):
     name = models.CharField(max_length=200)
     logo = models.URLField(blank=True)
     website = models.URLField(null=True, blank=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return self.name
+
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(Publisher, self).save(*args, **kwargs)
 
 class Staff(models.Model):
     name = models.CharField(max_length=200)
@@ -29,9 +35,14 @@ class Staff(models.Model):
     date_of_death = models.DateField(blank=True, null=True)
     age = models.IntegerField(blank=True, null=True)
     biography = models.TextField(blank=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return self.name
+
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(Staff, self).save(*args, **kwargs)
 
 @receiver(pre_save, sender=Staff)
 def calculate_age(sender, instance=None, created=False, **kwargs):
@@ -49,9 +60,14 @@ class Character(models.Model):
     alias = models.CharField(max_length=200, null=True, blank=True)
     image = models.URLField(blank=True)
     biography = models.TextField(blank=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return self.name
+
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(Character, self).save(*args, **kwargs)
 
 class Comic(models.Model):
     series_name = models.CharField(max_length=200)
@@ -62,9 +78,14 @@ class Comic(models.Model):
     cover_image = models.URLField(blank=True)
     background_image = models.URLField(blank=True)
     rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=True, null=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return self.series_name
+
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(Comic, self).save(*args, **kwargs)
 
 class Format(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -85,6 +106,11 @@ class Issue(models.Model):
     format = models.ForeignKey(Format, on_delete=models.SET_NULL, null=True, blank=True)
     release_date = models.DateField(blank=True, null=True)
     cover_image = models.URLField(blank=True)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return str(self.series) + ' #' + str(self.issue_number)
+
+    def save(self, *args, **kwargs) -> None:
+        self.date_created = timezone.now()
+        super(Issue, self).save(*args, **kwargs)
