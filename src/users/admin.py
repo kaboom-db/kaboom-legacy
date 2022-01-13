@@ -19,6 +19,11 @@ admin.site.register(models.UserLikedThought)
 class ImageRequestAdmin(admin.ModelAdmin):
     change_form_template = "users/image_request.html"
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return self.readonly_fields + ('user', 'image', 'object_type', 'request_field', 'object_id', 'status')
+        return self.readonly_fields
+
     def response_change(self, request, obj):
         if '_approve' in request.POST:
             if obj.status == 'NONE':
