@@ -79,7 +79,17 @@ class ImageRequestAdmin(admin.ModelAdmin):
                     self.message_user(request, 'Could not accept request. See error: ' + str(e), messages.ERROR)
                     return HttpResponseRedirect('.')
             else:
-                self.message_user(request, 'Request has already been accepted.', messages.ERROR)
+                self.message_user(request, 'Request has already been ' + obj.status.lower(), messages.ERROR)
                 return HttpResponseRedirect('.')
-
+        elif '_reject' in request.POST:
+            if obj.status == "NONE":
+                # Reject the request
+                # Delete the file
+                obj.image.delete()
+                obj.status = 'REJECTED'
+                obj.save()
+                self.message_user(request, 'This request has now been rejected')
+            else:
+                self.message_user(request, 'Request has already been ' + obj.status.lower(), messages.ERROR)
+                return HttpResponseRedirect('.')
         return super().response_change(request, obj)

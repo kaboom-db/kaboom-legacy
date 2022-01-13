@@ -1,8 +1,15 @@
 {% extends 'admin/change_form.html' %}
 
-{% block submit_buttons_bottom %}
+{% block after_related_objects %}
     {{ block.super }}
+    <style>
+        .deletelink {
+            background-color: red;
+        }
+    </style>
+
     <div class="submit-row">
             <input type="submit" value="Approve" name="_approve">
+            <p class="deletelink-box"><input type="submit" value="Reject" name="_reject" class="deletelink"></p>
     </div>
 {% endblock %}

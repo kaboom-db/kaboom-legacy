@@ -146,7 +146,7 @@ def delete_num_of_likes(sender, instance=None, **kwargs):
 
 class ImageRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField()
+    image = models.ImageField(blank=True)
     object_type = models.CharField(max_length=50, choices=IMG_REQUEST_OPTIONS)
     request_field = models.CharField(max_length=50, choices=IMG_REQUEST_FIELDS)
     object_id = models.PositiveIntegerField()

@@ -377,11 +377,15 @@ class ImageRequestView(APIView):
         try: 
             data = request.data.copy()
             data['user'] = user.id
-            serializer = ImageRequestSerializer(data=data)
-            if serializer.is_valid():
-                serializer.save();
-                return Response(serializer.data)
+            if data.get('image', ''):
+                print('image supplied')
+                serializer = ImageRequestSerializer(data=data)
+                if serializer.is_valid():
+                    serializer.save();
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                raise BaseException('No image provided')
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
