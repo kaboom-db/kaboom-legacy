@@ -13,7 +13,6 @@ admin.site.register(models.Thought)
 admin.site.register(models.Comment)
 admin.site.register(models.Follow)
 admin.site.register(models.UserLikedThought)
-#admin.site.register(models.ImageRequest)
 
 @admin.register(models.ImageRequest)
 class ImageRequestAdmin(admin.ModelAdmin):
