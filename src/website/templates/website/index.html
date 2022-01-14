@@ -33,7 +33,7 @@
     </div>
     <div class="container">
         <div class="row">
-            <div class="col">
+            <div class="col-sm-6">
                 <div class="card" style="width: auto;">
                     <div class="cst-container">
                         <h1>📚 {{num_of_comics}}</h1>
@@ -45,8 +45,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="card" style="width: auto;">
+            <div class="col-sm-6">
+                <div class="card row-0" style="width: auto;">
                     <div class="cst-container">
                         <h1>🐉 {{num_of_cartoons}}</h1>
                     </div>
@@ -59,10 +59,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-sm-6">
                 <div class="card row-1" style="width: auto;">
                     <div class="cst-container">
-                        <h1>👤 {{num_of_users}}</h1>
+                        <h1>😃 {{num_of_users}}</h1>
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">Users</h5>
@@ -71,7 +71,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col">
+            <div class="col-sm-6">
                 <div class="card row-1" style="width: auto;">
                     <div class="cst-container">
                         <h1>🤔 {{num_of_thoughts}}</h1>
@@ -89,7 +89,15 @@
         <h3 id="features-list">Features</h3>
         <br>
         <div class="row">
-            <div class="col">
+            <div class="col-sm-4">
+                <h6>Accounts</h6>
+                <ul>
+                    <li>User following</li>
+                    <li>Comics and cartoons tracking</li>
+                    <li>Write your own thoughts</li>
+                </ul>
+            </div>
+            <div class="col-sm-4">
                 <h6>Comics</h6>
                 <ul>
                     <li>Comic series</li>
@@ -99,7 +107,7 @@
                     <li>Staff</li>
                 </ul>
             </div>
-            <div class="col">
+            <div class="col-sm-4">
                 <h6>Cartoons</h6>
                 <ul>
                     <li>Cartoon series</li>
@@ -109,20 +117,20 @@
                     <li>Actors</li>
                 </ul>
             </div>
-            <div class="col">
-                <h6>Accounts</h6>
-                <ul>
-                    <li>User following</li>
-                    <li>Comics and cartoons tracking</li>
-                    <li>Write your own thoughts</li>
-                </ul>
-            </div>
         </div>
     </div>
     <div class="clients section container">
         <h3 id="clients-list">Clients</h3>
         <p>There are no clients yet, check back soon!</p>
         <p>Want to make your own client? Check out the <a href="/docs">docs</a>!</p>
+        <code>Note for developers: Make sure to read the <a href="#">rules and guidlines</a> before making a client</code>
+    </div>
+    <div class="footer container-fluid">
+        <div class="container">
+            <p>2022 @ Kaboom</p>
+            <p><a href="" class="">Developer Guidlines</a></p>
+            <p><a href="" class="">Rules and Guidlines</a></p>
+        </div>
     </div>
 </body>
 

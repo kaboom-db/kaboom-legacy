@@ -16,6 +16,10 @@
     padding: 25px;
 }
 
+.clients {
+    padding-bottom: 35px;
+}
+
 .row-1 {
     display: flex;
     flex-direction: row;
@@ -40,4 +44,42 @@
 
 .row-1 {
     margin-top: 20px;
+}
+
+@media screen and (max-width: 600px) {
+    .row-0 {
+        margin-top: 20px;
+    }
+}
+
+.footer {
+    background-color: rgb(32, 32, 32);
+    height: 20vh;
+    padding: 15px;
+    color: white;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: row;
+}
+
+a, a:hover {
+    color: rgb(255,95,109) !important;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background-color: rgb(255,95,109) !important;
+    border-color: rgb(255,95,109) !important;
+    color: white !important;
+}
+
+::-moz-selection {
+    color: rgb(255,95,109);
+    background-color: rgba(255,195,113,1);
+}
+
+::selection {
+    color: rgb(255,95,109);
+    background-color: rgba(255,195,113,1);
 }
