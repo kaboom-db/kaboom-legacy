@@ -52,18 +52,6 @@
     }
 }
 
-.footer {
-    background-color: rgb(32, 32, 32);
-    height: 20vh;
-    padding: 15px;
-    color: white;
-}
-
-.footer-links {
-    display: flex;
-    flex-direction: row;
-}
-
 a, a:hover {
     color: rgb(255,95,109) !important;
 }
@@ -82,4 +70,12 @@ a, a:hover {
 ::selection {
     color: rgb(255,95,109);
     background-color: rgba(255,195,113,1);
+}
+
+.border-dark {
+    border-color: gray !important;
+}
+
+.footer {
+    background-color: rgb(19, 19, 19) !important;
 }
