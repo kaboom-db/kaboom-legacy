@@ -9,7 +9,9 @@ class CartoonAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None): 
         if obj:
             if not request.user.is_superuser:
-                return self.readonly_fields + ('cover_image', 'background_image')
+                return self.readonly_fields + ('cover_image', 'background_image', 'rating')
+            else:
+                return self.readonly_fields + ('rating',)
         return self.readonly_fields
 
 @admin.register(Character)

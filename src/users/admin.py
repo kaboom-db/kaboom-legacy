@@ -9,10 +9,17 @@ admin.site.register(models.ComicSubscription)
 admin.site.register(models.ReadIssue)
 admin.site.register(models.CartoonSubscription)
 admin.site.register(models.WatchedEpisode)
-admin.site.register(models.Thought)
+#admin.site.register(models.Thought)
 admin.site.register(models.Comment)
 admin.site.register(models.Follow)
 admin.site.register(models.UserLikedThought)
+
+@admin.register(models.Thought)
+class ThoughtAdmin(admin.ModelAdmin):
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return self.readonly_fields + ('num_of_likes',)
+        return self.readonly_fields
 
 @admin.register(models.ImageRequest)
 class ImageRequestAdmin(admin.ModelAdmin):
