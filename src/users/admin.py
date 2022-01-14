@@ -17,9 +17,7 @@ admin.site.register(models.UserLikedThought)
 @admin.register(models.Thought)
 class ThoughtAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return self.readonly_fields + ('num_of_likes',)
-        return self.readonly_fields
+        return self.readonly_fields + ('num_of_likes',)
 
 @admin.register(models.ImageRequest)
 class ImageRequestAdmin(admin.ModelAdmin):
