@@ -18,7 +18,6 @@ from django.core.exceptions import ObjectDoesNotExist
 class CreateUser(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        print(request.data)
         try:
             if serializer.is_valid():
                 serializer.save()
