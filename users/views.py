@@ -7,6 +7,7 @@ from .serializers import ImageRequestSerializer, CommentSerializer, ContentTypeS
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from django_filters import rest_framework as filters
 from rest_framework import status
@@ -21,9 +22,11 @@ class CreateUser(APIView):
         try:
             if serializer.is_valid():
                 serializer.save()
+                token = Token.objects.get(user=serializer.data['id'])
                 return Response({
                     'user_id': serializer.data['id'],
-                    'username': serializer.data['username']
+                    'username': serializer.data['username'],
+                    'token': token.key
                 })
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
