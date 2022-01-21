@@ -196,7 +196,7 @@ class IssueView(viewsets.ReadOnlyModelViewSet):
             serializer = IssueSerializer(instance=issue)
             return Response(serializer.data)
         except:
-            return Response({'error': 'Staff with ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Issue with ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
     def partial_update(self, request, pk=None):
         try:
