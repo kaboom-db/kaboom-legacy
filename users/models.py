@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models import Q
-from kaboom.utils import IMG_REQUEST_FIELDS, IMG_REQUEST_OPTIONS, IMG_REQUEST_STATUS
+from kaboom.utils import IMG_REQUEST_FIELDS, IMG_REQUEST_OPTIONS, REQUEST_STATUS
 
 ### When a new user is created, add a token for their account.
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -150,7 +150,17 @@ class ImageRequest(models.Model):
     object_type = models.CharField(max_length=50, choices=IMG_REQUEST_OPTIONS)
     request_field = models.CharField(max_length=50, choices=IMG_REQUEST_FIELDS)
     object_id = models.PositiveIntegerField()
-    status = models.CharField(max_length=50, choices=IMG_REQUEST_STATUS, default="NONE")
+    status = models.CharField(max_length=50, choices=REQUEST_STATUS, default="NONE")
 
     def __str__(self):
         return "Image Request: " + self.user.username + " | " + self.object_type
+
+class Report(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    object_type = models.CharField(max_length=50, choices=IMG_REQUEST_OPTIONS)
+    object_id = models.PositiveIntegerField()
+    status = models.CharField(max_length=50, choices=REQUEST_STATUS, default="NONE")
+    message = models.TextField()
+
+    def __str__(self):
+        return self.user + " | " + self.object_type + " | " + self.object_id

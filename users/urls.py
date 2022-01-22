@@ -9,6 +9,7 @@ urlpatterns = [
     path('signup/', views.CreateUser.as_view(), name='index'),
     path('login/', CustomAuthToken.as_view(), name='token'),
     path('upload/', views.ImageRequestView.as_view(), name='image-request'),
+    path('report/', views.ReportView.as_view(), name='report'),
     path('users/', views.GetUsersView.as_view(), name='get-users'),
     path('users/<str:username>/', views.SpecificUserView.as_view(), name='user'),
     path('users/<str:username>/follow/', views.FollowUser.as_view(), name='follow-user'),

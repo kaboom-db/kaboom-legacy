@@ -25,7 +25,7 @@ IMG_REQUEST_OPTIONS = (
     ("cartoons_Episode", "cartoon_episode")
 )
 
-IMG_REQUEST_STATUS = (
+REQUEST_STATUS = (
     ("NONE", "None"),
     ("ACCEPTED", "Accepted"),
     ("REJECTED", "Rejected")

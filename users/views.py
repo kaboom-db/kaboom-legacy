@@ -3,7 +3,7 @@ from rest_framework.generics import ListAPIView, GenericAPIView, CreateAPIView
 from rest_framework.views import APIView
 from users.models import Comment, Follow, Thought, UserLikedThought
 from users.users_filters import ThoughtFilter, UserFilter
-from .serializers import ImageRequestSerializer, CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerDetailed
+from .serializers import ReportSerializer, ImageRequestSerializer, CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerDetailed
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -379,15 +379,36 @@ class ImageRequestView(APIView):
         try: 
             data = request.data.copy()
             data['user'] = user.id
+            data['status'] = 'NONE'
             if data.get('image', ''):
                 print('image supplied')
                 serializer = ImageRequestSerializer(data=data)
                 if serializer.is_valid():
-                    serializer.save();
+                    serializer.save()
                     return Response(serializer.data)
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
                 raise BaseException('No image provided')
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class ReportView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    serializer_class = ImageRequestSerializer
+    http_method_names = ['post']
+
+    def post(self, request):
+        user = self.request.user
+        try:
+            request.data['user'] = user.id
+            request.data['status'] = 'NONE'
+            serializer = ReportSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
