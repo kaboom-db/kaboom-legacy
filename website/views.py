@@ -18,3 +18,6 @@ def docs(request):
 
 def tocs(request):
     return HttpResponseRedirect('https://github.com/kaboom-db/kaboom-api/blob/master/LICENSE')
+
+def privacy(request):
+    return HttpResponseRedirect('https://github.com/kaboom-db/kaboom-api/blob/master/PRIVACY.md')
