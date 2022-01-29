@@ -40,7 +40,7 @@ class UserSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'id', 'image', 'date_joined', 'time_joined', 'is_admin']
+        fields = ['username', 'id', 'image', 'date_joined', 'time_joined', 'is_staff']
 
 class ComicSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:

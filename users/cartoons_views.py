@@ -27,10 +27,10 @@ class CartoonSubscriptionsView(APIView):
         else:
             user_id = user.pk
         try:
-            queryset = CartoonSubscription.objects.filter(user=user_id)
+            queryset = CartoonSubscription.objects.filter(user=user_id).order_by('rating')
             query = request.query_params.get('query')
             if query:
-                queryset = CartoonSubscription.objects.filter(user=user_id, series__name__icontains=query)
+                queryset = CartoonSubscription.objects.filter(user=user_id, series__name__icontains=query).order_by('rating')
             paginator = pagination.PageNumberPagination()
             result_page = paginator.paginate_queryset(queryset, request)
             data = CartoonSubscriptionSerializerDetailed(result_page, many=True).data
@@ -106,10 +106,10 @@ class UserWatchedEpisodesView(APIView):
         else:
             user_id = user.pk
         try:
-            queryset = WatchedEpisode.objects.filter(user=user_id)
+            queryset = WatchedEpisode.objects.filter(user=user_id).order_by('-watched_at')
             series = request.query_params.get('series')
             if series:
-                queryset = WatchedEpisode.objects.filter(user=user_id, episode__series=series)
+                queryset = WatchedEpisode.objects.filter(user=user_id, episode__series=series).order_by('-watched_at')
             paginator = pagination.PageNumberPagination()
             result_page = paginator.paginate_queryset(queryset, request)
             data = WatchedEpisodesSerializerDetailed(result_page, many=True).data

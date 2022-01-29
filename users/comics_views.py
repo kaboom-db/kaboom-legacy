@@ -26,10 +26,10 @@ class ComicSubscriptionsView(APIView):
         else:
             user_id = user.pk
         try:
-            queryset = ComicSubscription.objects.filter(user=user_id)
+            queryset = ComicSubscription.objects.filter(user=user_id).order_by('rating')
             query = request.query_params.get('query')
             if query:
-                queryset = ComicSubscription.objects.filter(user=user_id, series__series_name__icontains=query)
+                queryset = ComicSubscription.objects.filter(user=user_id, series__series_name__icontains=query).order_by('rating')
             paginator = pagination.PageNumberPagination()
             result_page = paginator.paginate_queryset(queryset, request)
             data = ComicSubscriptionSerializerDetailed(result_page, many=True).data
@@ -106,10 +106,10 @@ class UserReadIssuesView(APIView):
         else:
             user_id = user.pk
         try:
-            queryset = ReadIssue.objects.filter(user=user_id)
+            queryset = ReadIssue.objects.filter(user=user_id).order_by('-read_at')
             series = request.query_params.get('series')
             if series:
-                queryset = ReadIssue.objects.filter(user=user_id, issue__series=series)
+                queryset = ReadIssue.objects.filter(user=user_id, issue__series=series).order_by('-read_at')
             paginator = pagination.PageNumberPagination()
             result_page = paginator.paginate_queryset(queryset, request)
             data = ReadIssuesSerializerDetailed(result_page, many=True).data
