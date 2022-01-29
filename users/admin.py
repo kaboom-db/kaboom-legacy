@@ -11,6 +11,7 @@ admin.site.register(models.CartoonSubscription)
 admin.site.register(models.WatchedEpisode)
 admin.site.register(models.Follow)
 admin.site.register(models.UserLikedThought)
+admin.site.register(models.Report)
 
 @admin.register(models.Thought)
 class ThoughtAdmin(admin.ModelAdmin):

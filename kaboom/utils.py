@@ -25,6 +25,23 @@ IMG_REQUEST_OPTIONS = (
     ("cartoons_Episode", "cartoon_episode")
 )
 
+REPORT_OPTIONS = (
+    ("comics_Publisher", "comic_publisher"),
+    ("comics_Staff", "comic_staff"),
+    ("comics_Character", "comic_character"),
+    ("comics_Comic", "comic_comic"),
+    ("comics_Issue", "comic_issue"),
+    ("cartoons_VoiceActor", "cartoon_voiceactor"),
+    ("cartoons_Network", "cartoon_network"),
+    ("cartoons_Character", "cartoon_character"),
+    ("cartoons_Cartoon", "cartoon_series"),
+    ("cartoons_Episode", "cartoon_episode"),
+    ("users_Thought", "users_thought"),
+    ("users_Comment", "users_comment"),
+    ("users_Comment", "users_comment"),
+    ("auth_User", "auth_user"),
+)
+
 REQUEST_STATUS = (
     ("NONE", "None"),
     ("ACCEPTED", "Accepted"),
