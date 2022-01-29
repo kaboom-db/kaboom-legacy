@@ -15,3 +15,6 @@ def index(request):
 
 def docs(request):
     return HttpResponseRedirect('https://kaboom.readthedocs.io/en/latest/')
+
+def tocs(request):
+    return HttpResponseRedirect('https://github.com/kaboom-db/kaboom-api/blob/master/LICENSE')
