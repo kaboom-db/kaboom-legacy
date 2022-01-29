@@ -31,6 +31,8 @@ class CreateUser(APIView):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except KeyError as e:
             return Response({'error': 'You are either missing an email, password or username. Missing: ' + str(e.args)}, status=status.HTTP_400_BAD_REQUEST)
+        except BaseException as be:
+            return Response({'error': str(be)}, status=status.HTTP_400_BAD_REQUEST)
 
 class GetUsersView(ListAPIView):
     authentication_classes = [TokenAuthentication]
