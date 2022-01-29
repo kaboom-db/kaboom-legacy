@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from . import db_secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,12 +83,8 @@ WSGI_APPLICATION = 'kaboom.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': db_secrets.DB_NAME,
-        'USER': db_secrets.DB_USER,
-        'PASSWORD': db_secrets.DB_PASS,
-        'HOST': db_secrets.DB_HOST,
-        'PORT': db_secrets.DB_PORT
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -155,13 +150,3 @@ REST_FRAMEWORK = {
         'user': '60/minute'
     }
 }
-
-AWS_ACCESS_KEY_ID = db_secrets.AWS_ACCESS_KEY
-AWS_SECRET_ACCESS_KEY = db_secrets.AWS_SECRET_ACCESS_KEY
-AWS_STORAGE_BUCKET_NAME = db_secrets.AWS_BUCKET_NAME
-AWS_S3_SIGNATURE_VERSION = db_secrets.AWS_S3_SIGNATURE_VERSION
-AWS_S3_REGION_NAME = db_secrets.AWS_S3_REGION_NAME
-AWS_S3_FILE_OVERWRITE = db_secrets.AWS_S3_FILE_OVERWRITE
-AWS_DEFAULT_ACL = db_secrets.AWS_DEFAULT_ACL
-AWS_S3_VERIFY = db_secrets.AWS_S3_VERIFY
-DEFAULT_FILE_STORAGE = db_secrets.DEFAULT_FILE_STORAGE
