@@ -35,7 +35,7 @@ Currently, the Kaboom website does not implement or use cookies.
 
 We may need to periodically update this Privacy Policy, so you are advised to review this periodically in case of any major changes.
 
-This current iteration was published on January 29, 2022 and is effective immediately.
+This current iteration was published on January 29th, 2022 and is effective immediately.
 
 ## Contact
 
