@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from . import db_secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,14 +23,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-r)bhqr+crl4b#^s-=@g!t6cfm8s79-w(m5n44)y#c^fvnaee03'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'comics.apps.ComicsConfig',
     'cartoons.apps.CartoonsConfig',
     'users.apps.UsersConfig',
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -84,12 +85,8 @@ WSGI_APPLICATION = 'kaboom.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': db_secrets.DB_NAME,
-        'USER': db_secrets.DB_USER,
-        'PASSWORD': db_secrets.DB_PASS,
-        'HOST': db_secrets.DB_HOST,
-        'PORT': db_secrets.DB_PORT
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -133,6 +130,7 @@ STATIC_ROOT = str(BASE_DIR / "static")
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR / 'media')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -155,13 +153,3 @@ REST_FRAMEWORK = {
         'user': '60/minute'
     }
 }
-
-AWS_ACCESS_KEY_ID = db_secrets.AWS_ACCESS_KEY
-AWS_SECRET_ACCESS_KEY = db_secrets.AWS_SECRET_ACCESS_KEY
-AWS_STORAGE_BUCKET_NAME = db_secrets.AWS_BUCKET_NAME
-AWS_S3_SIGNATURE_VERSION = db_secrets.AWS_S3_SIGNATURE_VERSION
-AWS_S3_REGION_NAME = db_secrets.AWS_S3_REGION_NAME
-AWS_S3_FILE_OVERWRITE = db_secrets.AWS_S3_FILE_OVERWRITE
-AWS_DEFAULT_ACL = db_secrets.AWS_DEFAULT_ACL
-AWS_S3_VERIFY = db_secrets.AWS_S3_VERIFY
-DEFAULT_FILE_STORAGE = db_secrets.DEFAULT_FILE_STORAGE
