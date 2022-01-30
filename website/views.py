@@ -21,3 +21,6 @@ def tocs(request):
 
 def privacy(request):
     return HttpResponseRedirect('https://github.com/kaboom-db/kaboom-api/blob/master/PRIVACY.md')
+
+def dev_guides(request):
+    return HttpResponseRedirect('https://github.com/kaboom-db/kaboom-api/blob/master/DEV_GUIDELINES.md')
