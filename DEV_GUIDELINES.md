@@ -8,3 +8,7 @@ Before creating your client, you must read through these simple rules and guidel
 For ease, there is a pre-made [Postman collection]() available for use that utilises the staging server and a demo accesstoken.
 
 This document was published on Sunday 30th, 2022.
+
+## Client Guidelines
+
+If you are a client developer you must credit Kaboom. For GUI applications, please include the Kaboom logo in the about section of your application. You can find high quality logos in the [brand assets](https://github.com/kaboom-db/kaboom-api/tree/master/brand%20assets) folder. If it's a TUI/CLI application, include something like `Developed with Kaboom` as part as the help or about command.
