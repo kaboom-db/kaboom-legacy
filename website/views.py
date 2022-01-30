@@ -24,3 +24,6 @@ def privacy(request):
 
 def dev_guides(request):
     return HttpResponseRedirect('https://github.com/kaboom-db/kaboom-api/blob/master/DEV_GUIDELINES.md')
+
+def v1(request):
+    return render(request, 'website/v1.html')
