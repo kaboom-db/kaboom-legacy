@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from datetime import date
 from django.utils import timezone
 from kaboom.utils import util_calculate_age, STATUS_OPTIONS
+from cartoons.models import Character
 
 # Create your models here.
 class StaffPositions(models.Model):
@@ -54,20 +55,6 @@ def calculate_age(sender, instance=None, created=False, **kwargs):
             instance.age = util_calculate_age(instance.date_of_birth, today)
     else:
         instance.age = None
-
-class Character(models.Model):
-    name = models.CharField(max_length=200)
-    alias = models.CharField(max_length=200, null=True, blank=True)
-    image = models.URLField(blank=True, max_length=500)
-    biography = models.TextField(blank=True)
-    date_created = models.DateTimeField(default=timezone.now)
-
-    def __str__(self) -> str:
-        return self.name
-
-    def save(self, *args, **kwargs) -> None:
-        self.date_created = timezone.now()
-        super(Character, self).save(*args, **kwargs)
 
 class Comic(models.Model):
     series_name = models.CharField(max_length=200)

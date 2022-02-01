@@ -59,56 +59,6 @@ class PublisherView(viewsets.ModelViewSet):
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class CharacterView(viewsets.ModelViewSet):
-    serializer_class = CharacterSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [AllowGetAuthentication]
-    http_method_names = ['get', 'post', 'patch']
-
-    def list(self, request):
-        queryset = Character.objects.all().order_by('name')
-        query = self.request.query_params.get('query')
-        if query:
-            queryset = Character.objects.filter(Q(name__icontains=query) | Q(alias__icontains=query)).order_by('name')
-        paginator = pagination.PageNumberPagination()
-        result_page = paginator.paginate_queryset(queryset, request)
-        serializer = CharacterSerializer(instance=result_page, many=True)
-        return paginator.get_paginated_response(data=serializer.data)
-
-    def create(self, request):
-        if request.data:
-            serializer = CharacterSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            return Response({'error': 'Request body must not be empty'}, status=status.HTTP_400_BAD_REQUEST)
-
-    def retrieve(self, request, pk=None):
-        try:
-            character = Character.objects.get(pk=pk)
-            serializer = CharacterSerializer(instance=character)
-            return Response(serializer.data)
-        except:
-            return Response({'error': 'Character with ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
-
-    def partial_update(self, request, pk=None):
-        try:
-            character = Character.objects.get(pk=pk)
-            if request.data:
-                serializer = CharacterSerializer(instance=character, data=request.data, partial=True)
-                if serializer.is_valid():
-                    serializer.update(instance=character, validated_data=serializer.validated_data)
-                    return Response(serializer.data)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response({'error': 'Request body must not be empty'}, status=status.HTTP_400_BAD_REQUEST)
-        except BaseException as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 class StaffView(viewsets.ReadOnlyModelViewSet):
     serializer_class = StaffSerializer
     filter_backends = (filters.DjangoFilterBackend,)

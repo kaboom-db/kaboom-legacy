@@ -15,7 +15,6 @@ IMG_REQUEST_FIELDS = (
 IMG_REQUEST_OPTIONS = (
     ("comics_Publisher", "comic_publisher"),
     ("comics_Staff", "comic_staff"),
-    ("comics_Character", "comic_character"),
     ("comics_Comic", "comic_comic"),
     ("comics_Issue", "comic_issue"),
     ("cartoons_VoiceActor", "cartoon_voiceactor"),
@@ -28,7 +27,6 @@ IMG_REQUEST_OPTIONS = (
 REPORT_OPTIONS = (
     ("comics_Publisher", "comic_publisher"),
     ("comics_Staff", "comic_staff"),
-    ("comics_Character", "comic_character"),
     ("comics_Comic", "comic_comic"),
     ("comics_Issue", "comic_issue"),
     ("cartoons_VoiceActor", "cartoon_voiceactor"),

@@ -1,18 +1,13 @@
 from comics.comics_filters import SeriesFilter
 from .models import Comic, Format, Issue, Character, Staff, Publisher, StaffPositions
 from rest_framework import serializers
+from cartoons.serializers import CharacterSerializer
 
 class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publisher
         fields = '__all__'
         read_only_fields = ['logo', 'date_created']
-
-class CharacterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Character
-        fields = '__all__'
-        read_only_fields = ['image', 'date_created']
 
 class StaffPositionsSerializer(serializers.ModelSerializer):
     class Meta:
