@@ -31,6 +31,9 @@ def dev_guides(request):
 def v1(request):
     return render(request, 'website/v1.html')
 
+def profile(request):
+    return render(request, 'website/profile.html')
+
 class SignUpView(generic.CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy('login')

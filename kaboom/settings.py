@@ -78,7 +78,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kaboom.wsgi.application'
 
-LOGIN_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'index'
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
