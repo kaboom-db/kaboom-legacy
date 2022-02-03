@@ -7,5 +7,6 @@ urlpatterns = [
     path('docs/', views.docs, name='docs'),
     path('tocs/', views.tocs, name='tocs'),
     path('privacy/', views.privacy, name='privacy'),
+    path('signup/', views.SignUpView.as_view(), name='signup'),
     path('dev-guides/', views.dev_guides, name='dev-guides')
 ]

@@ -78,6 +78,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kaboom.wsgi.application'
 
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'index'
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = str(BASE_DIR / "sent_emails")
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -129,7 +134,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
-STATIC_ROOT = str(BASE_DIR / "static")
+# STATIC_ROOT = str(BASE_DIR / "static")
+STATICFILES_DIRS = (str(BASE_DIR / "static"),)
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR / 'media')

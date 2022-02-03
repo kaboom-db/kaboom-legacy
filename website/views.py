@@ -4,6 +4,9 @@ from comics.models import Comic
 from cartoons.models import Cartoon
 from users.models import Thought
 from django.contrib.auth.models import User
+from .forms import SignUpForm
+from django.urls import reverse_lazy
+from django.views import generic
 
 # Create your views here.
 def index(request):
@@ -27,3 +30,8 @@ def dev_guides(request):
 
 def v1(request):
     return render(request, 'website/v1.html')
+
+class SignUpView(generic.CreateView):
+    form_class = SignUpForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'

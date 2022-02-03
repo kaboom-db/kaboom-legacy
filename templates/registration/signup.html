@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Kaboom - Sign Up{% endblock %}
+
+{% block content %}
+<div class="header">
+    <center>
+        <h2>Sign up</h2>
+    </center>
+</div>
+<div class="section container">
+    <h3>Hi 👋, let's get you started!</h3>
+    <br>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+        <a href="{% url 'index' %}" class="btn btn-primary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

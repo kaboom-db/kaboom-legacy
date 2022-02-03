@@ -140,3 +140,5 @@ cython_debug/
 db_secrets.py
 media/
 .vscode/
+
+sent_emails/
