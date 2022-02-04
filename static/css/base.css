@@ -66,6 +66,8 @@ a, a:hover {
     background-color: rgb(255,95,109) !important;
     border-color: rgb(255,95,109) !important;
     color: white !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
 }
 
 ::-moz-selection {
