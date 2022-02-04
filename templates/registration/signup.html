@@ -16,6 +16,8 @@
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Sign Up</button>
         <a href="{% url 'index' %}" class="btn btn-primary">Cancel</a>
+        <code><a href="{% url 'login' %}">Login instead</a></code>
     </form>
+    <code>By signing up to Kaboom, you accept our <a href="{% url 'tocs' %}">Terms and Conditions</a>.</code>
 </div>
 {% endblock %}

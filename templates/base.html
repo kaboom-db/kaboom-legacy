@@ -22,6 +22,62 @@
         {% block content %}
         {% endblock %}
     </main>
+    <!-- Footer -->
+    <footer class="text-center text-lg-start footer text-muted">
+        <!-- Section: Links  -->
+        <section class="d-flex">
+            <div class="container text-center text-md-start mt-5">
+                <!-- Grid row -->
+                <div class="row mt-3">
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                        <!-- Content -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            💥 KABOOM!
+                        </h6>
+                        <p>
+                            The comic book and cartoons database and tracker.
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+
+                    <!-- Grid column -->
+                    <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                        <!-- Links -->
+                        <h6 class="text-uppercase fw-bold mb-4">
+                            Useful links
+                        </h6>
+                        <p>
+                            <a href="{% url 'tocs' %}">Terms and Conditions</a>
+                        </p>
+                        <p>
+                            <a href="{% url 'privacy' %}">Privacy Policy</a>
+                        </p>
+                        <p>
+                            <a href="{% url 'dev-guides' %}">Developer Guidlines</a>
+                        </p>
+                        <p>
+                            <a href="https://github.com/kaboom-db/kaboom-api">Source</a>
+                        </p>
+                        <p>
+                            <a href="{% url 'docs' %}">Documentation</a>
+                        </p>
+                    </div>
+                    <!-- Grid column -->
+                </div>
+                <!-- Grid row -->
+            </div>
+        </section>
+        <!-- Section: Links  -->
+
+        <!-- Message -->
+        <div class="text-center p-4">
+            Created with ❤️ by <a href="https://crxssed7.github.io/">crxssed</a>
+        </div>
+        </div>
+        <!-- Message -->
+    </footer>
+    <!-- Footer -->
 </body>
 
 </html>

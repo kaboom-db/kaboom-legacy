@@ -6,12 +6,17 @@
 {% if user.is_authenticated %}
     <div class="header">
         <center>
-            <h1>{{ user.username }}</h1>
+            <div class="pfp-header">
+                <img src="{{ image }}" alt="profile" class="pfp">
+                <h1>{{ user.username }}</h1>
+            </div>
         </center>
     </div>
     <div class="section container">
         <h3>Manage your account:</h3>
         <br>
+        <code>Note: your image can be edited over at <a href="https://gravatar.com">Gravatar</a>. Kaboom does not store user profile pictures.</code>
+        <p><b>Image URL: </b>{{ image }}</p>
         <p><b>Email: </b>{{ user.email }}</p>
         <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
         <a href="{% url 'password_reset' %}" class="btn btn-primary">Reset Password</a>
