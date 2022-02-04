@@ -1,7 +1,7 @@
 {% load static %}
 
 {% if exists %}
-<svg id="poster_watched" width="720" height="460" viewBox="0 0 720 460" xmlns="http://www.w3.org/2000/svg"
+<svg id="poster_watched" width="480" height="815" viewBox="0 0 480 815" xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
         <style>
@@ -23,22 +23,22 @@
     </defs>
 
     <g id="image">
-        <rect x="0" y="0" width="100%" height="88%" fill="#000" />
-        <image x="0" y="0" width="100%" xlink:href="{{ last_watched_image }}" />
+        <rect x="0" y="0" width="100%" height="90%" fill="#f2f2f2" />
+        <image x="0" y="0" width="100%" xlink:href="{{ last_read_image }}" />
     </g>
 
     <g id="text">
-        <rect x="0" y="88%" width="100%" height="12%" fill="url(#grad1)" />
+        <rect x="0" y="90%" width="100%" height="10%" fill="url(#grad1)" />
 
-        <image y="88%" width="8%" xlink:href="{% static 'images/logo.svg' %}" />
+        <image x="3" y="91.4%" width="12%" xlink:href="{% static 'images/logo.svg' %}" />
 
-        <text x="10%" y="92.8%" fill="#000" font-size="14" dominant-baseline="bottom" text-anchor="left">
-            {{ username }} last watched
+        <text x="18%" y="93.9%" fill="#bfbfbf" font-size="14" dominant-baseline="bottom" text-anchor="left">
+            {{ username }} last read
         </text>
-        <text x="10%" y="97.5%" fill="#000" font-size="22" dominant-baseline="bottom" text-anchor="left">
-            {{ last_watched_title }}
+        <text x="18%" y="97.5%" fill="#e6e6e6" font-size="22" dominant-baseline="bottom" text-anchor="left">
+            {{ last_read_title }}
             <tspan dx="7">
-                {{ episode_nr }}
+                {{ issue_nr }}
             </tspan>
         </text>
     </g>

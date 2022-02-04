@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from comics.models import Comic
 from cartoons.models import Cartoon
-from users.models import Thought, WatchedEpisode
+from users.models import Thought, WatchedEpisode, ReadIssue
 from django.contrib.auth.models import User
 from .forms import SignUpForm
 from django.urls import reverse_lazy
@@ -52,6 +52,21 @@ def watched(request, username):
         context = {'exists': False}
 
     return render(request, 'website/watched.html', context = context)
+
+def read(request, username):
+    context = {}
+    user = User.objects.filter(username=username).first()
+    if user:
+        last = ReadIssue.objects.filter(user=user).order_by('-read_at').first()
+        if last:
+            issue_nr = '#' + str(last.issue.issue_number_absolute) 
+            context = {'exists': True, 'last_read_title': str(last.issue.series), 'last_read_image': last.issue.cover_image, 'issue_nr': issue_nr, 'username': username}
+        else:
+            context = {'exists': True, 'last_read_title': 'Nothing read yet', 'last_read_image': '', 'issue_nr': '', 'username': username}
+    else:
+        context = {'exists': False}
+
+    return render(request, 'website/read.html', context = context)
 
 class SignUpView(generic.CreateView):
     form_class = SignUpForm

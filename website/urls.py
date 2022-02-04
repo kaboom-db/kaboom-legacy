@@ -9,6 +9,7 @@ urlpatterns = [
     path('privacy/', views.privacy, name='privacy'),
     path('profile/', views.profile, name='profile'),
     path('watched/<str:username>/', views.watched, name='watched'),
+    path('read/<str:username>/', views.read, name='read'),
     path('signup/', views.SignUpView.as_view(), name='signup'),
     path('dev-guides/', views.dev_guides, name='dev-guides')
 ]
