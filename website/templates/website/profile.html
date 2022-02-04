@@ -16,8 +16,7 @@
     <h3>Manage your account:</h3>
     <br>
     <div>
-        <code>Note: your image can be edited over at <a href="https://gravatar.com">Gravatar</a>. Kaboom does not store user profile pictures.</code>
-        <p><b>Image URL: </b>{{ image }}</p>
+        <code>Note: your image can be edited over at <a href="https://gravatar.com">Gravatar</a> using your email. Kaboom does not store user profile pictures.</code>
         <p><b>Email: </b>{{ user.email }}</p>
         <div>
             <code><a href="{% url 'watched' user.username %}">Last watched card</a> | <a href="/read/{{ user.username }}">Last read card</a></code>
