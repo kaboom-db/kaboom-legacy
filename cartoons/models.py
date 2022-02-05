@@ -56,7 +56,7 @@ class Genre(models.Model):
 class Character(models.Model):
     name = models.CharField(max_length=200)
     alias = models.CharField(max_length=200, null=True, blank=True)
-    voice_actor = models.ForeignKey(VoiceActor, on_delete=models.SET_NULL, blank=True, null=True)
+    voice_actors = models.ManyToManyField(VoiceActor, blank=True)
     image = models.URLField(blank=True, max_length=500)
     biography = models.TextField(blank=True)
     date_created = models.DateTimeField(default=timezone.now)

@@ -20,30 +20,28 @@ class NetworkSerializer(serializers.ModelSerializer):
         read_only_fields = ['date_created', 'logo']
 
 class CharacterSerializer(serializers.ModelSerializer):
-    voice_actor = VoiceActorSerializer(required=False)
-    voice_actor_id = serializers.PrimaryKeyRelatedField(queryset=VoiceActor.objects.all(), write_only=True, required=False)
+    voice_actors = VoiceActorSerializer(required=False, many=True ,read_only=True)
+    voice_actors_id = serializers.PrimaryKeyRelatedField(queryset=VoiceActor.objects.all(), write_only=True, required=False, many=True)
 
     class Meta:
         model = Character
         fields = '__all__'
-        read_only_fields = ['date_created', 'voice_actor', 'image']
+        read_only_fields = ['date_created', 'voice_actors', 'image']
     
     def create(self, validated_data):
-        voice_actor = validated_data.pop('voice_actor_id', None)
+        voice_actors = validated_data.pop('voice_actors_id', None)
         character = Character.objects.create(**validated_data)
-        if voice_actor is not None:
-            character.voice_actor = voice_actor
+        if voice_actors is not None:
+            character.voice_actors.add(*voice_actors)
         character.save()
         return character
     
     def update(self, instance, validated_data):
-        voice_actor = validated_data.pop('voice_actor_id', None)
+        voice_actors = validated_data.pop('voice_actors_id', None)
         instance = super().update(instance, validated_data)
-
-        if voice_actor is not None:
-            instance.voice_actor = voice_actor
+        if voice_actors is not None:
+            instance.voice_actors.add(*voice_actors)
         instance.save()
-
         return instance
 
 class SeriesSerializer(serializers.ModelSerializer):
