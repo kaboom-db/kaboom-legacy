@@ -100,6 +100,7 @@ class Episode(models.Model):
     release_date = models.DateField(blank=True, null=True)
     screenshot = models.URLField(blank=True, max_length=500)
     date_created = models.DateTimeField(default=timezone.now)
+    runtime = models.PositiveIntegerField()
 
     def __str__(self) -> str:
         return str(self.series) + " S" + str(self.season_number) + "E" + str(self.episode_number) + ": " + self.name
