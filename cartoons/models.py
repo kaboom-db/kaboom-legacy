@@ -1,9 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models.aggregates import Count, Sum
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-from datetime import date
 from django.utils import timezone
 from kaboom.utils import STATUS_OPTIONS
 

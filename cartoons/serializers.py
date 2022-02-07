@@ -1,4 +1,3 @@
-from typing import NewType
 from .models import Cartoon, Character, Episode, Genre, Network, VoiceActor
 from rest_framework import serializers
 from kaboom.utils import util_calculate_age
