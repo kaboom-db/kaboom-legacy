@@ -44,7 +44,7 @@ class CartoonSubscriptionsView(APIView):
         serializer = CartoonSubscriptionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -82,7 +82,7 @@ class AddUserSeriesRating(APIView):
                         'user': instance.user.id,
                         'id': instance.id,
                         'rating': instance.rating
-                    })
+                    }, status=status.HTTP_201_CREATED)
                 else:
                     return Response({'error': 'Rating must be between 1 and 10'})
             else:
@@ -123,7 +123,7 @@ class UserWatchedEpisodesView(APIView):
         serializer = WatchedEpisodesSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'success': 'Watched the episode'})
+            return Response({'success': 'Watched the episode'}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

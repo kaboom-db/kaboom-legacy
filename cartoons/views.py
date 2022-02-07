@@ -35,7 +35,7 @@ class SeriesView(viewsets.ModelViewSet):
             serializer = SeriesSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -85,7 +85,7 @@ class CharacterView(viewsets.ModelViewSet):
             serializer = CharacterSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -135,7 +135,7 @@ class EpisodeView(viewsets.ModelViewSet):
             serializer = EpisodeSerializerSave(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
@@ -193,7 +193,7 @@ class NetworkView(viewsets.ModelViewSet):
             serializer = NetworkSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
@@ -243,7 +243,7 @@ class VoiceActorView(viewsets.ModelViewSet):
             serializer = VoiceActorSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:

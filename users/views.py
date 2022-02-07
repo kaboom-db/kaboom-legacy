@@ -26,7 +26,7 @@ class CreateUser(APIView):
                     'user_id': serializer.data['id'],
                     'username': serializer.data['username'],
                     'token': token.key
-                })
+                }, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except KeyError as e:
@@ -113,7 +113,7 @@ class SpecificThoughtView(APIView):
                 serializer = ThoughtSerializer(instance=thought, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.update(instance=thought, validated_data=serializer.validated_data)
-                    return Response(serializer.data)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -145,7 +145,7 @@ class AddThought(APIView):
         serializer = ThoughtSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -176,7 +176,7 @@ class LikeThought(APIView):
                     return Response({
                         'thought': instance.id,
                         'num_of_likes': instance.num_of_likes
-                    })
+                    }, status=status.HTTP_201_CREATED)
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -213,7 +213,7 @@ class FollowUser(APIView):
             if user != following:
                 if serializer.is_valid():
                     serializer.save()
-                    return Response(serializer.data)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -290,7 +290,7 @@ class CommentView(APIView):
             comment = CommentSerializer(data=request.data, partial=True)
             if comment.is_valid():
                 comment.save()
-                return Response(comment.data)
+                return Response(comment.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(comment.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
@@ -360,7 +360,7 @@ class SpecificCommentView(APIView):
                     serializer = CommentSerializer(instance=comment, data=request.data, partial=True)
                     if serializer.is_valid():
                         serializer.update(instance=comment, validated_data=serializer.validated_data)
-                        return Response(serializer.data)
+                        return Response(serializer.data, status=status.HTTP_201_CREATED)
                     else:
                         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 else:
@@ -387,7 +387,7 @@ class ImageRequestView(APIView):
                 serializer = ImageRequestSerializer(data=data)
                 if serializer.is_valid():
                     serializer.save()
-                    return Response(serializer.data)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -409,7 +409,7 @@ class ReportView(APIView):
             serializer = ReportSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:

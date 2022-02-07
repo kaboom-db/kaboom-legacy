@@ -30,7 +30,7 @@ class PublisherView(viewsets.ModelViewSet):
             serializer = PublisherSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -80,7 +80,7 @@ class StaffView(viewsets.ReadOnlyModelViewSet):
             serializer = StaffSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -132,7 +132,7 @@ class IssueView(viewsets.ReadOnlyModelViewSet):
                 serializer = IssueSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save()
-                    return Response(serializer.data)
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -185,7 +185,7 @@ class SeriesView(viewsets.ReadOnlyModelViewSet):
             serializer = SeriesSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
