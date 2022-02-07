@@ -5,7 +5,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from datetime import date
 from django.utils import timezone
-from kaboom.utils import util_calculate_age, STATUS_OPTIONS
+from kaboom.utils import STATUS_OPTIONS
 
 class VoiceActor(models.Model):
     name = models.CharField(max_length=200)
@@ -13,7 +13,6 @@ class VoiceActor(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     date_of_death = models.DateField(blank=True, null=True)
     biography = models.TextField(blank=True)
-    age = models.IntegerField(blank=True, null=True)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
@@ -22,17 +21,6 @@ class VoiceActor(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.date_created = timezone.now()
         super(VoiceActor, self).save(*args, **kwargs)
-
-@receiver(pre_save, sender=VoiceActor)
-def calculate_age(sender, instance=None, created=False, **kwargs):
-    today = date.today()
-    if instance.date_of_birth:
-        if instance.date_of_death:
-            instance.age = util_calculate_age(instance.date_of_birth, instance.date_of_death)
-        else:
-            instance.age = util_calculate_age(instance.date_of_birth, today)
-    else:
-        instance.age = None
 
 class Network(models.Model):
     name = models.CharField(max_length=200)

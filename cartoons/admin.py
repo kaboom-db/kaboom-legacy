@@ -41,5 +41,5 @@ class VoiceActorAdmin(admin.ModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         if obj:
             if not request.user.is_superuser:
-                return self.readonly_fields + ('image', 'age', 'date_created')
-        return self.readonly_fields + ('age', 'date_created',)
+                return self.readonly_fields + ('image', 'date_created')
+        return self.readonly_fields + ('date_created',)

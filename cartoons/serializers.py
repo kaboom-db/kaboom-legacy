@@ -1,6 +1,8 @@
 from typing import NewType
 from .models import Cartoon, Character, Episode, Genre, Network, VoiceActor
 from rest_framework import serializers
+from kaboom.utils import util_calculate_age
+from datetime import date
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,6 +10,18 @@ class GenreSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class VoiceActorSerializer(serializers.ModelSerializer):
+    age = serializers.SerializerMethodField(method_name='calculate_age')
+
+    def calculate_age(self, obj):
+        today = date.today()
+        if obj.date_of_birth:
+            if obj.date_of_death:
+                return util_calculate_age(obj.date_of_birth, obj.date_of_death)
+            else:
+                return util_calculate_age(obj.date_of_birth, today)
+        else:
+            return None
+
     class Meta:
         model = VoiceActor
         fields = '__all__'

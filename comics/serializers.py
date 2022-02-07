@@ -2,6 +2,8 @@ from comics.comics_filters import SeriesFilter
 from .models import Comic, Format, Issue, Character, Staff, Publisher, StaffPositions
 from rest_framework import serializers
 from cartoons.serializers import CharacterSerializer
+from kaboom.utils import util_calculate_age
+from datetime import date
 
 class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,6 +19,17 @@ class StaffPositionsSerializer(serializers.ModelSerializer):
 class StaffSerializer(serializers.ModelSerializer):
     position = StaffPositionsSerializer(read_only=True)
     position_id = serializers.PrimaryKeyRelatedField(queryset=StaffPositions.objects.all(), write_only=True, required=False)
+    age = serializers.SerializerMethodField(method_name='calculate_age')
+
+    def calculate_age(self, obj):
+        today = date.today()
+        if obj.date_of_birth:
+            if obj.date_of_death:
+                return util_calculate_age(obj.date_of_birth, obj.date_of_death)
+            else:
+                return util_calculate_age(obj.date_of_birth, today)
+        else:
+            return None
 
     class Meta:
         model = Staff
