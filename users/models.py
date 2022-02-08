@@ -15,6 +15,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models import Q
 from kaboom.utils import IMG_REQUEST_FIELDS, IMG_REQUEST_OPTIONS, REQUEST_STATUS, REPORT_OPTIONS
 from django.core.mail import send_mail
+from kaboom.db_secrets import DEFAULT_FROM_EMAIL
 
 ### When a new user is created, add a token for their account.
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -23,7 +24,7 @@ def create_token(sender, instance=None, created=False, **kwargs):
         # Create a new token
         Token.objects.create(user=instance)
         # Send an email
-        send_mail(subject="Welcome to kaboom", message="Hello " + instance.username + ", welcome to Kaboom!\nWe're sending this email just to confirm that you have created an account with Kaboom.", from_email="webmaster@localhost", recipient_list=(instance.email,))
+        send_mail("Welcome to kaboom", "Hello " + instance.username + ", welcome to Kaboom!\nWe're sending this email just to confirm that you have created an account with Kaboom.", DEFAULT_FROM_EMAIL, (instance.email,))
 
 def get_user_image(email) -> str:
     g = Gravatar(email)

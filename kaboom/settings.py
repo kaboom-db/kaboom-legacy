@@ -81,9 +81,13 @@ WSGI_APPLICATION = 'kaboom.wsgi.application'
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'index'
 
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = str(BASE_DIR / "sent_emails")
-DEFAULT_FROM_EMAIL = "webmaster@localhost"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+DEFAULT_FROM_EMAIL = db_secrets.DEFAULT_FROM_EMAIL
+EMAIL_HOST = db_secrets.EMAIL_HOST
+EMAIL_HOST_USER = db_secrets.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = db_secrets.SENDGRID_APIKEY
+EMAIL_PORT = db_secrets.EMAIL_PORT
+EMAIL_USE_TLS = True
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
