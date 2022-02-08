@@ -1,7 +1,8 @@
 STATUS_OPTIONS = (
     ("COMPLETED", "Completed"),
     ("RELEASING", "Releasing"),
-    ("PLANNED", "Planned")
+    ("PLANNED", "Planned"),
+    ("CANCELLED", "Cancelled")
 )
 
 IMG_REQUEST_FIELDS = (

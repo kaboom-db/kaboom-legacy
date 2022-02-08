@@ -83,6 +83,7 @@ LOGOUT_REDIRECT_URL = 'index'
 
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = str(BASE_DIR / "sent_emails")
+DEFAULT_FROM_EMAIL = "webmaster@localhost"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
