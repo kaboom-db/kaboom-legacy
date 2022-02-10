@@ -18,6 +18,8 @@ from django.core.mail import send_mail
 from kaboom.db_secrets import DEFAULT_FROM_EMAIL
 from django.template import loader
 
+User._meta.get_field('email')._unique = True
+
 ### When a new user is created, add a token for their account.
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_token(sender, instance=None, created=False, **kwargs):
