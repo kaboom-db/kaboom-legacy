@@ -63,6 +63,9 @@ class Cartoon(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_OPTIONS)
     rating = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=True, null=True)
     characters = models.ManyToManyField(Character, blank=True)
+    website = models.URLField(blank=True, null=True)
+    imdb_id = models.CharField(max_length=9, blank=True, null=True)
+    tmdb_id = models.PositiveIntegerField(blank=True, null=True)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
