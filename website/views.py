@@ -51,7 +51,7 @@ def watched(request, username):
     else:
         context = {'exists': False}
 
-    return render(request, 'website/watched.html', context = context)
+    return render(request, 'website/watched.html', context = context, content_type="image/svg+xml")
 
 def read(request, username):
     context = {}
@@ -66,7 +66,7 @@ def read(request, username):
     else:
         context = {'exists': False}
 
-    return render(request, 'website/read.html', context = context)
+    return render(request, 'website/read.html', context = context, content_type="image/svg+xml")
 
 class SignUpView(generic.CreateView):
     form_class = SignUpForm
