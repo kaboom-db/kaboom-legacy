@@ -22,7 +22,8 @@ IMG_REQUEST_OPTIONS = (
     ("cartoons_Network", "cartoon_network"),
     ("cartoons_Character", "cartoon_character"),
     ("cartoons_Cartoon", "cartoon_series"),
-    ("cartoons_Episode", "cartoon_episode")
+    ("cartoons_Episode", "cartoon_episode"),
+    ("cartoons_Team", "cartoon_team")
 )
 
 REPORT_OPTIONS = (

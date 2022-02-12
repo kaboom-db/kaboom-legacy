@@ -14,10 +14,6 @@ class VoiceActor(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    def save(self, *args, **kwargs) -> None:
-        self.date_created = timezone.now()
-        super(VoiceActor, self).save(*args, **kwargs)
-
 class Network(models.Model):
     name = models.CharField(max_length=200)
     website = models.URLField(blank=True)
@@ -27,15 +23,22 @@ class Network(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    def save(self, *args, **kwargs) -> None:
-        self.date_created = timezone.now()
-        super(Network, self).save(*args, **kwargs)
-
 class Genre(models.Model):
     genre = models.CharField(max_length=100, unique=True)
 
     def __str__(self) -> str:
         return self.genre
+
+class Team(models.Model):
+    name = models.CharField(max_length=100)
+    tagline = models.CharField(max_length=256, blank=True, null=True)
+    disbanded = models.PositiveIntegerField(blank=True, null=True, validators=[MinValueValidator(1000), MaxValueValidator(9999)])
+    history = models.TextField(blank=True, null=True)
+    logo = models.URLField(blank=True, max_length=500)
+    date_created = models.DateTimeField(default=timezone.now)
+
+    def __str__(self) -> str:
+        return self.name
 
 class Character(models.Model):
     name = models.CharField(max_length=200)
@@ -43,14 +46,11 @@ class Character(models.Model):
     voice_actors = models.ManyToManyField(VoiceActor, blank=True)
     image = models.URLField(blank=True, max_length=500)
     biography = models.TextField(blank=True)
+    teams = models.ManyToManyField(Team, blank=True)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return self.name
-
-    def save(self, *args, **kwargs) -> None:
-        self.date_created = timezone.now()
-        super(Character, self).save(*args, **kwargs)
 
 class Cartoon(models.Model):
     name = models.CharField(max_length=200)
@@ -71,10 +71,6 @@ class Cartoon(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    def save(self, *args, **kwargs) -> None:
-        self.date_created = timezone.now()
-        super(Cartoon, self).save(*args, **kwargs)
-
 class Episode(models.Model):
     class Meta:
         unique_together = (('episode_number', 'season_number', 'series'))
@@ -91,7 +87,3 @@ class Episode(models.Model):
 
     def __str__(self) -> str:
         return str(self.series) + " S" + str(self.season_number) + "E" + str(self.episode_number) + ": " + self.name
-
-    def save(self, *args, **kwargs) -> None:
-        self.date_created = timezone.now()
-        super(Episode, self).save(*args, **kwargs)

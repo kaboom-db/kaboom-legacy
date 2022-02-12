@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from .models import Character, Episode, Genre, Network, Cartoon, VoiceActor
+from .models import Character, Episode, Genre, Network, Cartoon, VoiceActor, Team
 
 class SeriesFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
@@ -50,4 +50,11 @@ class VoiceActorsFilter(filters.FilterSet):
 
     class Meta:
         model = VoiceActor
+        fields = ['name']
+
+class TeamFilter(filters.FilterSet):
+    query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
+
+    class Meta:
+        model = Team
         fields = ['name']

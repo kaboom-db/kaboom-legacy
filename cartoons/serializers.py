@@ -1,4 +1,4 @@
-from .models import Cartoon, Character, Episode, Genre, Network, VoiceActor
+from .models import Cartoon, Character, Episode, Genre, Network, VoiceActor, Team
 from rest_framework import serializers
 from kaboom.utils import util_calculate_age
 from datetime import date
@@ -32,9 +32,17 @@ class NetworkSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ['date_created', 'logo']
 
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = '__all__'
+        read_only_fields = ['date_created', 'logo']
+
 class CharacterSerializer(serializers.ModelSerializer):
     voice_actors = VoiceActorSerializer(required=False, many=True ,read_only=True)
     voice_actors_id = serializers.PrimaryKeyRelatedField(queryset=VoiceActor.objects.all(), write_only=True, required=False, many=True)
+    teams = TeamSerializer(required=False, many=True, read_only=True)
+    teams_id = serializers.PrimaryKeyRelatedField(queryset=Team.objects.all(), write_only=True, required=False, many=True)
 
     class Meta:
         model = Character
@@ -43,17 +51,23 @@ class CharacterSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         voice_actors = validated_data.pop('voice_actors_id', None)
+        teams = validated_data.pop('teams_id', None)
         character = Character.objects.create(**validated_data)
         if voice_actors is not None:
             character.voice_actors.add(*voice_actors)
+        if teams is not None:
+            character.teams.add(*teams)
         character.save()
         return character
     
     def update(self, instance, validated_data):
         voice_actors = validated_data.pop('voice_actors_id', None)
+        teams = validated_data.pop('teams_id', None)
         instance = super().update(instance, validated_data)
         if voice_actors is not None:
             instance.voice_actors.add(*voice_actors)
+        if teams is not None:
+            instance.teams.add(*teams)
         instance.save()
         return instance
 
