@@ -9,6 +9,9 @@ from django.urls import reverse_lazy
 from django.views import generic
 from users.models import get_user_image
 
+import base64
+import requests
+
 # Create your views here.
 def index(request):
     num_of_comics = Comic.objects.count()
@@ -45,7 +48,11 @@ def watched(request, username):
         last = WatchedEpisode.objects.filter(user=user).order_by('-watched_at').first()
         if last:
             episode_nr = 'S' + str(last.episode.season_number) + 'E' + str(last.episode.episode_number)
-            context = {'exists': True, 'last_watched_title': last.episode.name, 'last_watched_image': last.episode.screenshot, 'episode_nr': episode_nr, 'username': username}
+            if last.episode.screenshot:
+                last_watched_image = 'data:image/png;base64,' + base64.b64encode(requests.get(last.episode.screenshot).content).decode('utf-8')
+            else:
+                last_watched_image = ''
+            context = {'exists': True, 'last_watched_title': last.episode.name, 'last_watched_image': last_watched_image, 'episode_nr': episode_nr, 'username': username}
         else:
             context = {'exists': True, 'last_watched_title': 'Nothing watched yet', 'last_watched_image': '', 'episode_nr': '', 'username': username}
     else:
@@ -60,7 +67,11 @@ def read(request, username):
         last = ReadIssue.objects.filter(user=user).order_by('-read_at').first()
         if last:
             issue_nr = '#' + str(last.issue.issue_number_absolute) 
-            context = {'exists': True, 'last_read_title': str(last.issue.series), 'last_read_image': last.issue.cover_image, 'issue_nr': issue_nr, 'username': username}
+            if last.issue.cover_image:
+                last_read_image = 'data:image/png;base64,' + base64.b64encode(requests.get(last.issue.cover_image).content).decode('utf-8')
+            else:
+                last_read_image = ''
+            context = {'exists': True, 'last_read_title': str(last.issue.series), 'last_read_image': last_read_image, 'issue_nr': issue_nr, 'username': username}
         else:
             context = {'exists': True, 'last_read_title': 'Nothing read yet', 'last_read_image': '', 'issue_nr': '', 'username': username}
     else:
