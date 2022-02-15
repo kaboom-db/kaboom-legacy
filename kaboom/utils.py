@@ -48,5 +48,17 @@ REQUEST_STATUS = (
     ("REJECTED", "Rejected")
 )
 
+CHARACTER_STATUS = (
+    ("UNKNOWN", "Unknown"),
+    ("ALIVE", "Alive"),
+    ("DECEASED", "Deceased")
+)
+
+ALIGNMENT_OPTIONS = (
+    ("ANTI-HERO", "Anti-Hero"),
+    ("GOOD", "Good"),
+    ("EVIL", "Evil")
+)
+
 def util_calculate_age(dob, dod) -> int:
     return dod.year - dob.year - ((dod.month, dod.day) < (dob.month, dob.day))

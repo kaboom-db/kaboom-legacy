@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
-from kaboom.utils import STATUS_OPTIONS
+from kaboom.utils import STATUS_OPTIONS, CHARACTER_STATUS, ALIGNMENT_OPTIONS
 
 class VoiceActor(models.Model):
     name = models.CharField(max_length=200)
@@ -47,6 +47,8 @@ class Character(models.Model):
     image = models.URLField(blank=True, max_length=500)
     biography = models.TextField(blank=True)
     teams = models.ManyToManyField(Team, blank=True)
+    status = models.CharField(max_length=100, choices=CHARACTER_STATUS, default="ALIVE")
+    alignment = models.CharField(max_length=100, choices=ALIGNMENT_OPTIONS, default="GOOD")
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
