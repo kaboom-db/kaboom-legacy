@@ -58,6 +58,7 @@ class Character(models.Model):
     teams = models.ManyToManyField(Team, blank=True)
     status = models.CharField(max_length=100, choices=CHARACTER_STATUS, default="ALIVE")
     alignment = models.CharField(max_length=100, choices=ALIGNMENT_OPTIONS, default="GOOD")
+    location_of_operation = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
