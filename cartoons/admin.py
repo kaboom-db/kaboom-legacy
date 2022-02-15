@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Team, VoiceActor, Character, Network, Genre, Cartoon, Episode
+from .models import Team, VoiceActor, Character, Network, Genre, Cartoon, Episode, Location
 
 # Register your models here.
 admin.site.register(Genre)
@@ -50,4 +50,9 @@ class TeamAdmin(admin.ModelAdmin):
         if obj:
             if not request.user.is_superuser:
                 return self.readonly_fields + ('logo', 'date_created')
+        return self.readonly_fields + ('date_created',)
+
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    def get_readonly_fields(self, request, obj=None):
         return self.readonly_fields + ('date_created',)

@@ -1,4 +1,4 @@
-from .models import Cartoon, Character, Episode, Genre, Network, VoiceActor, Team
+from .models import Cartoon, Character, Episode, Genre, Network, VoiceActor, Team, Location
 from rest_framework import serializers
 from kaboom.utils import util_calculate_age
 from datetime import date
@@ -127,3 +127,9 @@ class EpisodeSerializerSave(serializers.ModelSerializer):
         model = Episode
         fields = '__all__'
         read_only_fields = ['date_created', 'screenshot']
+
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = '__all__'
+        read_only_fields = ['date_created']

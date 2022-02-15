@@ -3,6 +3,15 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from kaboom.utils import STATUS_OPTIONS, CHARACTER_STATUS, ALIGNMENT_OPTIONS
 
+class Location(models.Model):
+    base_name = models.CharField(max_length=100, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    nation = models.CharField(max_length=100)
+    date_created = models.DateTimeField(default=timezone.now)
+    
+    def __str__(self) -> str:
+        return self.base_name + ", " + self.city + ", " + self.nation
+
 class VoiceActor(models.Model):
     name = models.CharField(max_length=200)
     image = models.URLField(blank=True, max_length=500)
