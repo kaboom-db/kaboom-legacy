@@ -7,6 +7,8 @@ admin.site.register(Format)
 
 @admin.register(Comic)
 class ComicAdmin(admin.ModelAdmin):
+    list_display = ("series_name", "publisher", "year_started", "status", "rating")
+    
     def get_readonly_fields(self, request, obj=None):
         if obj:
             if not request.user.is_superuser:
@@ -15,6 +17,8 @@ class ComicAdmin(admin.ModelAdmin):
 
 @admin.register(Issue)
 class IssueAdmin(admin.ModelAdmin):
+    list_display = ("issue_number", "issue_number_absolute", "series", "format", "release_date", "date_created")
+
     def get_readonly_fields(self, request, obj=None):
         if obj:
             if not request.user.is_superuser:
@@ -23,6 +27,8 @@ class IssueAdmin(admin.ModelAdmin):
 
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
+    list_display = ("name", "website", "date_created")
+
     def get_readonly_fields(self, request, obj=None):
         if obj:
             if not request.user.is_superuser:
@@ -31,6 +37,8 @@ class PublisherAdmin(admin.ModelAdmin):
 
 @admin.register(Staff)
 class StaffAdmin(admin.ModelAdmin):
+    list_display = ("name", "position", "date_of_birth", "date_of_death", "date_created")
+
     def get_readonly_fields(self, request, obj=None):
         if obj:
             if not request.user.is_superuser:
