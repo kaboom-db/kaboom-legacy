@@ -2,6 +2,7 @@ from .models import Cartoon, Character, Episode, Genre, Network, VoiceActor, Tea
 from rest_framework import serializers
 from kaboom.utils import util_calculate_age
 from datetime import date
+from django.core.exceptions import ValidationError
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
@@ -137,6 +138,16 @@ class EpisodeSerializer(serializers.ModelSerializer):
         read_only_fields = ['date_created', 'series', 'screenshot']
 
 class EpisodeSerializerSave(serializers.ModelSerializer):
+    def create(self, validated_data):
+        print(validated_data['series'].id)
+        series = Cartoon.objects.get(pk=validated_data['series'].id)
+        print(series)
+        if int(validated_data['season_number']) > series.season_count:
+            raise ValidationError('Season number does not exist for series ' + str(series))
+        else:
+            episode = Episode.objects.create(**validated_data)
+            return episode
+
     class Meta:
         model = Episode
         fields = '__all__'

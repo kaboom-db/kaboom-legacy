@@ -9,7 +9,6 @@ from django.contrib.contenttypes.models import ContentType
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         existing = User.objects.filter(email=validated_data['email'])
-        print(existing)
         if not existing:
             user = User.objects.create_user(
                 username=validated_data['username'],

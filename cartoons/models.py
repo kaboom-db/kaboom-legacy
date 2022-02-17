@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from kaboom.utils import STATUS_OPTIONS, CHARACTER_STATUS, ALIGNMENT_OPTIONS
 
@@ -96,6 +97,10 @@ class Episode(models.Model):
     screenshot = models.URLField(blank=True, max_length=500)
     date_created = models.DateTimeField(default=timezone.now)
     runtime = models.PositiveIntegerField()
+
+    def clean(self):
+        if self.season_number > self.series.season_count:
+            raise ValidationError('Season number does not exist for series ' + str(self.series))
 
     def __str__(self) -> str:
         return str(self.series) + " S" + str(self.season_number) + "E" + str(self.episode_number) + ": " + self.name
