@@ -20,12 +20,12 @@
         account and track the issues and episodes that you have
         watched/read.</p>
     <h3>So, how do I use Kaboom?</h3>
-    <p>As mentioned above, Kaboom is just a database. You need to use a client to actually access the data (for
-        now), there are a list of <a href="#clients-list">clients below</a>. If you want to make a client, check out
+    <p>As mentioned above, Kaboom is just a database. You need to use an app to actually access the data (for
+        now), there are a list of <a href="#apps-list">apps below</a>. If you want to make an app, check out
         the <a href="/docs">docs</a>.</p>
     {% if not user.is_authenticated %}
     <h3>How do I make an account?</h3>
-    <p>You can either make an account here on this website or via a <a href="#clients-list">client</a>. You can also
+    <p>You can either make an account here on this website or via a <a href="#apps-list">app</a>. You can also
         login to manage your account directly.</p>
     <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
     <a href="{% url 'signup' %}" class="btn btn-primary">Signup</a>
@@ -71,7 +71,7 @@
                     {% if not user.is_authenticated %}
                     <a href="{% url 'signup' %}" class="btn btn-primary">Join now</a>
                     {% else %}
-                    <a href="#clients-list" class="btn btn-primary">Clients</a>
+                    <a href="#apps-list" class="btn btn-primary">Apps</a>
                     {% endif %}
                 </div>
             </div>
@@ -84,7 +84,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Thoughts</h5>
                     <p class="card-text">{{num_of_thoughts}} thoughts have been written by users.</p>
-                    <a href="#clients-list" class="btn btn-primary">Check it out!</a>
+                    <a href="#apps-list" class="btn btn-primary">Check it out!</a>
                 </div>
             </div>
         </div>
@@ -136,11 +136,11 @@
         </div>
     </div>
 </div>
-<div class="clients section container">
-    <h3 id="clients-list">Clients</h3>
-    <p>There are no clients yet, check back soon!</p>
-    <p>Want to make your own client? Check out the <a href="/docs">docs</a>!</p>
-    <h6>Note for developers: Make sure to read the <a href="/dev-guides">Developer Guidlines</a> before making a client.
+<div class="apps section container">
+    <h3 id="apps-list">Apps</h3>
+    <p>There are no apps yet, check back soon!</p>
+    <p>Want to make your own app? Check out the <a href="/docs">docs</a>!</p>
+    <h6>Note for developers: Make sure to read the <a href="/dev-guides">Developer Guidlines</a> before making an app.
     </h6>
 </div>
 <div class="section container">
@@ -158,6 +158,6 @@
     <h5 id="contribute">Contribute</h5>
     <p>If you're a developer you can also <a href="https://github.com/kaboom-db/kaboom-api">contribute</a> to the
         project as Kaboom is <a href="https://en.wikipedia.org/wiki/Open_source">open source</a>. You can also make your
-        own <a href="/docs">client</a>.</p>
+        own <a href="/docs">app</a>.</p>
 </div>
 {% endblock %}
