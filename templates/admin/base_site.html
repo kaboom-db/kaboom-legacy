@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block title %}{{ title }} | Kaboom admin{% endblock %}
+
+{% block branding %}
+<style>
+    :root {
+        --primary: rgba(255,95,109,1);
+        --secondary: rgba(255,195,113,1);
+        --link-fg: var(--primary);
+        --link-hover-color: var(--secondary);
+        --button-hover-bg: var(--secondary);
+        --default-button-bg: var(--primary);
+        --default-button-hover-bg: var(--button-hover-bg);
+    }
+
+    #header {
+        background: linear-gradient(90deg, rgba(255,95,109,1) 0%, rgba(255,195,113,1) 77%) !important;
+    }
+
+    #user-tools {
+        color: rgb(10, 10, 10);
+    }
+
+    #user-tools a:link {
+        color: rgb(10, 10, 10);
+    }
+
+    #user-tools a:visited {
+        color: rgb(10, 10, 10);
+    }
+
+    #user-tools a:hover {
+        color: rgb(10, 10, 10);
+    }
+</style>
+
+<div id="branding">
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">
+            <img src="{% static 'images/logo.svg' %}" height="60px" />
+        </a>
+    </h1>
+</div>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
