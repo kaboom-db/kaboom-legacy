@@ -60,10 +60,9 @@ class TeamFilter(filters.FilterSet):
         fields = ['name']
 
 class LocationFilter(filters.FilterSet):
-    base_name = filters.filters.CharFilter(field_name='base_name', lookup_expr='icontains')
     city = filters.filters.CharFilter(field_name='city', lookup_expr='icontains')
     nation = filters.filters.CharFilter(field_name='nation', lookup_expr='icontains')
 
     class Meta:
         model = Location
-        fields = ['base_name', 'city', 'nation']
+        fields = ['city', 'nation']
