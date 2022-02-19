@@ -66,7 +66,7 @@ class TeamAdmin(admin.ModelAdmin):
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ("base_name", "city", "nation", "date_created")
+    list_display = ("nation", "city", "date_created")
 
     def get_readonly_fields(self, request, obj=None):
         return self.readonly_fields + ('date_created',)
