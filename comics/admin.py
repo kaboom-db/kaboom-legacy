@@ -17,7 +17,7 @@ class ComicAdmin(admin.ModelAdmin):
 
 @admin.register(Issue)
 class IssueAdmin(admin.ModelAdmin):
-    list_display = ("issue_number", "issue_number_absolute", "series", "format", "release_date", "date_created")
+    list_display = ("issue_name", "issue_number_absolute", "series", "format", "release_date", "date_created")
 
     def get_readonly_fields(self, request, obj=None):
         if obj:

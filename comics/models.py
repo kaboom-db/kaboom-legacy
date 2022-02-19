@@ -69,7 +69,7 @@ class Issue(models.Model):
         unique_together = (('issue_number_absolute', 'series'),)
 
     issue_number_absolute = models.IntegerField(default=1)
-    issue_number = models.CharField(max_length=50)
+    issue_name = models.CharField(max_length=50)
     series = models.ForeignKey(Comic, on_delete=models.CASCADE)
     summary = models.TextField(blank=True)
     characters = models.ManyToManyField(Character, blank=True)
