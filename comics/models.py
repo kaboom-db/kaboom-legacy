@@ -80,7 +80,7 @@ class Issue(models.Model):
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
-        return str(self.series) + ' #' + str(self.issue_number)
+        return str(self.series) + ' #' + str(self.issue_number_absolute)
 
     def save(self, *args, **kwargs) -> None:
         self.date_created = timezone.now()
