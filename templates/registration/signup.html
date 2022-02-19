@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load crispy_forms_tags %}
+
 {% block title %}Kaboom - Sign Up{% endblock %}
 
 {% block content %}
@@ -11,9 +13,9 @@
 <div class="section container">
     <h3>Hi 👋, let's get you started!</h3>
     <br>
-    <form method="post">
+    <form method="post" novalidate>
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form|crispy }}
         <button type="submit" class="btn btn-primary">Sign Up</button>
         <a href="{% url 'index' %}" class="btn btn-primary">Cancel</a>
         <code><a href="{% url 'login' %}">Login instead</a></code>
