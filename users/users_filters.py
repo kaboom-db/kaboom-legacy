@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from users.models import Thought
+from users.models import Thought, UserData
 from django.contrib.auth.models import User
 
 class ThoughtFilter(filters.FilterSet):
@@ -18,3 +18,10 @@ class UserFilter(filters.FilterSet):
     class Meta:
         model = User
         fields = ['username']
+
+class UserDataFilter(filters.FilterSet):
+    username = filters.filters.CharFilter(field_name='user', lookup_expr='username__icontains')
+
+    class Meta:
+        model = UserData
+        fields = ['user']

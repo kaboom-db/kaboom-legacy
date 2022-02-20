@@ -21,11 +21,20 @@ from django.template import loader
 User._meta.get_field('email')._unique = True
 
 ### When a new user is created, add a token for their account.
+class UserData(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
+    bio = models.TextField(blank=True, null=True)
+    private = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.user)
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_token(sender, instance=None, created=False, **kwargs):
     if created:
         # Create a new token
         Token.objects.create(user=instance)
+        UserData.objects.create(user=instance)
         # Send an email
         html = loader.render_to_string('website/email.html', {
             'username': instance.username

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from comics.models import Issue
-from users.models import Report, ImageRequest, CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, Thought, Comment, get_user_image
+from users.models import UserData, Report, ImageRequest, CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, Thought, Comment, get_user_image
 import comics.serializers as comics_ser
 import cartoons.serializers as cartoons_ser
 from django.contrib.contenttypes.models import ContentType
@@ -40,6 +40,13 @@ class UserSerializerDetailed(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'id', 'image', 'date_joined', 'time_joined', 'is_staff']
+
+class UserDataSerializer(serializers.ModelSerializer):
+    user = UserSerializerDetailed(read_only=True)
+    
+    class Meta:
+        model = UserData
+        fields = '__all__'
 
 class ComicSubscriptionSerializer(serializers.ModelSerializer):
     class Meta:

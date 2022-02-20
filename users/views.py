@@ -1,9 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework.generics import ListAPIView, GenericAPIView, CreateAPIView
 from rest_framework.views import APIView
-from users.models import Comment, Follow, Thought, UserLikedThought
-from users.users_filters import ThoughtFilter, UserFilter
-from .serializers import ReportSerializer, ImageRequestSerializer, CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerDetailed
+from users.models import Comment, Follow, Thought, UserLikedThought, UserData
+from users.users_filters import ThoughtFilter, UserFilter, UserDataFilter
+from .serializers import UserDataSerializer, ReportSerializer, ImageRequestSerializer, CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerDetailed
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -37,24 +37,42 @@ class CreateUser(APIView):
 class GetUsersView(ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = UserSerializerDetailed
+    serializer_class = UserDataSerializer
     http_method_names = ['get']
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = UserFilter
-    queryset = User.objects.all().order_by('-date_joined')
+    filterset_class = UserDataFilter
+    queryset = UserData.objects.filter(private=False).order_by('-user__date_joined')
 
 class SpecificUserView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializerDetailed
-    http_method_names = ['get']
+    http_method_names = ['get', 'patch']
 
     def get(self, request, username):
-        try:
-            user = User.objects.get(username=username)
-            serializer = UserSerializerDetailed(instance=user)
+        user = UserData.objects.filter(user__username=username, private=False).first()
+        if user:
+            serializer = UserDataSerializer(instance=user)
             return Response(serializer.data)
-        except ObjectDoesNotExist:
+        else:
+            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+    def patch(self, request, username):
+        current_user = self.request.user
+        user_data = UserData.objects.filter(user__username = username).first()
+        if user_data:
+            # Check if the user is the right user
+            if current_user == user_data.user:
+                serializer = UserDataSerializer(instance=user_data, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.update(instance=user_data, validated_data=serializer.validated_data)
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'You are not authorized to edit this user.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        else:
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
 class GetThoughtTypes(ListAPIView):

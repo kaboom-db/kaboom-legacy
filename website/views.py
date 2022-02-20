@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from comics.models import Comic
 from cartoons.models import Cartoon
-from users.models import Thought, WatchedEpisode, ReadIssue
+from users.models import Thought, WatchedEpisode, ReadIssue, UserData
 from django.contrib.auth.models import User
 from .forms import SignUpForm
 from django.urls import reverse_lazy
@@ -43,8 +43,10 @@ def profile(request):
 
 def watched(request, username):
     context = {}
-    user = User.objects.filter(username=username).first()
-    if user:
+    # user = User.objects.filter(username=username).first()
+    userdata = UserData.objects.filter(user__username=username, private=False).first()
+    if userdata:
+        user = userdata.user
         last = WatchedEpisode.objects.filter(user=user).order_by('-watched_at').first()
         if last:
             episode_nr = 'S' + str(last.episode.season_number) + 'E' + str(last.episode.episode_number)
@@ -55,15 +57,17 @@ def watched(request, username):
             context = {'exists': True, 'last_watched_title': last.episode.name, 'last_watched_image': last_watched_image, 'episode_nr': episode_nr, 'username': username}
         else:
             context = {'exists': True, 'last_watched_title': 'Nothing watched yet', 'last_watched_image': '', 'episode_nr': '', 'username': username}
+        
+        return render(request, 'website/watched.html', context = context, content_type="image/svg+xml")
     else:
         context = {'exists': False}
-
-    return render(request, 'website/watched.html', context = context, content_type="image/svg+xml")
+        return render(request, 'website/watched.html', context = context)
 
 def read(request, username):
     context = {}
-    user = User.objects.filter(username=username).first()
-    if user:
+    userdata = UserData.objects.filter(user__username=username, private=False).first()
+    if userdata:
+        user = userdata.user
         last = ReadIssue.objects.filter(user=user).order_by('-read_at').first()
         if last:
             issue_nr = '#' + str(last.issue.issue_number_absolute) 
@@ -74,10 +78,11 @@ def read(request, username):
             context = {'exists': True, 'last_read_title': str(last.issue.series), 'last_read_image': last_read_image, 'issue_nr': issue_nr, 'username': username}
         else:
             context = {'exists': True, 'last_read_title': 'Nothing read yet', 'last_read_image': '', 'issue_nr': '', 'username': username}
+        
+        return render(request, 'website/read.html', context = context, content_type="image/svg+xml")
     else:
         context = {'exists': False}
-
-    return render(request, 'website/read.html', context = context, content_type="image/svg+xml")
+        return render(request, 'website/read.html', context = context)
 
 class SignUpView(generic.CreateView):
     form_class = SignUpForm
