@@ -38,7 +38,8 @@ def v1(request):
 def profile(request):
     context = {}
     if not request.user.is_anonymous:
-        context = { 'image': get_user_image(request.user.email) }
+        user_data = UserData.objects.get(user=request.user)
+        context = { 'image': get_user_image(request.user.email), 'user_data': user_data }
     return render(request, 'website/profile.html', context = context)
 
 def watched(request, username):

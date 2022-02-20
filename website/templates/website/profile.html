@@ -13,15 +13,23 @@
     </center>
 </div>
 <div class="section container">
-    <h3>Manage your account:</h3>
+    <h3>Your account details</h3>
     <br>
     <div>
         <code>Note: your profile picture can be edited over at <a href="https://gravatar.com">Gravatar</a> using your email. Kaboom does not store user profile pictures.</code>
         <p><b>Email: </b>{{ user.email }}</p>
+        <p><b>Biography: </b>{{ user_data.bio }}</p>
+        {% if user_data.private == False %}
+        <p><b>Private: </b>No</p>
+        {% else %}
+        <p><b>Private: </b>Yes</p>
+        {% endif %}
         <div>
             <code><a href="{% url 'watched' user.username %}">Last watched card</a> | <a href="{% url 'read' user.username %}">Last read card</a></code>
         </div>
         <br>
+        <p>If you want to use a Kaboom profile card in your website/blog, add this code:</p>
+        <pre>&lt;img src="https://kaboomdb.org{% url 'watched' user.username %}"  alt="Watched card" /&gt;<br>&lt;img src="https://kaboomdb.org{% url 'read' user.username %}"  alt="Read card" /&gt;</pre>
     </div>
     <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
     <a href="{% url 'password_reset' %}" class="btn btn-primary">Reset Password</a>
