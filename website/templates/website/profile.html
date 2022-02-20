@@ -25,15 +25,29 @@
         <p><b>Private: </b>Yes</p>
         {% endif %}
         <div>
-            <code><a href="{% url 'watched' user.username %}">Last watched card</a> | <a href="{% url 'read' user.username %}">Last read card</a></code>
+            <code><a data-bs-toggle="collapse" href="#collapseWatched" role="button" aria-expanded="false" aria-controls="collapseWatched">Last watched card</a> | <a data-bs-toggle="collapse" href="#collapseRead" role="button" aria-expanded="false" aria-controls="collapseRead">Last read card</a></code>
+            <div class="collapse" id="collapseWatched">
+                <div class="card card-body">
+                    <img src="{% url 'watched' user.username %}" alt="Watched card" height="500px" width="auto">
+                    <br>
+                    <p>If you want to use this card in your website/blog, add this code:</p>
+                    <pre>&lt;img src="https://kaboomdb.org{% url 'watched' user.username %}" alt="Watched card" /&gt;</pre>
+                </div>
+            </div>
+            <div class="collapse" id="collapseRead">
+                <div class="card card-body">
+                    <img src="{% url 'read' user.username %}" alt="Read card" height="500px" width="auto">
+                    <br>
+                    <p>If you want to use this card in your website/blog, add this code:</p>
+                    <pre>&lt;img src="https://kaboomdb.org{% url 'read' user.username %}" alt="Read card" /&gt;</pre>
+                </div>
+            </div>
         </div>
         <br>
-        <p>If you want to use a Kaboom profile card in your website/blog, add this code:</p>
-        <pre>&lt;img src="https://kaboomdb.org{% url 'watched' user.username %}"  alt="Watched card" /&gt;<br>&lt;img src="https://kaboomdb.org{% url 'read' user.username %}"  alt="Read card" /&gt;</pre>
     </div>
     <a href="{% url 'logout' %}" class="btn btn-primary">Logout</a>
     <a href="{% url 'password_reset' %}" class="btn btn-primary">Reset Password</a>
-    {% if user.is_staff%}
+    {% if user.is_staff %}
     <a href="/admin" class="btn btn-primary">Kaboom Admin</a>
     {% endif %}
     <a href="{% url 'index' %}" class="btn btn-primary">Cancel</a>

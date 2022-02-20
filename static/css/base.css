@@ -116,3 +116,7 @@ pre {
     border: rgb(255,95,109) 1px solid;
     border-radius: 5px;
 }
+
+.carouselCards {
+    background-color: rgba(255,195,113,1) !important;
+}
