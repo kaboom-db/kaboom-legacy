@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from comics.models import Comic
 from cartoons.models import Cartoon
-from users.models import Thought, WatchedEpisode, ReadIssue, UserData
+from users.models import Thought, WatchedEpisode, ReadIssue, UserData, CartoonSubscription, ComicSubscription
 from django.contrib.auth.models import User
 from .forms import SignUpForm
 from django.urls import reverse_lazy
@@ -39,7 +39,9 @@ def profile(request):
     context = {}
     if not request.user.is_anonymous:
         user_data = UserData.objects.get(user=request.user)
-        context = { 'image': get_user_image(request.user.email), 'user_data': user_data }
+        user_cartoons = CartoonSubscription.objects.filter(user=request.user)
+        user_comics = ComicSubscription.objects.filter(user=request.user)
+        context = { 'image': get_user_image(request.user.email), 'user_data': user_data, 'user_cartoons': user_cartoons, 'user_comics': user_comics }
     return render(request, 'website/profile.html', context = context)
 
 def watched(request, username):

@@ -24,22 +24,64 @@
         {% else %}
         <p><b>Private: </b>Yes</p>
         {% endif %}
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card mb-3" style="max-width: auto; height: auto;">
+                    <div class="card-header">Cartoons</div>
+                    <div class="card-body text-dark">
+                        {% if user_comics %}
+                        <ul>
+                            {% for cartoon in user_cartoons %}
+                            <li><a href="/v1/cartoons/series/{{ cartoon.series.id }}">{{ cartoon.series.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p>You have no subscribed cartoons.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card mb-3" style="max-width: auto; height: auto;">
+                    <div class="card-header">Comics</div>
+                    <div class="card-body text-dark">
+                        {% if user_comics %}
+                        <ul>
+                            {% for comic in user_comics %}
+                            <li><a href="/v1/comics/series/{{ comic.series.id }}">{{ comic.series.series_name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p>You have no subscribed comics.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
         <div>
             <code><a data-bs-toggle="collapse" href="#collapseWatched" role="button" aria-expanded="false" aria-controls="collapseWatched">Last watched card</a> | <a data-bs-toggle="collapse" href="#collapseRead" role="button" aria-expanded="false" aria-controls="collapseRead">Last read card</a></code>
             <div class="collapse" id="collapseWatched">
                 <div class="card card-body">
+                    {% if not user_data.private %}
                     <img src="{% url 'watched' user.username %}" alt="Watched card" height="500px" width="auto">
                     <br>
-                    <p>If you want to use this card in your website/blog, add this code:</p>
+                    <p>If you want to use this widget in your website/blog, add this code:</p>
                     <pre>&lt;img src="https://kaboomdb.org{% url 'watched' user.username %}" alt="Watched card" /&gt;</pre>
+                    {% else %}
+                    <p>You cannot use Kaboom widgets as your account is private.</p>
+                    {% endif %}
                 </div>
             </div>
             <div class="collapse" id="collapseRead">
                 <div class="card card-body">
+                    {% if not user_data.private %}
                     <img src="{% url 'read' user.username %}" alt="Read card" height="500px" width="auto">
                     <br>
                     <p>If you want to use this card in your website/blog, add this code:</p>
                     <pre>&lt;img src="https://kaboomdb.org{% url 'read' user.username %}" alt="Read card" /&gt;</pre>
+                    {% else %}
+                    <p>You cannot use Kaboom widgets as your account is private.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
