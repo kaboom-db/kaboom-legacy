@@ -59,6 +59,12 @@ class Character(models.Model):
     status = models.CharField(max_length=100, choices=CHARACTER_STATUS, default="ALIVE")
     alignment = models.CharField(max_length=100, choices=ALIGNMENT_OPTIONS, default="GOOD")
     location_of_operation = models.ForeignKey(Location, on_delete=models.SET_NULL, blank=True, null=True)
+    intelligence = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    strength = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    speed = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    durability = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    power = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    combat = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(10)])
     date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
