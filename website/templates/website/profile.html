@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
 
+{% load markdown_extras %}
+
 {% block title %}Kaboom - Profile{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
+<style>
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+
 <div class="header">
     <center>
         <div class="pfp-header">
@@ -17,13 +26,23 @@
     <br>
     <div>
         <code>Note: your profile picture can be edited over at <a href="https://gravatar.com">Gravatar</a> using your email. Kaboom does not store user profile pictures.</code>
-        <p><b>Email: </b>{{ user.email }}</p>
-        <p><b>Biography: </b>{{ user_data.bio }}</p>
-        {% if user_data.private == False %}
-        <p><b>Private: </b>No</p>
-        {% else %}
-        <p><b>Private: </b>Yes</p>
-        {% endif %}
+        <div class="card card-body">
+            <p><b>Email: </b></p>
+            <p id="email">{{ user.email }}</p>
+            {% if user_data.private == False %}
+            <p><b>Private: </b></p>
+            <p>No</p>
+            {% else %}
+            <p><b>Private: </b></p>
+            <p>Yes</p>
+            {% endif %}
+        </div>
+        <br>
+        <div class="card card-body">
+            <p><b>Biography: </b></p>
+            <p id="markdown">{{ user_data.bio | markdown | safe }}</p>
+        </div>
+        <br>
         <div class="row">
             <div class="col-sm-6">
                 <div class="card mb-3" style="max-width: auto; height: auto;">
@@ -48,7 +67,8 @@
                         {% if user_comics %}
                         <ul>
                             {% for comic in user_comics %}
-                            <li><a href="/v1/comics/series/{{ comic.series.id }}">{{ comic.series.series_name }}</a></li>
+                            <li><a href="/v1/comics/series/{{ comic.series.id }}">{{ comic.series.series_name }}</a>
+                            </li>
                             {% endfor %}
                         </ul>
                         {% else %}
