@@ -17,13 +17,21 @@ from kaboom.utils import IMG_REQUEST_FIELDS, IMG_REQUEST_OPTIONS, REQUEST_STATUS
 from django.core.mail import send_mail
 from kaboom.db_secrets import DEFAULT_FROM_EMAIL
 from django.template import loader
+from django.core.exceptions import ValidationError
 
 User._meta.get_field('email')._unique = True
 
 ### When a new user is created, add a token for their account.
 class UserData(models.Model):
+    def validate_char(value):
+        if '<' in value or '>' in value:
+            raise ValidationError(
+                'Bio cannot contain \'<\' or \'>\'',
+                params={'value': value},
+            )
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
-    bio = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True, validators=[validate_char])
     private = models.BooleanField(default=False)
 
     def __str__(self):
