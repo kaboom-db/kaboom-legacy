@@ -18,8 +18,8 @@
 {% block branding %}
 <style>
     :root {
-        --primary: rgba(255,95,109,1);
-        --secondary: rgba(255,195,113,1);
+        --primary: rgba(255, 95, 109, 1);
+        --secondary: rgba(255, 195, 113, 1);
         --link-fg: var(--primary);
         --link-hover-color: var(--secondary);
         --button-hover-bg: var(--primary);
@@ -41,7 +41,7 @@
     }
 
     #header {
-        background: linear-gradient(90deg, rgba(255,95,109,1) 0%, rgba(255,195,113,1) 77%) !important;
+        background: linear-gradient(90deg, rgba(255, 95, 109, 1) 0%, rgba(255, 195, 113, 1) 77%) !important;
     }
 
     #user-tools {
@@ -68,6 +68,26 @@
     ::-moz-selection {
         color: var(--secondary);
         background-color: var(--primary);
+    }
+
+    /* width */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: var(--secondary);
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--secondary);
     }
 </style>
 
