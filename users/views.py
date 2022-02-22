@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 from rest_framework.generics import ListAPIView, GenericAPIView, CreateAPIView
 from rest_framework.views import APIView
 from users.models import Comment, Follow, Thought, UserLikedThought, UserData
-from users.users_filters import ThoughtFilter, UserFilter, UserDataFilter
-from .serializers import UserDataSerializer, ReportSerializer, ImageRequestSerializer, CommentSerializer, ContentTypeSerializer, FollowSerializer, GetFollowersSerializer, GetFollowingsSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerDetailed
+from users.users_filters import ThoughtFilter, UserFilter
+from .serializers import UserDataSerializer, ReportSerializer, ImageRequestSerializer, CommentSerializer, ContentTypeSerializer, FollowSerializer, ThoughtSerializer, UserSerializer, ThoughtSerializerDetailed, CommentSerializerDetailed, UserSerializerDetailed
 from rest_framework.response import Response
 from rest_framework.exceptions import ParseError
 from rest_framework.authentication import TokenAuthentication
@@ -13,6 +13,7 @@ from django_filters import rest_framework as filters
 from rest_framework import status
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework import pagination
 
 ### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
@@ -37,11 +38,11 @@ class CreateUser(APIView):
 class GetUsersView(ListAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = UserDataSerializer
+    serializer_class = UserSerializerDetailed
     http_method_names = ['get']
     filter_backends = (filters.DjangoFilterBackend,)
-    filterset_class = UserDataFilter
-    queryset = UserData.objects.filter(private=False).order_by('-user__date_joined')
+    filterset_class = UserFilter
+    queryset = User.objects.filter(userdata__private=False).order_by('-date_joined')
 
 class SpecificUserView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -50,9 +51,9 @@ class SpecificUserView(APIView):
     http_method_names = ['get', 'patch']
 
     def get(self, request, username):
-        user = UserData.objects.filter(user__username=username, private=False).first()
+        user = User.objects.filter(username=username, userdata__private=False).first()
         if user:
-            serializer = UserDataSerializer(instance=user)
+            serializer = UserSerializerDetailed(instance=user)
             return Response(serializer.data)
         else:
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
@@ -66,7 +67,8 @@ class SpecificUserView(APIView):
                 serializer = UserDataSerializer(instance=user_data, data=request.data, partial=True)
                 if serializer.is_valid():
                     serializer.update(instance=user_data, validated_data=serializer.validated_data)
-                    return Response(serializer.data)
+                    updated_user = UserSerializerDetailed(instance=current_user)
+                    return Response(updated_user.data)
                 else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -259,38 +261,45 @@ class UnfollowUser(APIView):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class GetUsersFollowers(APIView):
-    serializer_class = GetFollowersSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     http_method_names = ['get']
 
     def get(self, request, username):
         # Get all the followers
         try:
-            following = User.objects.get(username=username)
-            users_followers = Follow.objects.filter(following=following.id)
-            if users_followers:
-                serializer = GetFollowersSerializer(instance=users_followers, many=True)
-                return Response(serializer.data)
+            following = User.objects.filter(username=username).first()
+            if following.userdata.private == False or following == self.request.user:
+                users_followers = Follow.objects.filter(following=following.id, follower__userdata__private=False).values_list('follower', flat=True)
+                users = User.objects.filter(id__in=users_followers).order_by('username')
+                paginator = pagination.PageNumberPagination()
+                result_page = paginator.paginate_queryset(users, request)
+                serializer = UserSerializerDetailed(instance=users, many=True)
+                return paginator.get_paginated_response(data=serializer.data)
             else:
-                # user has no followers, loner
-                return Response({'error': 'User has no followers'}, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
-            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'error': 'User does not exist'}, status=status.HTTP_401_UNAUTHORIZED)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 class GetUsersFollowing(APIView):
-    serializer_class = GetFollowersSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     http_method_names = ['get']
 
     def get(self, request, username):
         try:
-            follower = User.objects.get(username=username)
-            users_following = Follow.objects.filter(follower=follower.id)
-            if users_following:
-                serializer = GetFollowingsSerializer(instance=users_following, many=True)
-                return Response(serializer.data)
+            follower = User.objects.filter(username=username).first()
+            if follower.userdata.private == False or follower == self.request.user:
+                users_following = Follow.objects.filter(follower=follower.id, following__userdata__private=False).values_list('following', flat=True)
+                users = User.objects.filter(id__in=users_following).order_by('username')
+                paginator = pagination.PageNumberPagination()
+                result_page = paginator.paginate_queryset(users, request)
+                serializer = UserSerializerDetailed(instance=users, many=True)
+                return paginator.get_paginated_response(data=serializer.data)
             else:
-                return Response({'error': 'User isn\'t following anyone'}, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
-            return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+                return Response({'error': 'User does not exist'}, status=status.HTTP_401_UNAUTHORIZED)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 class CommentView(APIView):
     authentication_classes = [TokenAuthentication]

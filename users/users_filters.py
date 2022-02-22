@@ -18,10 +18,3 @@ class UserFilter(filters.FilterSet):
     class Meta:
         model = User
         fields = ['username']
-
-class UserDataFilter(filters.FilterSet):
-    username = filters.filters.CharFilter(field_name='user', lookup_expr='username__icontains')
-
-    class Meta:
-        model = UserData
-        fields = ['user']

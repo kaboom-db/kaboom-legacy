@@ -23,10 +23,16 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'password', 'email', 'id']
 
+class UserDSer(serializers.ModelSerializer):
+    class Meta:
+        model = UserData
+        fields = ['bio', 'private']
+
 class UserSerializerDetailed(serializers.ModelSerializer):
     image = serializers.SerializerMethodField('get_image')
     date_joined = serializers.SerializerMethodField('get_date_joined')
     time_joined = serializers.SerializerMethodField('get_time_joined')
+    userdata = UserDSer()
 
     def get_time_joined(self, obj) -> str:
         return str(obj.date_joined.time())
@@ -39,7 +45,7 @@ class UserSerializerDetailed(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'id', 'image', 'date_joined', 'time_joined', 'is_staff']
+        fields = ['username', 'id', 'image', 'date_joined', 'time_joined', 'is_staff', 'userdata']
 
 class UserDataSerializer(serializers.ModelSerializer):
     user = UserSerializerDetailed(read_only=True)
@@ -140,20 +146,6 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = '__all__'
-
-class GetFollowersSerializer(serializers.ModelSerializer):
-    follower = UserSerializerDetailed(read_only=True)
-
-    class Meta:
-        model = Follow
-        fields = ['follower']
-
-class GetFollowingsSerializer(serializers.ModelSerializer):
-    following = UserSerializerDetailed(read_only=True)
-
-    class Meta:
-        model = Follow
-        fields = ['following']
 
 class ImageRequestSerializer(serializers.ModelSerializer):
     class Meta:
