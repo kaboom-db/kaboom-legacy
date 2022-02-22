@@ -142,3 +142,4 @@ media/
 .vscode/
 
 sent_emails/
+staticfiles/

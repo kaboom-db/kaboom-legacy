@@ -1,10 +1,24 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 from . import models
 from django.apps import apps
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 
 # Register your models here.
+class UserDataInline(admin.StackedInline):
+    model = models.UserData
+    can_delete = False
+    verbose_name_plural = 'user data'
+
+class UserAdmin(BaseUserAdmin):
+    inlines = (UserDataInline,)
+
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+
 @admin.register(models.Thought)
 class ThoughtAdmin(admin.ModelAdmin):
     list_display = ("title", "user", "num_of_likes", "date_created")
