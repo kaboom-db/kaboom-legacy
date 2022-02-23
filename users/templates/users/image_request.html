@@ -4,7 +4,13 @@
     {{ block.super }}
     <style>
         .deletelink {
-            background-color: red;
+            background: var(--delete-button-bg) !important;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .customdelete {
+                width: 100%;
+            }
         }
     </style>
     
@@ -21,6 +27,6 @@
 
     <div class="submit-row">
             <input type="submit" value="Approve" name="_approve">
-            <p class="deletelink-box"><input type="submit" value="Reject" name="_reject" class="deletelink"></p>
+            <p class="deletelink-box"><input type="submit" value="Reject" name="_reject" class="deletelink customdelete"></p>
     </div>
 {% endblock %}
