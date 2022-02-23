@@ -12,6 +12,11 @@
         max-width: 100%;
         height: auto;
     }
+
+    .card-image {
+        width: auto !important;
+        height: 500px !important;
+    }
 </style>
 
 <div class="header">
@@ -84,7 +89,7 @@
             <div class="collapse" id="collapseWatched">
                 <div class="card card-body">
                     {% if not user_data.private %}
-                    <img src="{% url 'watched' user.username %}" alt="Watched card" height="500px" width="auto">
+                    <img src="{% url 'watched' user.username %}" alt="Watched card" class="card-image">
                     <br>
                     <p>If you want to use this widget in your website/blog, add this code:</p>
                     <pre>&lt;img src="https://kaboomdb.org{% url 'watched' user.username %}" alt="Watched card" /&gt;</pre>
@@ -96,7 +101,7 @@
             <div class="collapse" id="collapseRead">
                 <div class="card card-body">
                     {% if not user_data.private %}
-                    <img src="{% url 'read' user.username %}" alt="Read card" height="500px" width="auto">
+                    <img src="{% url 'read' user.username %}" alt="Read card" class="card-image">
                     <br>
                     <p>If you want to use this card in your website/blog, add this code:</p>
                     <pre>&lt;img src="https://kaboomdb.org{% url 'read' user.username %}" alt="Read card" /&gt;</pre>
