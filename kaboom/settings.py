@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
-    'crispy_forms'
+    'crispy_forms',
+    'django_bleach'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -171,6 +172,17 @@ REST_FRAMEWORK = {
         'user': '60/minute'
     }
 }
+
+BLEACH_ALLOWED_TAGS = ['p', 'b', 'i', 'u', 'em', 'strong', 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'center']
+BLEACH_ALLOWED_ATTRIBUTES = ['href', 'title', 'style', 'src']
+BLEACH_ALLOWED_STYLES = [
+    'font-family', 'font-weight', 'text-decoration', 'font-variant'
+]
+BLEACH_ALLOWED_PROTOCOLS = [
+    'http', 'https', 'data'
+]
+BLEACH_STRIP_TAGS = True
+BLEACH_STRIP_COMMENTS = False
 
 AWS_ACCESS_KEY_ID = db_secrets.AWS_ACCESS_KEY
 AWS_SECRET_ACCESS_KEY = db_secrets.AWS_SECRET_ACCESS_KEY

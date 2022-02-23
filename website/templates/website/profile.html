@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load markdown_extras %}
+{% load bleach_tags %}
 
 {% block title %}Kaboom - Profile{% endblock %}
 
@@ -40,7 +41,7 @@
         <br>
         <div class="card card-body">
             <p><b>Biography: </b></p>
-            <p id="markdown">{{ user_data.bio | markdown | safe }}</p>
+            <p id="markdown">{{ user_data.bio | markdown | bleach }}</p>
         </div>
         <br>
         <div class="row">

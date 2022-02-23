@@ -23,6 +23,7 @@ User._meta.get_field('email')._unique = True
 
 ### When a new user is created, add a token for their account.
 class UserData(models.Model):
+    # Keeping this for the future
     def validate_char(value):
         if '<' in value or '>' in value:
             raise ValidationError(
@@ -31,7 +32,7 @@ class UserData(models.Model):
             )
     
     user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
-    bio = models.TextField(blank=True, null=True, validators=[validate_char])
+    bio = models.TextField(blank=True, null=True)
     private = models.BooleanField(default=False)
 
     def __str__(self):
