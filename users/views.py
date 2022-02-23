@@ -92,19 +92,22 @@ class GetThoughts(ListAPIView):
     http_method_names = ['get']
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = ThoughtFilter
-    queryset = Thought.objects.all().order_by('-date_created')
+    queryset = Thought.objects.filter(user__userdata__private=False).order_by('-date_created')
 
 class SpecificThoughtView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ThoughtSerializerDetailed
-    http_method_names = ['get', 'delete', 'post']
+    http_method_names = ['get', 'delete', 'patch', 'post']
 
     def get(self, request, thought_id):
         try:
             thought = Thought.objects.get(id=thought_id)
-            serializer = ThoughtSerializerDetailed(thought)
-            return Response(serializer.data)
+            if thought.user.userdata.private == False or thought.user == self.request.user:
+                serializer = ThoughtSerializerDetailed(thought)
+                return Response(serializer.data)
+            else:
+                return Response({'error': 'This thought is not accessible'}, status=status.HTTP_401_UNAUTHORIZED)
         except:
             return Response({'error': 'Thought Id not found'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -120,7 +123,7 @@ class SpecificThoughtView(APIView):
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, thought_id):
+    def patch(self, request, thought_id):
         # A user can only edit their own thought
         user = self.request.user
         try:
