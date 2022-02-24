@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'cartoons.apps.CartoonsConfig',
     'users.apps.UsersConfig',
     'website.apps.WebsiteConfig',
+    'social.apps.SocialConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
