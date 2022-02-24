@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from comics.models import Issue
-from users.models import UserData, Report, ImageRequest, CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, Thought, Comment, get_user_image
+from users.models import UserData, Report, ImageRequest, CartoonSubscription, ComicSubscription, Follow, ReadIssue, WatchedEpisode, get_user_image
 import comics.serializers as comics_ser
 import cartoons.serializers as cartoons_ser
 from django.contrib.contenttypes.models import ContentType
@@ -111,36 +111,6 @@ class ContentTypeSerializer(serializers.ModelSerializer):
         model = ContentType
         fields = ['id', 'model']
         lookup_field = 'model'
-
-class ThoughtSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializerDetailed(read_only=True)
-    thought_type = ContentTypeSerializer(read_only=True)
-
-    class Meta:
-        model = Thought
-        fields = '__all__'
-        read_only_fields = ['date_created', 'num_of_likes']
-
-class CommentSerializerDetailed(serializers.ModelSerializer):
-    user = UserSerializerDetailed(read_only=True)
-    thought = ThoughtSerializerDetailed(read_only=True)
-
-    class Meta:
-        model = Comment
-        fields = '__all__'
-        read_only_fields = ['date_created']
-
-class ThoughtSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Thought
-        fields = '__all__'
-        read_only_fields = ['date_created', 'num_of_likes']
-
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = '__all__'
-        read_only_fields = ['date_created']
 
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:

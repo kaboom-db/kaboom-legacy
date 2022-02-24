@@ -115,29 +115,6 @@ class WatchedEpisode(models.Model):
     def __str__(self) -> str:
         return "Episode: " + str(self.episode) + ", User: " + str(self.user) + ", Watched: " + str(self.watched_at)
 
-class Thought(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=250)
-    post_content = models.TextField()
-    date_created = models.DateTimeField(default=timezone.now)
-    limit = Q(app_label='comics', model='comic') | Q(app_label='comics', model='issue') | Q(app_label='cartoons', model='cartoon') | Q(app_label='cartoons', model='episode')
-    thought_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.SET_NULL, limit_choices_to=limit)
-    related_object_id = models.PositiveIntegerField(blank=True, null=True)
-    content_object = GenericForeignKey('thought_type', 'related_object_id')
-    num_of_likes = models.IntegerField(default=0)
-
-    def __str__(self) -> str:
-        return self.title
-
-class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment_content = models.TextField()
-    date_created = models.DateTimeField(default=timezone.now)
-    thought = models.ForeignKey(Thought, on_delete=models.CASCADE)
-
-    def __str__(self) -> str:
-        return "Comment on: " + str(self.thought) + ", User: " + str(self.user)
-
 class Follow(models.Model):
     class Meta:
         unique_together = (('follower', 'following'),)
@@ -149,28 +126,6 @@ class Follow(models.Model):
         if self.follower == self.following:
             return
         super(Follow, self).save(*args, **kwargs)
-
-class UserLikedThought(models.Model):
-    class Meta:
-        unique_together = (('user', 'thought'),)
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    thought = models.ForeignKey(Thought, on_delete=models.CASCADE)
-
-@receiver(post_save, sender=UserLikedThought)
-def add_num_of_likes(sender, instance=None, created=False, **kwargs):
-    if created:
-        num_of_likes = UserLikedThought.objects.filter(thought=instance.thought.id).aggregate(count=Count('user'))['count']
-        thought = Thought.objects.get(id=instance.thought.id)
-        thought.num_of_likes = num_of_likes
-        thought.save()
-
-@receiver(post_delete, sender=UserLikedThought)
-def delete_num_of_likes(sender, instance=None, **kwargs):
-    num_of_likes = UserLikedThought.objects.filter(thought=instance.thought.id).aggregate(count=Count('user'))['count']
-    thought = Thought.objects.get(id=instance.thought.id)
-    thought.num_of_likes = num_of_likes
-    thought.save()
 
 class ImageRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

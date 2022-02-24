@@ -143,3 +143,4 @@ media/
 
 sent_emails/
 staticfiles/
+.backup
