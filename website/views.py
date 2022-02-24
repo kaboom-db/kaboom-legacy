@@ -8,6 +8,7 @@ from .forms import SignUpForm
 from django.urls import reverse_lazy
 from django.views import generic
 from users.models import get_user_image
+from social.models import Thought
 
 import base64
 import requests
@@ -17,9 +18,8 @@ def index(request):
     num_of_comics = Comic.objects.count()
     num_of_cartoons = Cartoon.objects.count()
     num_of_users = User.objects.count()
-    # num_of_thoughts = Thought.objects.count()
-    # return render(request, 'website/index.html', context={'num_of_comics': num_of_comics, 'num_of_cartoons': num_of_cartoons, 'num_of_users': num_of_users, 'num_of_thoughts': num_of_thoughts})
-    return render(request, 'website/index.html', context={'num_of_comics': num_of_comics, 'num_of_cartoons': num_of_cartoons, 'num_of_users': num_of_users})
+    num_of_thoughts = Thought.objects.count()
+    return render(request, 'website/index.html', context={'num_of_comics': num_of_comics, 'num_of_cartoons': num_of_cartoons, 'num_of_users': num_of_users, 'num_of_thoughts': num_of_thoughts})
 
 def docs(request):
     return HttpResponseRedirect('https://github.com/kaboom-db/kaboom-docs/')
