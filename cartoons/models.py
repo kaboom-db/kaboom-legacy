@@ -4,9 +4,6 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from kaboom.utils import STATUS_OPTIONS, CHARACTER_STATUS, ALIGNMENT_OPTIONS
 
-# // TODO(#3): Rename file before uploading to S3
-# //    Reference: https://stackoverflow.com/questions/56888583/how-can-i-rename-an-uploaded-file-on-django-before-sending-it-to-amazon-s3-bucke
-# //    Do not want users to upload silly filenames, so should rename each file with a certain pattern, eg, Network_ID_Logo.ext
 
 class Location(models.Model):
     city = models.CharField(max_length=100, blank=True, null=True)
