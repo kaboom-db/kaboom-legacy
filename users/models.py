@@ -129,11 +129,18 @@ class Follow(models.Model):
 
 class ImageRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # This needs to be blankable so that the file can be deleted when a request is rejected.
     image = models.ImageField(blank=True)
     object_type = models.CharField(max_length=50, choices=IMG_REQUEST_OPTIONS)
     request_field = models.CharField(max_length=50, choices=IMG_REQUEST_FIELDS)
     object_id = models.PositiveIntegerField()
     status = models.CharField(max_length=50, choices=REQUEST_STATUS, default="NONE")
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            ext = self.image.name.split('.')[-1]
+            self.image.name = self.object_type + '_' + str(self.object_id) + '_' + self.request_field + '.' + ext
+        super(ImageRequest, self).save(*args, **kwargs)
 
     def __str__(self):
         return "Image Request: " + self.user.username + " | " + self.object_type
