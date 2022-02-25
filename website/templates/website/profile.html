@@ -32,6 +32,11 @@
     <br>
     <div>
         <div class="card card-body">
+            <p><b>Biography: </b></p>
+            <p id="markdown">{{ user_data.bio | markdown | bleach }}</p>
+        </div>
+        <br>
+        <div class="card card-body">
             <p><b>Email: </b></p>
             <p id="email">{{ user.email }}</p>
             {% if user_data.private == False %}
@@ -42,11 +47,6 @@
             <p>Yes</p>
             {% endif %}
             <code>Note: your profile picture can be edited over at <a href="https://gravatar.com">Gravatar</a> using your email. Kaboom does not store user profile pictures.</code>
-        </div>
-        <br>
-        <div class="card card-body">
-            <p><b>Biography: </b></p>
-            <p id="markdown">{{ user_data.bio | markdown | bleach }}</p>
         </div>
         <br>
         <div class="row">

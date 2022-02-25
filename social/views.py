@@ -36,3 +36,13 @@ class ThoughtView(viewsets.ModelViewSet):
                 return Response({'error': 'You are not authorised to view this thought.'}, status=status.HTTP_401_UNAUTHORIZED)
         except:
             return Response({'error': 'Thought with ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
+    
+    def create(self, request):
+        user = self.request.user
+        request.data['user'] = user.id
+        serializer = ThoughtSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
