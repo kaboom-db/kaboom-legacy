@@ -46,3 +46,21 @@ class ThoughtView(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def partial_update(self, request, pk=None):
+        user = self.request.user
+        try:
+            thought = Thought.objects.get(pk=pk)
+            # Check if the user is authorised to edit this thought
+            if user == thought.user:
+                request.data['user'] = thought.user.id
+                serializer = ThoughtSerializer(instance=thought, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.update(instance=thought, validated_data=serializer.validated_data)
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'You are not authorised to edit this thought'}, status=status.HTTP_401_UNAUTHORIZED)
+        except:
+            return Response({'error': 'Thought with ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
