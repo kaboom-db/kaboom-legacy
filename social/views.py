@@ -2,10 +2,10 @@ from rest_framework import status, viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from .serializers import ThoughtSerializer, ThoughtSerializerDetailed, CommentSerializer, CommentSerializerDetailed
+from django_filters import rest_framework as filters
 from .filters import ThoughtFilter
 from .models import Thought, Comment
 from rest_framework import pagination
-from django_filters import rest_framework as filters
 from rest_framework.response import Response
 
 # Create your views here.
