@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from kaboom.utils import STATUS_OPTIONS, CHARACTER_STATUS, ALIGNMENT_OPTIONS
 
-
 class Location(models.Model):
     city = models.CharField(max_length=100, blank=True, null=True)
     nation = models.CharField(max_length=100)
