@@ -15,6 +15,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import pagination
 
+# // TODO(#5): Optimize with use of select_related
+# //    Check this for inspiration: https://sayari3.com/articles/33-what-is-select_related-in-django/
+
 ### Creates a user. Must pass an email, password and username.
 class CreateUser(APIView):
     def post(self, request):
