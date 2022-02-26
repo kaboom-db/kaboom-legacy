@@ -18,6 +18,7 @@ from django.core.mail import send_mail
 from kaboom.db_secrets import DEFAULT_FROM_EMAIL
 from django.template import loader
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 User._meta.get_field('email')._unique = True
 
@@ -62,6 +63,7 @@ class ComicSubscription(models.Model):
     series = models.ForeignKey(comic_models.Comic, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(0), MaxValueValidator(10)])
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return "Comic: " + str(self.series) + ", User: " + str(self.user)
@@ -91,6 +93,7 @@ class CartoonSubscription(models.Model):
     series = models.ForeignKey(cartoons_models.Cartoon, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.FloatField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(10)])
+    date_created = models.DateTimeField(default=timezone.now)
 
     def __str__(self) -> str:
         return "Cartoon: " + str(self.series) + ", User: " + str(self.user)

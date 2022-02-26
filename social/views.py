@@ -5,6 +5,8 @@ from .serializers import ThoughtSerializer, ThoughtSerializerDetailed, CommentSe
 from django_filters import rest_framework as filters
 from .filters import ThoughtFilter, CommentFilter
 from .models import Thought, Comment
+from users.models import Follow, ComicSubscription, ReadIssue, CartoonSubscription, WatchedEpisode
+from users.serializers import ComicSubscriptionSerializerDetailed, ReadIssuesSerializerDetailed, CartoonSubscriptionSerializerDetailed, WatchedEpisodesSerializerDetailed
 from rest_framework import pagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -134,3 +136,54 @@ class SpecificCommentView(APIView):
 # // TODO(#7): Write user feeds
 # //    User feeds should have the ability to take a type as part of the query param
 # //    For example; type=comics which would show the comics read by the user followings
+class FeedView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get']
+
+    def get(self, request):
+        user = self.request.user
+        feed_type = self.request.query_params.get('type')
+        if not feed_type:
+            feed_type = 'thought'
+
+        # Get all the followed users 
+        followings = Follow.objects.filter(follower=user).values_list('following', flat=True)
+        
+        if feed_type.lower() == 'comic':
+            # Get the comic subs from that followings
+            comic_subs = ComicSubscription.objects.filter(user__in=followings).order_by('-date_created')
+            paginator = pagination.PageNumberPagination()
+            result_page = paginator.paginate_queryset(comic_subs, request)
+            serializer = ComicSubscriptionSerializerDetailed(instance=result_page, many=True)
+            return paginator.get_paginated_response(data=serializer.data)
+        elif feed_type.lower() == 'issue':
+            # Get the read issues from the followings\
+            read_issues = ReadIssue.objects.filter(user__in=followings).order_by('-read_at')
+            paginator = pagination.PageNumberPagination()
+            result_page = paginator.paginate_queryset(read_issues, request)
+            serializer = ReadIssuesSerializerDetailed(instance=result_page, many=True)
+            return paginator.get_paginated_response(data=serializer.data)
+        elif feed_type.lower() == 'cartoon':
+            # Get the cartoons subscriptions of users
+            cartoons_subs = CartoonSubscription.objects.filter(user__in=followings).order_by('-date_created')
+            paginator = pagination.PageNumberPagination()
+            result_page = paginator.paginate_queryset(cartoons_subs, request)
+            serializer = CartoonSubscriptionSerializerDetailed(instance=result_page, many=True)
+            return paginator.get_paginated_response(data=serializer.data)
+        elif feed_type.lower() == 'episode':
+            # Get the watched episodes for users
+            watched_eps = WatchedEpisode.objects.filter(user__in=followings).order_by('-watched_at')
+            paginator = pagination.PageNumberPagination()
+            result_page = paginator.paginate_queryset(watched_eps, request)
+            serializer = WatchedEpisodesSerializerDetailed(instance=result_page, many=True)
+            return paginator.get_paginated_response(data=serializer.data)
+        elif feed_type.lower() == 'thought':
+            # Get the followed users thoughts
+            thoughts = Thought.objects.filter(user__in=followings).order_by('-date_created')
+            paginator = pagination.PageNumberPagination()
+            result_page = paginator.paginate_queryset(thoughts, request)
+            serializer = ThoughtSerializerDetailed(instance=result_page, many=True)
+            return paginator.get_paginated_response(data=serializer.data)
+        else:
+            return Response({'error': 'Feed type is not accepted. Possible types are (comic, issue, cartoon, episode, thought)'})
