@@ -64,3 +64,7 @@ class ThoughtView(viewsets.ModelViewSet):
                 return Response({'error': 'You are not authorised to edit this thought'}, status=status.HTTP_401_UNAUTHORIZED)
         except:
             return Response({'error': 'Thought with ID does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+# // TODO(#7): Write user feeds
+# //    User feeds should have the ability to take a type as part of the query param
+# //    For example; type=comics which would show the comics read by the user followings
