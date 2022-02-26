@@ -133,9 +133,6 @@ class SpecificCommentView(APIView):
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-# // TODO(#7): Write user feeds
-# //    User feeds should have the ability to take a type as part of the query param
-# //    For example; type=comics which would show the comics read by the user followings
 class FeedView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
