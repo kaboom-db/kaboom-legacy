@@ -100,6 +100,37 @@ class CommentView(APIView):
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+class SpecificCommentView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'patch']
+
+    def get(self, request, comment_id):
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            serializer = CommentSerializerDetailed(instance=comment)
+            return Response(serializer.data)
+        except:
+            return Response({'error': 'Comment with ID does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, comment_id):
+        user = self.request.user
+        try:
+            comment = Comment.objects.get(id=comment_id)
+            if comment.user == user:
+                request.data['thought'] = comment.thought.id
+                request.data['user'] = comment.user.id
+                serializer = CommentSerializer(instance=comment, data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.update(instance=comment, validated_data=serializer.validated_data)
+                    return Response(serializer.data)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error': 'You are not authorised to edit this comment'}, status=status.HTTP_401_UNAUTHORIZED)
+        except BaseException as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 # // TODO(#7): Write user feeds
 # //    User feeds should have the ability to take a type as part of the query param
 # //    For example; type=comics which would show the comics read by the user followings

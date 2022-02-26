@@ -8,5 +8,6 @@ routerSocial.register(r'thoughts', views.ThoughtView, basename='thoughts')
 app_name = 'social'
 urlpatterns = [
     path('', include(routerSocial.urls), name='index'),
-    path('thoughts/<int:thought_id>/comments/', views.CommentView.as_view(), name='comments')
+    path('thoughts/<int:thought_id>/comments/', views.CommentView.as_view(), name='comments'),
+    path('comments/<int:comment_id>/', views.SpecificCommentView.as_view(), name='spec-comments')
 ]

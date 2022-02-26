@@ -14,8 +14,7 @@ class ThoughtFilter(filters.FilterSet):
 class CommentFilter(filters.FilterSet):
     user = filters.filters.CharFilter(field_name='user', lookup_expr='username__iexact')
     date_created = filters.filters.DateTimeFromToRangeFilter(field_name='date_created')
-    thought = filters.filters.NumberFilter(field_name='thought')
 
     class Meta:
         model = Comment
-        fields = ['user', 'date_created', 'thought']
+        fields = ['user', 'date_created']

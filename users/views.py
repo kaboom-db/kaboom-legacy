@@ -76,7 +76,6 @@ class SpecificUserView(APIView):
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response({'error': 'You are not authorized to edit this user.'}, status=status.HTTP_401_UNAUTHORIZED)
-
         else:
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
