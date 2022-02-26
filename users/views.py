@@ -80,8 +80,6 @@ class SpecificUserView(APIView):
         else:
             return Response({'error': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
-# // TODO(#6): Rewrite follow logic to include private accounts
-# //    To simplify this logic, private accounts will not be followable
 class FollowUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
