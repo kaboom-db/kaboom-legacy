@@ -92,17 +92,20 @@ class FollowUser(APIView):
         user = self.request.user
         try:
             following = User.objects.get(username=username)
-            request.data['follower'] = user.id
-            request.data['following'] = following.id
-            serializer = FollowSerializer(data=request.data)
-            if user != following:
-                if serializer.is_valid():
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+            if following.userdata.private == False:
+                request.data['follower'] = user.id
+                request.data['following'] = following.id
+                serializer = FollowSerializer(data=request.data)
+                if user != following:
+                    if serializer.is_valid():
+                        serializer.save()
+                        return Response(serializer.data, status=status.HTTP_201_CREATED)
+                    else:
+                        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'error': 'Users cannot follow themselves'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({'error': 'Users cannot follow themselves'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'This user is private'}, status=status.HTTP_400_BAD_REQUEST)
         except BaseException as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
