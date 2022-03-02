@@ -9,8 +9,6 @@ There is currently nothing in the database, the documentation is still a WIP (ht
 
 ## Developer Notes
 
-**The staging server is currently down, and will be reinstated when Kaboom reaches a stable state**
-
 While testing your client, please make sure to only use the staging server, located here: https://staging-kaboom.herokuapp.com/v1
 
 You can also download the Postman collection here, which is pre-configured with the staging url and a demo user access token: https://github.com/crxssed7/kaboom-api/blob/master/KABOOM.postman_collection.json
