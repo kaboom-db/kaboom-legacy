@@ -123,7 +123,7 @@ class EpisodeView(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'patch']
 
     def list(self, request):
-        queryset = Episode.objects.all().order_by('episode_number')
+        queryset = Episode.objects.all().order_by('season_number')
         queryset = self.filter_queryset(queryset)
         paginator = pagination.PageNumberPagination()
         result_page = paginator.paginate_queryset(queryset, request)
