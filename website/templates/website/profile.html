@@ -54,7 +54,7 @@
                 <div class="card mb-3" style="max-width: auto; height: auto;">
                     <div class="card-header">Cartoons</div>
                     <div class="card-body text-dark">
-                        {% if user_comics %}
+                        {% if user_cartoons %}
                         <ul>
                             {% for cartoon in user_cartoons %}
                             <li><a href="/v1/cartoons/series/{{ cartoon.series.id }}">{{ cartoon.series.name }}</a></li>
