@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from . import db_secrets
 
-# // TODO(#11): Make Kaboom self hostable
-# //    This means that sendgrid, aws s3 and pgsql should be optional.
 PGSQL = True
 SENDGRID = False
 AWS_S3 = False
