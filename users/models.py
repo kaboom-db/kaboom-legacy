@@ -15,7 +15,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models import Q
 from kaboom.utils import IMG_REQUEST_FIELDS, IMG_REQUEST_OPTIONS, REQUEST_STATUS, REPORT_OPTIONS
 from django.core.mail import send_mail
-from kaboom.db_secrets import DEFAULT_FROM_EMAIL
+from kaboom.settings import DEFAULT_FROM_EMAIL
 from django.template import loader
 from django.core.exceptions import ValidationError
 from django.utils import timezone
