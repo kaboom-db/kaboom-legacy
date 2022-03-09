@@ -5,10 +5,11 @@ class SeriesFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
     genre = filters.filters.CharFilter(field_name='genres', lookup_expr='genre__iexact')
     network = filters.filters.NumberFilter(field_name='network')
+    status = filters.filters.CharFilter(field_name='status', lookup_expr='icontains')
 
     class Meta:
         model = Cartoon
-        fields = ['name', 'genres', 'network']
+        fields = ['name', 'genres', 'network', 'status']
 
 class CharactersFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
