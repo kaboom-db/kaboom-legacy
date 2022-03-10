@@ -22,7 +22,7 @@ def index(request):
     return render(request, 'website/index.html', context={'num_of_comics': num_of_comics, 'num_of_cartoons': num_of_cartoons, 'num_of_users': num_of_users, 'num_of_thoughts': num_of_thoughts})
 
 def docs(request):
-    return HttpResponseRedirect('https://github.com/kaboom-db/kaboom-docs/')
+    return HttpResponseRedirect('https://kaboom-db.github.io/kaboom-docs/')
 
 def tocs(request):
     return HttpResponseRedirect('https://github.com/kaboom-db/kaboom-api/blob/master/LICENSE#L71-L621')
