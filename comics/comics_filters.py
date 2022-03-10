@@ -30,10 +30,11 @@ class IssuesFilter(filters.FilterSet):
     series = filters.filters.NumberFilter(field_name='series')
     issue_number_absolute = filters.filters.NumberFilter(field_name='issue_number_absolute')
     issue_name = filters.filters.CharFilter(field_name='issue_name', lookup_expr='icontains')
+    release_date = filters.filters.DateFromToRangeFilter(field_name='release_date')
 
     class Meta:
         model = Issue
-        fields = ['series', 'issue_number_absolute', 'issue_name']
+        fields = ['series', 'issue_number_absolute', 'issue_name', 'release_date']
 
 class PublishersFilters(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
