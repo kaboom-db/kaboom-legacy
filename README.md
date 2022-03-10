@@ -20,4 +20,4 @@ You can also download the [Postman collection](https://github.com/crxssed7/kaboo
 
 Any data uploaded to the staging database does not persist and will be refreshed frequently.
 
-The documentation for the Kaboom api is hosted [here](https://kaboom-db.github.io/kaboom-docs/).
+**The documentation for the Kaboom api is hosted [here](https://kaboom-db.github.io/kaboom-docs/).**
