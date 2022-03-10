@@ -10,6 +10,8 @@ from rest_framework import status
 from rest_framework import pagination
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.contrib.auth.models import User
+
 ### Gets a users comic subcriptions. Can pass in a query.
 class ComicSubscriptionsView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -23,6 +25,10 @@ class ComicSubscriptionsView(APIView):
         query_user = request.query_params.get('user')
         if query_user:
             user_id = query_user
+            # Check if specified user is private
+            tmp = User.objects.filter(id=user_id, userdata__private=False).first()
+            if not tmp:
+                return Response({'error': 'This user either does not exist or is private'})
         else:
             user_id = user.pk
         try:
@@ -49,7 +55,6 @@ class ComicSubscriptionsView(APIView):
     
     def delete(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
         try:
             instance = ComicSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
             if instance:
@@ -103,6 +108,10 @@ class UserReadIssuesView(APIView):
         query_user = request.query_params.get('user')
         if query_user:
             user_id = query_user
+            # Check if specified user is private
+            tmp = User.objects.filter(id=user_id, userdata__private=False).first()
+            if not tmp:
+                return Response({'error': 'This user either does not exist or is private'})
         else:
             user_id = user.pk
         try:

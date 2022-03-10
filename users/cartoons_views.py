@@ -11,6 +11,8 @@ from rest_framework import status
 from rest_framework import pagination
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.contrib.auth.models import User
+
 ### Gets all the cartoons that the user is subbed to
 class CartoonSubscriptionsView(APIView):
     authentication_classes = [TokenAuthentication]
@@ -24,6 +26,9 @@ class CartoonSubscriptionsView(APIView):
         query_user = request.query_params.get('user')
         if query_user:
             user_id = query_user
+            tmp = User.objects.filter(id=user_id, userdata__private=False).first()
+            if not tmp:
+                return Response({'error': 'This user either does not exist or is private'})
         else:
             user_id = user.pk
         try:
@@ -103,6 +108,9 @@ class UserWatchedEpisodesView(APIView):
         query_user = request.query_params.get('user')
         if query_user:
             user_id = query_user
+            tmp = User.objects.filter(id=user_id, userdata__private=False).first()
+            if not tmp:
+                return Response({'error': 'This user either does not exist or is private'})
         else:
             user_id = user.pk
         try:
@@ -123,7 +131,7 @@ class UserWatchedEpisodesView(APIView):
         serializer = WatchedEpisodesSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'success': 'Watched the episode'}, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
