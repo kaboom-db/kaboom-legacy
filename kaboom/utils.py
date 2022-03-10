@@ -36,8 +36,9 @@ REPORT_OPTIONS = (
     ("cartoons_Character", "cartoon_character"),
     ("cartoons_Cartoon", "cartoon_series"),
     ("cartoons_Episode", "cartoon_episode"),
+    ("cartoons_Team", "cartoon_team"),
+    ("cartoons_Location", "cartoon_location"),
     ("users_Thought", "users_thought"),
-    ("users_Comment", "users_comment"),
     ("users_Comment", "users_comment"),
     ("auth_User", "auth_user"),
 )
