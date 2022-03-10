@@ -14,10 +14,10 @@ Instructions on how to self host Kaboom will be coming soon.
 
 ## Developer Notes
 
-If you want to make a client for Kaboom but don't want to go through the hassle of self hosting it, you can use the demo/staging server located here: https://staging-kaboom.herokuapp.com/v1. This is just a slimmed down version of Kaboom with limited functionality.
+If you want to make a client for Kaboom but don't want to go through the hassle of self hosting it, you can use the demo/staging server located [here](https://staging-kaboom.herokuapp.com/v1). This is just a slimmed down version of Kaboom with "limited" functionality (data uploads do not persist).
 
-You can also download the Postman collection here, which is pre-configured with the staging url and a demo user access token: https://github.com/crxssed7/kaboom-api/blob/master/KABOOM.postman_collection.json
+You can also download the [Postman collection](https://github.com/crxssed7/kaboom-api/blob/master/KABOOM.postman_collection.json), which is pre-configured with the staging url and a demo user access token.
 
 Any data uploaded to the staging database does not persist and will be refreshed frequently.
 
-Documentation coming soon.
+The documentation for the Kaboom api is hosted [here](https://kaboom-db.github.io/kaboom-docs/).
