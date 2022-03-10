@@ -23,7 +23,7 @@ class CharactersFilter(filters.FilterSet):
 class EpisodesFilter(filters.FilterSet):
     query = filters.filters.CharFilter(field_name='name', lookup_expr='icontains')
     series = filters.filters.NumberFilter(field_name='series')
-    # // TODO: Document new filters on both cartoon_filters and comics_filters
+    # // TODO(#13): Document new filters on both cartoon_filters and comics_filters
     # //    Docs for the date filters are out of date
     release_date = filters.filters.DateFromToRangeFilter(field_name='release_date')
     season_number = filters.filters.NumberFilter(field_name='season_number')
