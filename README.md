@@ -10,7 +10,7 @@ Kaboom has always just been a hobby project for me. I don't have a lot of experi
 Kaboom is in a deployable state, if you want to use it you can [host it yourself](#self-hosting-kaboom) - when it comes to actually making Kaboom go live I'll probably write a script to import user data to the live server.
 
 ## Self hosting Kaboom
-Instructions on how to self host Kaboom will be coming soon.
+Instructions on how to self host Kaboom are avaliable [here](https://kaboom-db.github.io/kaboom-docs/blog/self-host-kaboom)
 
 ## Developer Notes
 
