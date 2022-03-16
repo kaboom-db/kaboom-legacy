@@ -14,6 +14,7 @@ from rest_framework import status
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import pagination
+from rest_framework.parsers import MultiPartParser
 
 # // TODO(#5): Optimize with use of select_related
 # //    Check this for inspiration: https://sayari3.com/articles/33-what-is-select_related-in-django/
@@ -170,6 +171,7 @@ class ImageRequestView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = ImageRequestSerializer
+    parser_classes = [MultiPartParser]
     http_method_names = ['post']
 
     def post(self, request):
