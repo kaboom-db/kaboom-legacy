@@ -11,7 +11,13 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from . import db_secrets
+import os
+
+def to_bool(val: str) -> bool:
+    if val.lower() == 'true':
+        return True
+    else:
+        return False
 
 PGSQL = True
 SENDGRID = False
@@ -25,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = db_secrets.DJ_SECRET_KEY
+SECRET_KEY = os.environ['KABOOM_DJ_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -93,11 +99,11 @@ LOGOUT_REDIRECT_URL = 'index'
 
 if SENDGRID:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    DEFAULT_FROM_EMAIL = db_secrets.DEFAULT_FROM_EMAIL
-    EMAIL_HOST = db_secrets.EMAIL_HOST
-    EMAIL_HOST_USER = db_secrets.EMAIL_HOST_USER
-    EMAIL_HOST_PASSWORD = db_secrets.SENDGRID_APIKEY
-    EMAIL_PORT = db_secrets.EMAIL_PORT
+    DEFAULT_FROM_EMAIL = os.environ['KABOOM_DEFAULT_FROM_EMAIL']
+    EMAIL_HOST = os.environ['KABOOM_EMAIL_HOST']
+    EMAIL_HOST_USER = os.environ['KABOOM_EMAIL_HOST_USER']
+    EMAIL_HOST_PASSWORD = os.environ['KABOOM_SENDGRID_APIKEY']
+    EMAIL_PORT = os.environ['KABOOM_EMAIL_PORT']
     EMAIL_USE_TLS = True
 else:
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
@@ -111,11 +117,11 @@ if PGSQL:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': db_secrets.DB_NAME,
-            'USER': db_secrets.DB_USER,
-            'PASSWORD': db_secrets.DB_PASS,
-            'HOST': db_secrets.DB_HOST,
-            'PORT': db_secrets.DB_PORT
+            'NAME': os.environ['KABOOM_DB_NAME'],
+            'USER': os.environ['KABOOM_DB_USER'],
+            'PASSWORD': os.environ['KABOOM_DB_PASS'],
+            'HOST': os.environ['KABOOM_DB_HOST'],
+            'PORT': os.environ['KABOOM_DB_PORT']
         }
     }
 else:
@@ -203,13 +209,13 @@ BLEACH_STRIP_TAGS = True
 BLEACH_STRIP_COMMENTS = False
 
 if AWS_S3:
-    AWS_ACCESS_KEY_ID = db_secrets.AWS_ACCESS_KEY
-    AWS_SECRET_ACCESS_KEY = db_secrets.AWS_SECRET_ACCESS_KEY
-    AWS_STORAGE_BUCKET_NAME = db_secrets.AWS_BUCKET_NAME
-    AWS_S3_SIGNATURE_VERSION = db_secrets.AWS_S3_SIGNATURE_VERSION
-    AWS_S3_REGION_NAME = db_secrets.AWS_S3_REGION_NAME
-    AWS_S3_FILE_OVERWRITE = db_secrets.AWS_S3_FILE_OVERWRITE
-    AWS_DEFAULT_ACL = db_secrets.AWS_DEFAULT_ACL
-    AWS_S3_VERIFY = db_secrets.AWS_S3_VERIFY
+    AWS_ACCESS_KEY_ID = os.environ['KABOOM_AWS_ACCESS_KEY']
+    AWS_SECRET_ACCESS_KEY = os.environ['KABOOM_AWS_SECRET_ACCESS_KEY']
+    AWS_STORAGE_BUCKET_NAME = os.environ['KABOOM_AWS_BUCKET_NAME']
+    AWS_S3_SIGNATURE_VERSION = os.environ['KABOOM_AWS_S3_SIGNATURE_VERSION']
+    AWS_S3_REGION_NAME = os.environ['KABOOM_AWS_S3_REGION_NAME']
+    AWS_S3_FILE_OVERWRITE = to_bool(os.environ['KABOOM_AWS_S3_FILE_OVERWRITE'])
+    AWS_DEFAULT_ACL = None
+    AWS_S3_VERIFY = to_bool(os.environ['KABOOM_AWS_S3_VERIFY'])
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' 
-    AWS_QUERYSTRING_AUTH = db_secrets.AWS_QUERYSTRING_AUTH
+    AWS_QUERYSTRING_AUTH = to_bool(os.environ['KABOOM_AWS_QUERYSTRING_AUTH'])
