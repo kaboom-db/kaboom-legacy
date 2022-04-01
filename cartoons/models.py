@@ -41,7 +41,8 @@ class Genre(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=100)
     tagline = models.CharField(max_length=256, blank=True, null=True)
-    disbanded = models.PositiveIntegerField(blank=True, null=True, validators=[MinValueValidator(1000), MaxValueValidator(9999)])
+    disbanded = models.PositiveIntegerField(blank=True, null=True)
+    disbanded_label = models.CharField(max_length=10, blank=True, null=True)
     history = models.TextField(blank=True, null=True)
     logo = models.URLField(blank=True, max_length=500)
     date_created = models.DateTimeField(default=timezone.now)
