@@ -152,8 +152,9 @@ class IssueView(viewsets.ReadOnlyModelViewSet):
         try:
             issue = Issue.objects.get(pk=pk)
             if request.data:
-                request.data['series'] = issue.series.id
-                serializer = IssueSerializer(instance=issue, data=request.data, partial=True)
+                data = request.data.copy()
+                data['series'] = issue.series.id
+                serializer = IssueSerializer(instance=issue, data=data, partial=True)
                 if serializer.is_valid():
                     serializer.update(instance=issue, validated_data=serializer.validated_data)
                     return Response(serializer.data)
