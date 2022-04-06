@@ -57,7 +57,7 @@ class CartoonSubscriptionsView(APIView):
     def delete(self, request):
         user = self.request.user
         try:
-            instance = CartoonSubscription.objects.filter(user=user.pk, series=data['series']).first()
+            instance = CartoonSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
             if instance:
                 instance.delete()
                 return Response({'success': 'Successfully unsubscribed'})
