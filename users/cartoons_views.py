@@ -45,8 +45,9 @@ class CartoonSubscriptionsView(APIView):
 
     def post(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
-        serializer = CartoonSubscriptionSerializer(data=request.data)
+        data = request.data.copy()
+        data['user'] = user.pk
+        serializer = CartoonSubscriptionSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -55,9 +56,8 @@ class CartoonSubscriptionsView(APIView):
     
     def delete(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
         try:
-            instance = CartoonSubscription.objects.filter(user=user.pk, series=request.data['series']).first()
+            instance = CartoonSubscription.objects.filter(user=user.pk, series=data['series']).first()
             if instance:
                 instance.delete()
                 return Response({'success': 'Successfully unsubscribed'})
@@ -127,8 +127,9 @@ class UserWatchedEpisodesView(APIView):
 
     def post(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
-        serializer = WatchedEpisodesSerializer(data = request.data)
+        data = request.data.copy()
+        data['user'] = user.pk
+        serializer = WatchedEpisodesSerializer(data = data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -137,7 +138,6 @@ class UserWatchedEpisodesView(APIView):
     
     def delete(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
         try:
             instance = WatchedEpisode.objects.get(id=request.data['watched_id'])
             if instance.user == user:
@@ -157,7 +157,6 @@ class CleanUserWatchedEpisodes(APIView):
 
     def delete(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
         try:
             instances = WatchedEpisode.objects.filter(episode=request.data['episode'], user=user)
             if instances:

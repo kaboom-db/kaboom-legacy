@@ -91,9 +91,10 @@ class FollowUser(APIView):
         try:
             following = User.objects.get(username=username)
             if following.userdata.private == False:
-                request.data['follower'] = user.id
-                request.data['following'] = following.id
-                serializer = FollowSerializer(data=request.data)
+                data = request.data.copy()
+                data['follower'] = user.id
+                data['following'] = following.id
+                serializer = FollowSerializer(data=data)
                 if user != following:
                     if serializer.is_valid():
                         serializer.save()
@@ -202,9 +203,10 @@ class ReportView(APIView):
     def post(self, request):
         user = self.request.user
         try:
-            request.data['user'] = user.id
-            request.data['status'] = 'NONE'
-            serializer = ReportSerializer(data=request.data)
+            data = request.data.copy()
+            data['user'] = user.id
+            data['status'] = 'NONE'
+            serializer = ReportSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)

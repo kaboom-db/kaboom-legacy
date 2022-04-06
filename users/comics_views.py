@@ -45,8 +45,9 @@ class ComicSubscriptionsView(APIView):
 
     def post(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
-        serializer = ComicSubscriptionSerializer(data=request.data)
+        data = request.data.copy()
+        data['user'] = user.pk
+        serializer = ComicSubscriptionSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -129,8 +130,9 @@ class UserReadIssuesView(APIView):
     ### Adds an issue as read
     def post(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
-        serializer = ReadIssuesSerializer(data=request.data)
+        data = request.data.copy()
+        data['user'] = user.pk
+        serializer = ReadIssuesSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -139,7 +141,6 @@ class UserReadIssuesView(APIView):
 
     def delete(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
         try:
             instance = ReadIssue.objects.get(id=request.data['read_id'])
             ## Check if the instance is attached to the user
@@ -160,7 +161,6 @@ class CleanUserReadIssues(APIView):
 
     def delete(self, request):
         user = self.request.user
-        request.data['user'] = user.pk
         try:
             instances = ReadIssue.objects.filter(issue=request.data['issue'], user=user)
             if instances:
