@@ -136,7 +136,7 @@ class GetUsersFollowers(APIView):
         # Get all the followers
         try:
             following = User.objects.filter(username=username).first()
-            if following.userdata.private == False or following == self.request.user:
+            if following and (following.userdata.private == False or following == self.request.user):
                 users_followers = Follow.objects.filter(following=following.id, follower__userdata__private=False).values_list('follower', flat=True)
                 users = User.objects.filter(id__in=users_followers).order_by('username')
                 paginator = pagination.PageNumberPagination()
@@ -156,7 +156,7 @@ class GetUsersFollowing(APIView):
     def get(self, request, username):
         try:
             follower = User.objects.filter(username=username).first()
-            if follower.userdata.private == False or follower == self.request.user:
+            if follower and (follower.userdata.private == False or follower == self.request.user):
                 users_following = Follow.objects.filter(follower=follower.id, following__userdata__private=False).values_list('following', flat=True)
                 users = User.objects.filter(id__in=users_following).order_by('username')
                 paginator = pagination.PageNumberPagination()
